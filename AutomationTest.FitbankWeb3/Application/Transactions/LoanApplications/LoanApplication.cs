@@ -17,11 +17,10 @@ using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
 {
-    public abstract class LoanApplication<TClientData, TLoanResult> : ILoanApplication<TClientData, TLoanResult>
+    public abstract class LoanApplication<TClientData> : ILoanApplication<TClientData>
         where TClientData : IClientData
-        where TLoanResult : ILoanApplicationResult
     {
-        public abstract Task<TLoanResult> ApplyForLoanAsync(IPage page,LoanApplicationModel<TClientData> loanRequest);
+        public abstract Task<ILoanApplicationResult> ApplyForLoanAsync(IPage page,LoanApplicationModel<TClientData> loanRequest);
         // Aquí puedes agregar métodos comunes para todas las implementaciones de LoanApplication, si es necesario.
         // Por ejemplo, podrías tener un método para validar los datos del cliente o para formatear la solicitud de préstamo.
         public async Task SearchProduct(IPage page, string product)

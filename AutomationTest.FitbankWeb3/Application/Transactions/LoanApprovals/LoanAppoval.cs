@@ -66,7 +66,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals
                         Timeout = 30000 // 30 seconds timeout for the force login to be processed
                     }, _outputAccessor.Output);
             }
-
+            
             await page.Locator(_locators.Login.UsernameInput).FillAsync(loanAppproval.ApprovingUser);
             await page.Locator(_locators.Login.PasswordInput).FillAsync("fitbank123");
             await page.Locator(_locators.Login.SubmitButton).ClickAsync();
@@ -161,13 +161,13 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals
 
             await page.Locator(_locators.DashboardPage.ApprovalUsers).ClickAsync();
             await Task.Delay(500); // Wait for the UI to stabilize
-            Task hasApproverUsersTask = page.Locator(_locators.DashboardPage.OK).WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 30000 });
-            Task hasNoApproverUsersTask = page.Locator(_locators.DashboardPage.NonAuthorizingUsers).WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 30000 });
+            Task hasApprovingUsersTask = page.Locator(_locators.DashboardPage.OK).WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 30000 });
+            Task hasNoApprovingUsersTask = page.Locator(_locators.DashboardPage.NonAuthorizingUsers).WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 30000 });
 
-            Task usersResultTask = await Task.WhenAny(hasApproverUsersTask, hasNoApproverUsersTask);
+            Task usersResultTask = await Task.WhenAny(hasApprovingUsersTask, hasNoApprovingUsersTask);
 
             List<string> approvingUsers = new();
-            if (usersResultTask == hasApproverUsersTask)
+            if (usersResultTask == hasApprovingUsersTask)
             {
                 ILocator usersTable = page.Locator(_locators.DashboardPage.AprovalUsersList);
                 var rows = usersTable.Locator("tbody > tr");

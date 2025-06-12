@@ -87,7 +87,8 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             Services.AddSingleton<IBranchSynchronizationService, DynamicBranchBarrier>();
             Services.AddSingleton<ITestOutputAccessor, TestOutputAccessor>();
 
-            Services.AddTransient<ILoanApplication<ClientDataT062900, LoanApplicationResultT062900>, LoanApplicationT062900>();
+            Services.AddTransient<ILoanApplication<ClientDataT062900>, LoanApplicationT062900>();
+            Services.AddTransient<ILoanApplication<ClientDataT062800>, LoanApplicationT062800>();
             Services.AddTransient<ILoanApproval, LoanApproval>();
 
             // 7) Construye el ServiceProvider

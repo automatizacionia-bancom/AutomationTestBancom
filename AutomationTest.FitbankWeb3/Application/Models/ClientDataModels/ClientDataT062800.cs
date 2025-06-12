@@ -9,13 +9,15 @@ using AutomationTest.FitbankWeb3.Domain.Enums;
 
 namespace AutomationTest.FitbankWeb3.Application.Models.ClientDataModels
 {
-    [TransactionType(TransactionType.T062900)]
-    public class ClientDataT062900 : IClientData
+    [TransactionType(TransactionType.T062800)]
+    public class ClientDataT062800 : IClientData
     {
         public string UserRequest { get; set; } = string.Empty;
         public string Identification { get; set; } = string.Empty;
         public int Address { get; set; } = 1;
+        public string ProductGroup { get; set; } = string.Empty;
         public string Product { get; set; } = string.Empty;
+        public GuaranteeType GuaranteeType { get; set; } = GuaranteeType.SinGarantia;
         public LoanType LoanType { get; set; } = LoanType.Prestamo;
         public int LoanInstallments { get; set; } = 0;
         public double LoanAmount { get; set; } = 0.0;

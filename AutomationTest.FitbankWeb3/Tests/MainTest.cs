@@ -29,7 +29,7 @@ using Xunit.Sdk;
 
 namespace AutomationTest.FitbankWeb3.Tests
 {
-    public class MainTest :  IClassFixture<TestFixture>
+    public class MainTest : IClassFixture<TestFixture>
     {
         private readonly IServiceProvider _provider;
         private readonly IServiceScope _scope;
@@ -64,13 +64,13 @@ namespace AutomationTest.FitbankWeb3.Tests
             _output = output;
         }
         // Holds all test data in a list for scalability
-        //private static readonly List<LoanApplicationModel<ClientDataT062900>> ClientDataList = new()
+        //private static readonly List<LoanApplicationModel<ClientDataT062800>> ClientDataList = new()
         //{
-        //    new LoanApplicationModel<ClientDataT062900>
+        //    new LoanApplicationModel<ClientDataT062800>
         //    {
         //        Headless = true,
         //        KeepPdf = false,
-        //        ClientData = new ClientDataT062900
+        //        ClientData = new ClientDataT062800
         //        {
         //            UserRequest = "NGONZALES",
         //            Identification = "09607112",
@@ -89,9 +89,9 @@ namespace AutomationTest.FitbankWeb3.Tests
         //        IpPort = "http://10.0.2.54:8380",
         //        EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\Prueba\\Caso1"
         //    },
-        //    //new LoanRequestModel<ClientDataT062900>
+        //    //new LoanRequestModel<ClientDataT062800>
         //    //{
-        //    //     ClientData = new ClientDataT062900
+        //    //     ClientData = new ClientDataT062800
         //    //    {
         //    //    UserRequest = "NGONZALES",
         //    //    Identification = "16681272",
@@ -138,13 +138,15 @@ namespace AutomationTest.FitbankWeb3.Tests
         //        IpPort = "http://10.0.2.54:8380",
         //    }
         //};
-        private static readonly List<FullLoanRequest<ClientDataT062900>> ClientDataList = new()
+        private static readonly List<FullLoanRequest<ClientDataT062800>> ClientDataList = new()
         {
-            new FullLoanRequest<ClientDataT062900>
+            new FullLoanRequest<ClientDataT062800>
             {
-                ClientData = new ClientDataT062900
+                ClientData = new ClientDataT062800
                 {
-                    UserRequest = "NGONZALES",
+                    UserRequest = "NBASURTO",
+                    GuaranteeType = GuaranteeType.SinGarantia,
+                    ProductGroup = "11",
                     Identification = "09607112",
                     Address = 1,
                     LoanAmount = 15000.00,
@@ -164,30 +166,32 @@ namespace AutomationTest.FitbankWeb3.Tests
                 KeepPdf = false,
                 MaxApprovalUser = 10,
             },
-            new FullLoanRequest<ClientDataT062900>
-            {
-                ClientData = new ClientDataT062900
-                {
-                UserRequest = "NGONZALES",
-                Identification = "16681272",
-                Address = 1,
-                LoanAmount = 15000.00,
-                LoanType = LoanType.Prestamo,
-                LoanInstallments = 72,
-                PayrollSource = "Dir/Of. Economia",
-                Product = "159",
-                Income = 20000.00,
-                RequestType = RequestType.IngresoARiesgos,
-                RequestState = RequestStatus.APROBAR,
-                RequestObservation1 = "SUPERVISADOS",
-                RequestObservation2 = "OTROS",
-                },
-                IpPort = "http://10.0.2.54:8380",
-                EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\Prueba\\Caso2",
-                Headless = false,
-                KeepPdf = false,
-                MaxApprovalUser = 10,
-            },
+            //new FullLoanRequest<ClientDataT062800>
+            //{
+            //    ClientData = new ClientDataT062800
+            //    {
+            //        UserRequest = "NGONZALES",
+            //        GuaranteeType = GuaranteeType.SinGarantia,
+            //        ProductGroup = "11",
+            //        Identification = "16681272",
+            //        Address = 1,
+            //        LoanAmount = 15000.00,
+            //        LoanType = LoanType.Prestamo,
+            //        LoanInstallments = 72,
+            //        PayrollSource = "Dir/Of. Economia",
+            //        Product = "159",
+            //        Income = 20000.00,
+            //        RequestType = RequestType.IngresoARiesgos,
+            //        RequestState = RequestStatus.APROBAR,
+            //        RequestObservation1 = "SUPERVISADOS",
+            //        RequestObservation2 = "OTROS",
+            //        },
+            //        IpPort = "http://10.0.2.54:8380",
+            //        EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\Prueba\\Caso2",
+            //        Headless = false,
+            //        KeepPdf = false,
+            //        MaxApprovalUser = 10,
+            //},
         };
         // Returns the test indices (primitive values), always matching the ClientDataList size
         public static TheoryData<int> GetData()
@@ -199,8 +203,8 @@ namespace AutomationTest.FitbankWeb3.Tests
             return data;
         }
 
-        // Maps index to ClientDataT062900 from the list
-        private static FullLoanRequest<ClientDataT062900> GetClientDataByIndex(int index)
+        // Maps index to ClientDataT062800 from the list
+        private static FullLoanRequest<ClientDataT062800> GetClientDataByIndex(int index)
         {
             if (index < 0 || index >= ClientDataList.Count)
                 throw new ArgumentOutOfRangeException(nameof(index), "Invalid test data index");
@@ -211,7 +215,7 @@ namespace AutomationTest.FitbankWeb3.Tests
         //public async Task LoginTheoryTest(int clientDataIndex)
         //{
         //    var clientData = GetClientDataByIndex(clientDataIndex);
-        //    ILoanApplication<ClientDataT062900, LoanApplicationResultT062900> loginTest = new LoanApplicationT062900(_playwright, _locators, _pdfConverter, _standardQueryService, _actionCoordinatorService, _outputAccessor.Output);
+        //    ILoanApplication<ClientDataT062800, LoanApplicationResultT062900> loginTest = new LoanApplicationT062900(_playwright, _locators, _pdfConverter, _standardQueryService, _actionCoordinatorService, _outputAccessor.Output);
         //    await loginTest.ApplyForLoanAsync(clientData);
         //}
         //[Theory]
@@ -259,8 +263,8 @@ namespace AutomationTest.FitbankWeb3.Tests
         {
             var loanRequest = GetClientDataByIndex(clientDataIndex);
 
-            TransactionOrchestrator orchestrator = new TransactionOrchestrator(_provider, _playwright, _locators, _pdfConverter, _standardQueryService, _transactionUsersSelectionService,_actionCoordinatorFactory, _branchSynchronizationService, _output);
-            await orchestrator.TransactionAsync<ClientDataT062900, LoanApplicationResultT062900>(loanRequest);
+            TransactionOrchestrator orchestrator = new TransactionOrchestrator(_provider, _playwright, _locators, _pdfConverter, _standardQueryService, _transactionUsersSelectionService, _actionCoordinatorFactory, _branchSynchronizationService, _output);
+            await orchestrator.TransactionAsync<ClientDataT062800>(loanRequest);
         }
     }
 }

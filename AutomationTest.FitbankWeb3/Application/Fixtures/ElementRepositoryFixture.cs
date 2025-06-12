@@ -11,6 +11,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
     {
         public LoginRepository Login { get; } = new LoginRepository();
         public LoanApplicationT062900Repository ApplicationPageT062900 { get; } = new LoanApplicationT062900Repository();
+        public LoanApplicationT062800Repository ApplicationPageT062800 { get; } = new LoanApplicationT062800Repository();
         public LoanApprovalRepository ApprovalPage { get; } = new LoanApprovalRepository();
         public DashboardRepository DashboardPage { get; } = new DashboardRepository();
     }

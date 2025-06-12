@@ -63,9 +63,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             _branchSynchronizationService = branchSynchronizationService;
             _output = output;
         }
-        public async Task TransactionAsync<TClientData, TAppResult>(FullLoanRequest<TClientData> loanRequest)
+        public async Task TransactionAsync<TClientData>(FullLoanRequest<TClientData> loanRequest)
             where TClientData : IClientData
-            where TAppResult : ILoanApplicationResult
         {
             await using var browser = await LaunchBrowserAsync<TClientData>(loanRequest);
             await using var context = await browser.NewContextAsync(new BrowserNewContextOptions { AcceptDownloads = true });
@@ -76,12 +75,12 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             using var registration = _branchSynchronizationService.RegisterBranch(BranchId);
             try
             {
-                var applicationResult = await RunLoanApplicationAsync<TClientData, TAppResult>(page, loanRequest);
+                var applicationResult = await RunLoanApplicationAsync<TClientData>(page, loanRequest);
                 _output.WriteLine("Flujo de solicitud de préstamo completado con éxito.");
 
                 await _branchSynchronizationService.ArriveAndWaitAsync(BranchId);
 
-                await RunApprovalLoopAsync<TClientData, TAppResult>(page, loanRequest, applicationResult, transactionType);
+                await RunApprovalLoopAsync<TClientData>(page, loanRequest, applicationResult, transactionType);
             }
             catch (Exception ex)
             {
@@ -94,13 +93,12 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
                 Headless = req.Headless,
                 DownloadsPath = req.EvidenceFoler
             });
-        private async Task<TAppResult> RunLoanApplicationAsync<TClientData, TAppResult>(
+        private async Task<ILoanApplicationResult> RunLoanApplicationAsync<TClientData>(
             IPage page,
             FullLoanRequest<TClientData> req)
             where TClientData : IClientData
-            where TAppResult : ILoanApplicationResult
         {
-            var approvalFlow = _provider.GetRequiredService<ILoanApplication<TClientData, TAppResult>>();
+            var approvalFlow = _provider.GetRequiredService<ILoanApplication<TClientData>>();
 
             var model = new LoanApplicationModel<TClientData>
             {
@@ -113,12 +111,11 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
 
             return await approvalFlow.ApplyForLoanAsync(page, model);
         }
-        private async Task RunApprovalLoopAsync<TClientData, TAppResult>(
+        private async Task RunApprovalLoopAsync<TClientData>(
             IPage page,
             FullLoanRequest<TClientData> req,
-            TAppResult result, TransactionType transactionType)
+            ILoanApplicationResult result, TransactionType transactionType)
             where TClientData : IClientData
-            where TAppResult : ILoanApplicationResult
         {
             var approvalFlow = _provider.GetRequiredService<ILoanApproval>();
 
@@ -127,9 +124,6 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
 
             for (int attempt = 1; attempt <= req.MaxApprovalUser; attempt++)
             {
-                if (attempt == req.MaxApprovalUser)
-                    throw new InvalidOperationException($"Se alcanzó el máximo ({req.MaxApprovalUser}) de intentos de aprobación.");
-
                 var model = new LoanApprovalModel
                 {
                     ApprovingUser = nextUser,
@@ -150,6 +144,9 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
 
                 if (approvalResult.ApprovalStatus == ApprovalStatus.APROBADO)
                     throw new InvalidOperationException("Bucle detectado: préstamo ya aprobado con usuarios pendientes.");
+
+                if (attempt >= req.MaxApprovalUser)
+                    throw new InvalidOperationException($"Se alcanzó el máximo ({req.MaxApprovalUser}) de intentos de aprobación.");
 
                 nextUser = await _transactionUsersSelectionService
                                  .SelectOptimalUserAsync(transactionType, approvalResult.RecognizedApprovingUsers);
