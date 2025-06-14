@@ -12,8 +12,10 @@ using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Input;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Output;
 using AutomationTest.FitbankWeb3.Application.Models.QueryModels;
+using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Application.Services.ActionCoordination;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
+using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalLoan;
 using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
@@ -43,7 +45,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
             ClientDataT062900 clientData = loanApplication.ClientData;
 
             // Verificar que el usuario no tenga una sesión activa
-            await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionQuery>(new StandardQueryModel
+            await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel
             {
                 User = clientData.UserRequest
             });
@@ -137,7 +139,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
                     State = WaitForSelectorState.Visible
                 });
 
-                await page.Locator(_locators.ApplicationPageT062900.IncomeDate).FillIfEditableAsync(DateTime.Now.AddMonths(-1).ToString("/MM/yyyy"));
+                await page.Locator(_locators.ApplicationPageT062900.IncomeDate).FillIfEditableAsync(DateTime.Now.AddMonths(-1).ToString("MMyyyy"));
                 await page.Locator(_locators.ApplicationPageT062900.IncomeDate).PressAsync("Enter");
 
                 await page.Locator(_locators.ApplicationPageT062900.IncomeAssets).FillIfEditableAsync(clientData.Income.ToString());

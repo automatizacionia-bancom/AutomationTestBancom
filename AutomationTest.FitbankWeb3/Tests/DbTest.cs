@@ -1,7 +1,9 @@
 ﻿using System.Data;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
+using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.QueryModels;
+using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using AutomationTest.FitbankWeb3.Infrastructure.Persistence;
@@ -45,7 +47,7 @@ namespace AutomationTest.FitbankWeb3.Tests
             //    }
             //    _output.WriteLine("");
             //}
-            await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionQuery>(new StandardQueryModel
+            await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel
             {
                 User = "NGONZALES"
             });

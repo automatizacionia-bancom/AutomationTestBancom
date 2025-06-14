@@ -37,6 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Application\Transactions\LoanApplications\CreditProposal\" />
+    <Folder Include="Application\Transactions\LoanApprovals\CreditProposal\" />
     <Folder Include="Domain\Models\" />
     <Folder Include="Domain\Ports\Inbound\" />
   </ItemGroup>

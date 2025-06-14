@@ -7,11 +7,13 @@ using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Output;
+using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Application.Services;
 using AutomationTest.FitbankWeb3.Application.Services.ActionCoordination;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications;
-using AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals;
+using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalLoan;
+using AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.PersonalLoan;
 using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using AutomationTest.FitbankWeb3.Infrastructure.Configuration;
@@ -75,7 +77,8 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             Services.AddSingleton<ElementRepositoryFixture>();
 
             // 6) Registra las demás dependencias (queries, servicios, etc.)
-            Services.AddTransient<DeleteUserSesionQuery>();
+            Services.AddTransient<IStandardQuery<DeleteUserSesionModel>, DeleteUserSesionQuery>();
+            Services.AddTransient<IStandardQuery<ForceLoanApprovalModel>, ForceLoanApprovalQuery>();
             Services.AddScoped<IStandardQueryService, StandardQueryService>();
             Services.AddScoped<ITransactionUsersSelectionService, TransactionUsersSelectionService>();
             Services.AddScoped<IPdfConverter, PdfConverter>();

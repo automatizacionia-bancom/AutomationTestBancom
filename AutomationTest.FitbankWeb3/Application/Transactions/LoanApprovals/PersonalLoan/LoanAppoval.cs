@@ -10,9 +10,11 @@ using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
+using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApprovalModels.Input;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApprovalModels.Output;
 using AutomationTest.FitbankWeb3.Application.Models.QueryModels;
+using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Application.Services.ActionCoordination;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications;
@@ -22,7 +24,7 @@ using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Playwright;
 using Xunit.Abstractions;
 
-namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals
+namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.PersonalLoan
 {
     public class LoanApproval : ILoanApproval
     {
@@ -40,9 +42,9 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals
             _actionCoordinatorFactory = actionCoordinatorService;
             _outputAccessor = output;
         }
-        public async Task<LoanApprovalResultModel> ApproveLoanAsync(IPage page,LoanApprovalModel loanAppproval)
+        public async Task<LoanApprovalResultModel> ApproveLoanAsync(IPage page, LoanApprovalModel loanAppproval)
         {
-            await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionQuery>(new StandardQueryModel
+            await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel
             {
                 User = loanAppproval.ApprovingUser
             });
@@ -66,7 +68,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals
                         Timeout = 30000 // 30 seconds timeout for the force login to be processed
                     }, _outputAccessor.Output);
             }
-            
+
             await page.Locator(_locators.Login.UsernameInput).FillAsync(loanAppproval.ApprovingUser);
             await page.Locator(_locators.Login.PasswordInput).FillAsync("fitbank123");
             await page.Locator(_locators.Login.SubmitButton).ClickAsync();
@@ -127,7 +129,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals
                 {
                     State = WaitForSelectorState.Visible,
                     Timeout = 90000 // 90 seconds timeout for the transaction to be processed
-                }, _outputAccessor.Output);
+                }, _outputAccessor.Output, maxRetries: 10);
             await Task.Delay(1000); // Wait for the transaction to be processed
             await page.Locator(_locators.DashboardPage.OK_TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
             {
@@ -159,10 +161,62 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals
                     State = WaitForSelectorState.Visible
                 }, _outputAccessor.Output);
 
+            string approvalStatusResult = await page.Locator(_locators.DashboardPage.ApprovalStatus).InputValueAsync();
+            if (!Enum.TryParse(approvalStatusResult, true, out ApprovalStatus approvalStatus))
+                throw new Exception($"El estado de aprobación '{approvalStatusResult}' no es válido.");
+            
+            List<string> approvingUsers = await GetApprovingUsersAsync(page, approvalStatus);
+
+            await page.ScreenshotAsync(new PageScreenshotOptions
+            {
+                Path = Path.Combine(loanAppproval.EvidenceFoler, $"Aprobacion {loanAppproval.ApprovalNumber} - Usuarios.jpg"),
+                FullPage = true
+            });
+
+            _outputAccessor.Output.WriteLine($"Estado de aprobación: {approvalStatus}");
+
+            return new LoanApprovalResultModel
+            {
+                RecognizedApprovingUsers = approvingUsers,
+                ApprovalStatus = approvalStatus
+            };
+        }
+        private async Task<List<string>> GetApprovingUsersAsync(IPage page, ApprovalStatus approvalStatus)
+        {
+            // Si el estado de aprobación es APROBADO, se espera que no haya usuarios autorizadores
+            // Ejecutamos en bucle F7 para verificar los cambios en el fitbank, estos pueden tardar en reflejarse
+            if (approvalStatus == ApprovalStatus.APROBADO)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    string approvalProcess = await page.Locator(_locators.DashboardPage.ApprovalProcess).InputValueAsync();
+
+                    if (approvalProcess == "DESEMBOLSADO")
+                        return new List<string>();
+
+                    await page.ClickAndWaitAsync(
+                            page.Locator(_locators.DashboardPage.F7Button),
+                            page.Locator(_locators.DashboardPage.TransactionCorrect),
+                            new LocatorWaitForOptions
+                            {
+                                State = WaitForSelectorState.Visible,
+                                Timeout = 30000 // 30 seconds timeout for the transaction to be processed
+                            }, _outputAccessor.Output);
+                }
+            }
+
             await page.Locator(_locators.DashboardPage.ApprovalUsers).ClickAsync();
             await Task.Delay(500); // Wait for the UI to stabilize
-            Task hasApprovingUsersTask = page.Locator(_locators.DashboardPage.OK).WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 30000 });
-            Task hasNoApprovingUsersTask = page.Locator(_locators.DashboardPage.NonAuthorizingUsers).WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 30000 });
+            Task hasApprovingUsersTask = page.Locator(_locators.DashboardPage.OK).WaitForAsync(new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Visible,
+                Timeout = 30000
+            });
+            Task hasNoApprovingUsersTask = page.Locator(_locators.DashboardPage.NonAuthorizingUsers).WaitForAsync(new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Visible,
+                Timeout = 30000
+            });
 
             Task usersResultTask = await Task.WhenAny(hasApprovingUsersTask, hasNoApprovingUsersTask);
 
@@ -191,24 +245,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals
                 _outputAccessor.Output.WriteLine("No hay usuarios autorizadores disponibles para esta solicitud.");
             }
 
-            await page.ScreenshotAsync(new PageScreenshotOptions
-            {
-                Path = Path.Combine(loanAppproval.EvidenceFoler, $"Aprobacion {loanAppproval.ApprovalNumber} - Usuarios.jpg"),
-                FullPage = true
-            });
-
-            string approvalStatusResult = await page.Locator(_locators.DashboardPage.ApprovalStatus).InputValueAsync();
-
-            if (!Enum.TryParse<ApprovalStatus>(approvalStatusResult, true, out ApprovalStatus approvalStatus))
-                throw new Exception($"El estado de aprobación '{approvalStatusResult}' no es válido.");
-
-            _outputAccessor.Output.WriteLine($"Estado de aprobación: {approvalStatus}");
-
-            return new LoanApprovalResultModel
-            {
-                RecognizedApprovingUsers = approvingUsers,
-                ApprovalStatus = approvalStatus
-            };
+            return approvingUsers;
         }
     }
 }

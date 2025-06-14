@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Application.Attributes;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
+using AutomationTest.FitbankWeb3.Domain.Attributes;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 
 namespace AutomationTest.FitbankWeb3.Application.Models.ClientDataModels
@@ -17,12 +17,14 @@ namespace AutomationTest.FitbankWeb3.Application.Models.ClientDataModels
         public int Address { get; set; } = 1;
         public string ProductGroup { get; set; } = string.Empty;
         public string Product { get; set; } = string.Empty;
+        public CoinType CoinType { get; set; } = CoinType.Soles;    
         public GuaranteeType GuaranteeType { get; set; } = GuaranteeType.SinGarantia;
         public LoanType LoanType { get; set; } = LoanType.Prestamo;
         public int LoanInstallments { get; set; } = 0;
         public double LoanAmount { get; set; } = 0.0;
-        public string PayrollSource { get; set; } = string.Empty;
+        public DisbursementType DisbursementType { get; set; } = DisbursementType.Unspecified;
         public double Income { get; set; } = 0.0;
+        public bool ForceApproval { get; set; } = false;
         public RequestType RequestType { get; set; } = RequestType.Excepcion;
         public RequestStatus RequestState { get; set; } = RequestStatus.APROBAR;
         public string RequestObservation1 { get; set; } = string.Empty;

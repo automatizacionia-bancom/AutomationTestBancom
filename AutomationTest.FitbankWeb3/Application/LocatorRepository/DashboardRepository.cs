@@ -30,6 +30,7 @@ namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
         public string ApprovalUsers { get; } = "#container_2 > div > table > tbody > tr:nth-child(1) > td.usaIcono.button.list-of-values.none > img";
         public string AprovalUsersList { get; } = "#entorno-formulario > form:nth-child(7) > div > table";
         public string ApprovalStatus { get; } = "#c_txtEstado_0";
+        public string ApprovalProcess { get; } = "#c_txtProceso_0";
         public string ListElement(string elementName) => $"td:text-matches(\"^{elementName}$\", \"\")";
     }
 }
