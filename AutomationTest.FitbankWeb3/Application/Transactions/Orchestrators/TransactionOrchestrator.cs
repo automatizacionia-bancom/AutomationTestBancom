@@ -39,6 +39,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
         private readonly ITransactionUsersSelectionService _transactionUsersSelectionService;
         private readonly IActionCoordinatorFactory _actionCoordinatorFactory;
         private readonly IBranchSynchronizationService _branchSynchronizationService;
+        private readonly IUserTurnCoordinatorService _userTurnCoordinatorService;
         private readonly ITestOutputHelper _output;
         private readonly string BranchId = Guid.NewGuid().ToString();
 
@@ -51,6 +52,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             ITransactionUsersSelectionService transactionUsersSelectionService,
             IActionCoordinatorFactory actionCoordinatorFactory,
             IBranchSynchronizationService branchSynchronizationService,
+            IUserTurnCoordinatorService userTurnCoordinatorService,
             ITestOutputHelper output)
         {
             _provider = provider;
@@ -61,6 +63,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             _transactionUsersSelectionService = transactionUsersSelectionService;
             _actionCoordinatorFactory = actionCoordinatorFactory;
             _branchSynchronizationService = branchSynchronizationService;
+            _userTurnCoordinatorService = userTurnCoordinatorService;
             _output = output;
         }
         public async Task TransactionAsync<TClientData>(FullLoanRequest<TClientData> loanRequest)
@@ -72,71 +75,73 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
 
             TransactionType transactionType = _provider.GetRequiredService<ITransactionDataResolver>().GetTransactionType<TClientData>();
 
-            using var registration = _branchSynchronizationService.RegisterBranch(BranchId);
+            using var userTurnSession = _userTurnCoordinatorService.RegisterBranch();
             try
             {
                 var applicationResult = await RunLoanApplicationAsync<TClientData>(page, loanRequest);
                 _output.WriteLine("Flujo de solicitud de préstamo completado con éxito.");
 
-                await _branchSynchronizationService.ArriveAndWaitAsync(BranchId);
-
-                await RunApprovalLoopAsync<TClientData>(page, loanRequest, applicationResult, transactionType);
+                await RunApprovalLoopAsync<TClientData>(page, loanRequest, applicationResult, transactionType, userTurnSession);
             }
             catch (Exception ex)
             {
                 await HandleErrorAsync(ex, loanRequest, page);
             }
         }
-        private async Task<IBrowser> LaunchBrowserAsync<TClientData>(FullLoanRequest<TClientData> req) where TClientData : IClientData =>
+        private async Task<IBrowser> LaunchBrowserAsync<TClientData>(FullLoanRequest<TClientData> loanRequest) where TClientData : IClientData =>
             await _playwright.PlaywrightVar.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
-                Headless = req.Headless,
-                DownloadsPath = req.EvidenceFoler
+                Headless = loanRequest.Headless,
+                DownloadsPath = loanRequest.EvidenceFoler
             });
         private async Task<ILoanApplicationResult> RunLoanApplicationAsync<TClientData>(
             IPage page,
-            FullLoanRequest<TClientData> req)
+            FullLoanRequest<TClientData> loanRequest)
             where TClientData : IClientData
         {
             var approvalFlow = _provider.GetRequiredService<ILoanApplication<TClientData>>();
 
             var model = new LoanApplicationModel<TClientData>
             {
-                ClientData = req.ClientData,
-                EvidenceFoler = req.EvidenceFoler,
-                IpPort = req.IpPort,
-                Headless = req.Headless,
-                KeepPdf = req.KeepPdf
+                ClientData = loanRequest.ClientData,
+                EvidenceFoler = loanRequest.EvidenceFoler,
+                IpPort = loanRequest.IpPort,
+                Headless = loanRequest.Headless,
+                KeepPdf = loanRequest.KeepPdf
             };
 
             return await approvalFlow.ApplyForLoanAsync(page, model);
         }
         private async Task RunApprovalLoopAsync<TClientData>(
             IPage page,
-            FullLoanRequest<TClientData> req,
-            ILoanApplicationResult result, TransactionType transactionType)
+            FullLoanRequest<TClientData> loanRequest,
+            ILoanApplicationResult result, TransactionType transactionType, IBranchSession userTurnSession)
             where TClientData : IClientData
         {
-            var approvalFlow = _provider.GetRequiredService<ILoanApproval>();
+            var approvalFlow = _provider.GetRequiredService<ILoanApproval<TClientData>>();
 
-            var nextUser = await _transactionUsersSelectionService
-                                     .SelectOptimalUserAsync(transactionType, result.RecognizedApprovingUsers);
+            List<string> recognizedUser = result.RecognizedApprovingUsers;
 
-            for (int attempt = 1; attempt <= req.MaxApprovalUser; attempt++)
+            for (int attempt = 1; attempt <= loanRequest.MaxApprovalUser; attempt++)
             {
+                string nextUser = await _transactionUsersSelectionService
+                    .SelectOptimalUserAsync(transactionType, recognizedUser);
+
                 var model = new LoanApprovalModel
                 {
                     ApprovingUser = nextUser,
                     ApprovalNumber = attempt,
-                    EvidenceFoler = req.EvidenceFoler,
+                    EvidenceFoler = loanRequest.EvidenceFoler,
                     ApplicationNumber = result.ApplicationNumber,
-                    IpPort = req.IpPort
+                    IpPort = loanRequest.IpPort
                 };
+
+                await userTurnSession.ArriveUntilTurnAsync(nextUser);
 
                 var approvalResult = await approvalFlow.ApproveLoanAsync(page, model);
                 _output.WriteLine("Flujo de aprobación ejecutado.");
 
-                if (!approvalResult.RecognizedApprovingUsers.Any())
+                if (approvalResult.RecognizedApprovingUsers.Count == 0)
                 {
                     HandleNoRecognizedUsers(approvalResult);
                     return;
@@ -145,14 +150,10 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
                 if (approvalResult.ApprovalStatus == ApprovalStatus.APROBADO)
                     throw new InvalidOperationException("Bucle detectado: préstamo ya aprobado con usuarios pendientes.");
 
-                if (attempt >= req.MaxApprovalUser)
-                    throw new InvalidOperationException($"Se alcanzó el máximo ({req.MaxApprovalUser}) de intentos de aprobación.");
-
-                nextUser = await _transactionUsersSelectionService
-                                 .SelectOptimalUserAsync(transactionType, approvalResult.RecognizedApprovingUsers);
-
-                await _branchSynchronizationService.ArriveAndWaitAsync(BranchId);
+                recognizedUser = approvalResult.RecognizedApprovingUsers;
             }
+
+            throw new InvalidOperationException($"Se alcanzó el máximo ({loanRequest.MaxApprovalUser}) de intentos de aprobación.");
         }
         private void HandleNoRecognizedUsers(LoanApprovalResultModel res)
         {
@@ -166,10 +167,10 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
                     $"No hay usuarios reconocidos. Estado: {res.ApprovalStatus}");
             }
         }
-        private async Task HandleErrorAsync<TClientData>(Exception ex, FullLoanRequest<TClientData> req, IPage page) where TClientData : IClientData
+        private async Task HandleErrorAsync<TClientData>(Exception ex, FullLoanRequest<TClientData> loanRequest, IPage page) where TClientData : IClientData
         {
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-            var screenshotPath = Path.Combine(req.EvidenceFoler, $"Incidencia_{timestamp}.jpg");
+            var screenshotPath = Path.Combine(loanRequest.EvidenceFoler, $"Incidencia_{timestamp}.jpg");
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {

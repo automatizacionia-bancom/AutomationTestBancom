@@ -26,7 +26,10 @@ using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.PersonalLoan
 {
-    public class LoanApproval : ILoanApproval
+    public class LoanApproval 
+        : 
+        ILoanApproval<ClientDataT062900>,
+        ILoanApproval<ClientDataT062800>
     {
         private readonly ElementRepositoryFixture _locators;
         private readonly IPdfConverter _pdfConverter;

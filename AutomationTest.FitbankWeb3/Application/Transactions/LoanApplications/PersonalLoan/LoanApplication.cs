@@ -8,6 +8,7 @@ using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
@@ -149,18 +150,22 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             });
 
             // Presionamos F12 para generar el PDF de aprobación
-            await page.ClickAndWaitAsync(
+            using(var handle = actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.LoanApprovalCoordinator).CreateHandle())
+            {
+                await handle.WaitForTurnAsync(); // Esperar a que el coordinador permita continuar
+
+                await page.ClickAndWaitAsync(
                 page.Locator(locators.DashboardPage.F12Button),
                 page.Locator(locators.DashboardPage.OK),
                 page.Locator(locators.DashboardPage.TransactionError),
-                actionCoordinatorFactory.GetCoordinator(Enums.ActionCoordinatorType.LoanApprovalCoordinator),
                 new LocatorWaitForOptions
                 {
                     Timeout = 90000,
                     State = WaitForSelectorState.Visible
                 },
                 outputHelper
-            );
+                );
+            }
 
             // Esperamos a que se abra el popup del PDF
             var pdfpage = await pdfpageTask;

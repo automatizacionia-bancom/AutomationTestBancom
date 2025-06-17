@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Web;
+using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
@@ -135,16 +136,32 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.WaitForTimeoutAsync(500); // Esperar un segundo para asegurar que los cambios se reflejen
 
             // Crear la solicitud de préstamo y esperar a que se genere el número de solicitud
-            await page.ClickAndWaitAsync(
-            page.Locator(_locators.DashboardPage.F12Button),
-            page.Locator(_locators.DashboardPage.OK),
-            page.Locator(_locators.DashboardPage.TransactionError),
-            _actionCoordinatorFactory.GetCoordinator(Enums.ActionCoordinatorType.LoanApplicationCoordinator),
-            new LocatorWaitForOptions
+            using (var handle = _actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.LoanApplicationCoordinator).CreateHandle())
             {
-                Timeout = 90000, // 90 seconds timeout
-                State = WaitForSelectorState.Visible
-            }, _outputAccessor.Output);
+                await handle.WaitForTurnAsync();
+
+                await page.ClickAndWaitAsync(
+                page.Locator(_locators.DashboardPage.F12Button),
+                page.Locator(_locators.DashboardPage.TransactionError),
+                //page.Locator(_locators.DashboardPage.TransactionError),
+                new LocatorWaitForOptions
+                {
+                    Timeout = 90000, // 90 seconds timeout
+                    State = WaitForSelectorState.Visible
+                }, _outputAccessor.Output);
+            }
+            await page.WaitForTimeoutAsync(30000);
+
+            //await page.ClickAndWaitAsync(
+            //page.Locator(_locators.DashboardPage.F12Button),
+            //page.Locator(_locators.DashboardPage.OK),
+            //page.Locator(_locators.DashboardPage.TransactionError),
+            //_actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.LoanApplicationCoordinator),
+            //new LocatorWaitForOptions
+            //{
+            //    Timeout = 90000, // 90 seconds timeout
+            //    State = WaitForSelectorState.Visible
+            //}, _outputAccessor.Output);
 
             string applicationNumber = await page.Locator(_locators.ApplicationPageT062800.ApplicationNumber).InputValueAsync();
             _outputAccessor.Output.WriteLine($"Solicitud: {applicationNumber}");
@@ -209,148 +226,6 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 loanApplication.Headless,
                 clientData.RequestObservation1,
                 clientData.RequestObservation2);
-            //// Ingresamos a la sección de aprobación de la solicitud
-            //await page.ClickAndWaitAsync(
-            //    page.Locator(_locators.DashboardPage.ApprovalSection),
-            //    page.Locator(_locators.DashboardPage.OK),
-            //    new LocatorWaitForOptions
-            //    {
-            //        Timeout = 60000, // 60 seconds timeout
-            //        State = WaitForSelectorState.Visible
-            //    }, _outputAccessor.Output);
-
-            //// Ingresamos el estado de la solicitud, el comentario y las observaciones si es necesario
-            //await page.Locator(_locators.DashboardPage.RequestState).SelectOptionAsync(clientData.RequestState.ToString());
-            //await page.Locator(_locators.DashboardPage.RequestComment).FillAsync("QA");
-
-            //if (evaluationResult is EvaluationResult.RECHAZADO)
-            //{
-            //    await page.Locator(_locators.DashboardPage.RequestType).SelectOptionAsync(clientData.RequestType.GetDescription());
-
-            //    if (!string.IsNullOrWhiteSpace(clientData.RequestObservation1))
-            //    {
-            //        await page.Locator(_locators.DashboardPage.RequestObservation1).ClickAsync();
-            //        await page.Locator(_locators.DashboardPage.ListElement(clientData.RequestObservation1)).ClickAsync();
-            //    }
-            //    if (!string.IsNullOrWhiteSpace(clientData.RequestObservation2))
-            //    {
-            //        await page.Locator(_locators.DashboardPage.RequestObservation2).ClickAsync();
-            //        await page.Locator(_locators.DashboardPage.ListElement(clientData.RequestObservation2)).ClickAsync();
-            //    }
-            //}
-            //await page.WaitForTimeoutAsync(500); // Esperar un segundo para asegurar que los cambios se reflejen
-
-            //// Iniciamos la espera por el popup del PDF
-            //var pdfpageTask = page.Context.WaitForPageAsync(new BrowserContextWaitForPageOptions
-            //{
-            //    Timeout = 0  // espera indefinidamente por el popup
-            //});
-
-            //// Presionamos F12 para generar el PDF de aprobación
-            //await page.ClickAndWaitAsync(
-            //    page.Locator(_locators.DashboardPage.F12Button),
-            //    page.Locator(_locators.DashboardPage.OK),
-            //    page.Locator(_locators.DashboardPage.TransactionError),
-            //    _actionCoordinatorFactory.GetCoordinator(Enums.ActionCoordinatorType.LoanApprovalCoordinator),
-            //    new LocatorWaitForOptions
-            //    {
-            //        Timeout = 90000,
-            //        State = WaitForSelectorState.Visible
-            //    },
-            //    _outputAccessor.Output
-            //);
-
-            //// Esperamos a que se abra el popup del PDF
-            //var pdfpage = await pdfpageTask;
-
-            //// Tomamos una captura de pantalla de la página del PDF si no es headless
-            //if (!loanApplication.Headless)
-            //{
-            //    await pdfpage.WaitForURLAsync(
-            //        url => url.Contains("/WEB3/proc/rep/") && url.Contains("directDownload"),
-            //        new PageWaitForURLOptions { Timeout = 60000 }
-            //    );
-
-            //    await pdfpage.WaitForLoadStateAsync(LoadState.NetworkIdle);
-            //    await pdfpage.WaitForTimeoutAsync(1000);
-
-            //    for (int i = 0; i < 3; i++)
-            //    {
-            //        await pdfpage.ScreenshotAsync(new PageScreenshotOptions
-            //        {
-            //            Path = Path.Combine(loanApplication.EvidenceFoler, $"4. PRT 0{i + 1}.jpg"),
-            //            FullPage = true
-            //        });
-            //        // Desplazar hacia abajo para capturar más contenido si es necesario
-            //        await pdfpage.Locator("body > embed").HoverAsync();
-            //        await pdfpage.Mouse.WheelAsync(0, 400);
-            //    }
-
-            //    await pdfpage.CloseAsync();
-            //}
-
-            //// Traemos la página principal al frente para continuar con el flujo
-            //await page.BringToFrontAsync();
-
-            //await page.ScreenshotAsync(new PageScreenshotOptions
-            //{
-            //    Path = Path.Combine(loanApplication.EvidenceFoler, $"5. Aprobacion.jpg"),
-            //    FullPage = true
-            //});
-
-            //// Vamos a consultar la solicitud aprobada y verificar los usuarios aprobadores
-            //await page.Locator(_locators.DashboardPage.TransactionInput).FillAsync("064060");
-            //await page.Locator(_locators.DashboardPage.TransactionInput).PressAsync("Enter");
-            //await page.Locator(_locators.DashboardPage.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
-            //{
-            //    State = WaitForSelectorState.Visible
-            //});
-
-            //await page.Locator(_locators.DashboardPage.ApplicationNumberSearch).FillAsync(applicationNumber);
-            //await page.ClickAndWaitAsync(
-            //    page.Locator(_locators.DashboardPage.F7Button),
-            //    page.Locator(_locators.DashboardPage.TransactionCorrect),
-            //    page.Locator(_locators.DashboardPage.TransactionError),
-            //    new LocatorWaitForOptions
-            //    {
-            //        Timeout = 60000, // 60 seconds timeout
-            //        State = WaitForSelectorState.Visible
-            //    }, _outputAccessor.Output);
-
-            //await page.ClickAndWaitAsync(
-            //    page.Locator(_locators.DashboardPage.ApprovalUsers),
-            //    page.Locator(_locators.DashboardPage.OK),
-            //    page.Locator(_locators.DashboardPage.TransactionError),
-            //    new LocatorWaitForOptions
-            //    {
-            //        Timeout = 60000, // 60 seconds timeout
-            //        State = WaitForSelectorState.Visible
-            //    }, _outputAccessor.Output);
-
-            //await page.ScreenshotAsync(new PageScreenshotOptions
-            //{
-            //    Path = Path.Combine(loanApplication.EvidenceFoler, $"6. Consulta.jpg"),
-            //    FullPage = true
-            //});
-
-            //// Extraer los usuarios aprobadores de la tabla
-            //ILocator usersTable = page.Locator(_locators.DashboardPage.AprovalUsersList);
-            //var rows = usersTable.Locator("tbody > tr");
-            //int rowCount = await rows.CountAsync();
-            //List<string> approvingUsers = new();
-
-            //for (int i = 0; i < rowCount; i++)
-            //{
-            //    var row = rows.Nth(i);
-            //    var cell = row.Locator("td").First;
-            //    string user = await cell.InnerTextAsync();
-            //    // Verifica si no está vacío y empieza con una letra
-            //    if (!string.IsNullOrWhiteSpace(user) && Regex.IsMatch(user[0].ToString(), @"^[a-zA-Z]"))
-            //    {
-            //        approvingUsers.Add(user);
-            //        _outputAccessor.Output.WriteLine($"Usuario {i + 1}: {user}");
-            //    }
-            //}
 
             List<string> approvingUsers = await GetApprovingUsersAsync(page, _locators, applicationNumber, loanApplication.EvidenceFoler, _outputAccessor.Output);
 
@@ -360,7 +235,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 await GetImgFromPdfDocument(_pdfConverter, loanApplication.EvidenceFoler, loanApplication.KeepPdf, _outputAccessor.Output); // Convertir el PDF del PRT a PNG
             }
 
-            // Realizamos las aprrobacion de verificacion domiciliaria y laboral
+            // Realizamos las aprobacion de verificacion domiciliaria y laboral
             await ValidateDocumentationAsync(page, applicationNumber, transacion062800Type); // Verificacion 1
             if (transacion062800Type == Transacion062800Type.Maxiprestamos)
             {
@@ -381,7 +256,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             string applicationNumber,
             EvaluationResult evaluationResult)
         {
-            if (!clientData.ForceApproval || evaluationResult == EvaluationResult.APROBADO)
+            if (clientData.ModifyLoanApplication != ModifyLoanApplication.APROBAR) // por el momento solo implementaremos el caso APROBAR
                 return evaluationResult;
 
             _outputAccessor.Output.WriteLine("Forzando aprobación de la solicitud.");
@@ -451,7 +326,11 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.WaitForTimeoutAsync(500); // Esperar para asegurar que los cambios se reflejen
 
-            await page.ClickAndWaitAsync(
+            using (var handle = _actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.LoanApprovalCoordinator).CreateHandle())
+            {
+                await handle.WaitForTurnAsync();
+                // Presionar F12 para guardar los cambios
+                await page.ClickAndWaitAsync(
                 page.Locator(_locators.DashboardPage.F12Button),
                 page.Locator(_locators.DashboardPage.TransactionCorrect),
                 page.Locator(_locators.DashboardPage.TransactionError),
@@ -460,6 +339,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                     Timeout = 60000, // 60 seconds timeout
                     State = WaitForSelectorState.Visible
                 }, _outputAccessor.Output);
+            }
         }
         private async Task AssingAdditonalIncomeAsync(IPage page, ClientDataT062800 clientData)
         {
@@ -482,13 +362,13 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             // Presionar F12 para guardar los cambios
             await page.ClickAndWaitAsync(
-                page.Locator(_locators.DashboardPage.F12Button),
-                page.Locator(_locators.DashboardPage.TransactionCorrect),
-                new LocatorWaitForOptions
-                {
-                    Timeout = 60000, // 60 seconds timeout
-                    State = WaitForSelectorState.Visible
-                }, _outputAccessor.Output);
+                    page.Locator(_locators.DashboardPage.F12Button),
+                    page.Locator(_locators.DashboardPage.TransactionCorrect),
+                    new LocatorWaitForOptions
+                    {
+                        Timeout = 60000, // 60 seconds timeout
+                        State = WaitForSelectorState.Visible
+                    }, _outputAccessor.Output);
 
             // Presionar regresar para guardar los cambios
             await page.ClickAndWaitAsync(

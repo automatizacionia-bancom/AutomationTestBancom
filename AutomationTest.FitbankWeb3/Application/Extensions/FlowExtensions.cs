@@ -39,16 +39,21 @@ namespace AutomationTest.FitbankWeb3.Application.Extensions
             int transitionBufferMs = 500)
         {
             // Asegurarse de que el ActionCoordinatorService está listo para usar
-            await actionCoordinatorService.WaitForTurnAsync();
-
-            try
+            using (var handle = actionCoordinatorService.CreateHandle())
             {
+                await handle.WaitForTurnAsync();
+
                 await ClickAndWaitAsync(page, locatorClick, locatorSuccess, locatorError, optionsWait, outputHelper, maxRetries, optionsClick, transitionBufferMs);
             }
-            finally
-            {
-                actionCoordinatorService.ReleaseTurn(); // Liberar el ActionCoordinatorService después de completar la acción
-            }
+
+            //try
+            //    {
+            //        await ClickAndWaitAsync(page, locatorClick, locatorSuccess, locatorError, optionsWait, outputHelper, maxRetries, optionsClick, transitionBufferMs);
+            //    }
+            //    finally
+            //    {
+            //        actionCoordinatorService.ReleaseTurn(); // Liberar el ActionCoordinatorService después de completar la acción
+            //    }
         }
         /// <summary>
         ///Click a un elemento y espera a que aparezca el elemento de confirmación.Repite si no aparece en el límite de tiempo o si aparece el elemento de error.       

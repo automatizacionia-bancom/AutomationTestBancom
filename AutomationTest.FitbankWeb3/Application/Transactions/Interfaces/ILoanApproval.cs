@@ -11,7 +11,7 @@ using Microsoft.Playwright;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.Interfaces
 {
-    public interface ILoanApproval
+    public interface ILoanApproval<TClientData> where TClientData : IClientData
     {
         Task<LoanApprovalResultModel> ApproveLoanAsync(IPage page, LoanApprovalModel loanAppproval);
     }

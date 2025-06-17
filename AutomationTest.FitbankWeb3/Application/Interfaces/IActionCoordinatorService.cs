@@ -10,13 +10,15 @@ namespace AutomationTest.FitbankWeb3.Application.Interfaces
     public interface IActionCoordinatorService
     {
         /// <summary>
-        /// Licencia para ejecutar una acción. El método espera hasta que sea su turno, sin timeout.
+        /// Crea un handle que, al Dispose(), libera el semáforo.
         /// </summary>
-        /// <returns></returns>
-        Task WaitForTurnAsync();
+        IActionHandle CreateHandle();
+    }
+    public interface IActionHandle : IDisposable
+    {
         /// <summary>
-        /// Libera el turno para que otro proceso pueda ejecutar su acción.
+        /// Espera hasta que sea tu turno.
         /// </summary>
-        void ReleaseTurn();
+        Task WaitForTurnAsync();
     }
 }

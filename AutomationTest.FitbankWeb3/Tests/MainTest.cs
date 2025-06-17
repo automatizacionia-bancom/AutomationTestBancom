@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Web;
+using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
@@ -40,6 +41,7 @@ namespace AutomationTest.FitbankWeb3.Tests
         private readonly ITransactionUsersSelectionService _transactionUsersSelectionService;
         private readonly IActionCoordinatorFactory _actionCoordinatorFactory;
         private readonly IBranchSynchronizationService _branchSynchronizationService;
+        private readonly IUserTurnCoordinatorService _userTurnCoordinatorService;
         private readonly ITestOutputHelper _output;
 
         public MainTest(TestFixture fixture, ITestOutputHelper output)
@@ -60,6 +62,7 @@ namespace AutomationTest.FitbankWeb3.Tests
             _transactionUsersSelectionService = _scope.ServiceProvider.GetRequiredService<ITransactionUsersSelectionService>();
             _actionCoordinatorFactory = _scope.ServiceProvider.GetRequiredService<IActionCoordinatorFactory>();
             _branchSynchronizationService = _scope.ServiceProvider.GetRequiredService<IBranchSynchronizationService>();
+            _userTurnCoordinatorService = _scope.ServiceProvider.GetRequiredService<IUserTurnCoordinatorService>();
 
             _output = output;
         }
@@ -145,7 +148,7 @@ namespace AutomationTest.FitbankWeb3.Tests
                 ClientData = new ClientDataT062800
                 {
                     UserRequest = "NBASURTO",
-                    GuaranteeType = GuaranteeType.SinGarantia,
+                    GuaranteeType = GuaranteeType.GarantiaLiquida,
                     Identification = "07821002",
                     Address = 1,
                     LoanAmount = 15000.00,
@@ -156,6 +159,7 @@ namespace AutomationTest.FitbankWeb3.Tests
                     Product = "001",
                     CoinType = CoinType.Soles,
                     Income = 5000.0,
+                    ModifyLoanApplication = ModifyLoanApplication.Default,
                     RequestType = RequestType.IngresoARiesgos,
                     RequestState = RequestStatus.APROBAR,
                     RequestObservation1 = "SUPERVISADOS",
@@ -167,32 +171,34 @@ namespace AutomationTest.FitbankWeb3.Tests
                 KeepPdf = false,
                 MaxApprovalUser = 10,
             },
-            //new FullLoanRequest<ClientDataT062800>
-            //{
-            //    ClientData = new ClientDataT062800
-            //    {
-            //        UserRequest = "NGONZALES",
-            //        GuaranteeType = GuaranteeType.SinGarantia,
-            //        ProductGroup = "11",
-            //        Identification = "16681272",
-            //        Address = 1,
-            //        LoanAmount = 15000.00,
-            //        LoanType = LoanType.Prestamo,
-            //        LoanInstallments = 72,
-            //        PayrollSource = "Dir/Of. Economia",
-            //        Product = "159",
-            //        Income = 20000.00,
-            //        RequestType = RequestType.IngresoARiesgos,
-            //        RequestState = RequestStatus.APROBAR,
-            //        RequestObservation1 = "SUPERVISADOS",
-            //        RequestObservation2 = "OTROS",
-            //        },
-            //        IpPort = "http://10.0.2.54:8380",
-            //        EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\Prueba\\Caso2",
-            //        Headless = false,
-            //        KeepPdf = false,
-            //        MaxApprovalUser = 10,
-            //},
+            new FullLoanRequest<ClientDataT062800>
+            {
+                ClientData = new ClientDataT062800
+                {
+                    UserRequest = "NBASURTO",
+                    GuaranteeType = GuaranteeType.SinGarantia,
+                    Identification = "76954100",
+                    Address = 1,
+                    LoanAmount = 15000.00,
+                    LoanType = LoanType.Prestamo,
+                    LoanInstallments = 72,
+                    DisbursementType = DisbursementType.Unspecified,
+                    ProductGroup = "05",
+                    Product = "001",
+                    CoinType = CoinType.Soles,
+                    Income = 5000.0,
+                    ModifyLoanApplication = ModifyLoanApplication.Default,
+                    RequestType = RequestType.IngresoARiesgos,
+                    RequestState = RequestStatus.APROBAR,
+                    RequestObservation1 = "SUPERVISADOS",
+                    RequestObservation2 = "OTROS",
+                },
+                IpPort = "http://10.0.2.54:8380",
+                EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\Prueba\\Caso1",
+                Headless = false,
+                KeepPdf = false,
+                MaxApprovalUser = 10,
+            },
         };
         // Returns the test indices (primitive values), always matching the ClientDataList size
         public static TheoryData<int> GetData()
@@ -264,7 +270,7 @@ namespace AutomationTest.FitbankWeb3.Tests
         {
             var loanRequest = GetClientDataByIndex(clientDataIndex);
 
-            TransactionOrchestrator orchestrator = new TransactionOrchestrator(_provider, _playwright, _locators, _pdfConverter, _standardQueryService, _transactionUsersSelectionService, _actionCoordinatorFactory, _branchSynchronizationService, _output);
+            TransactionOrchestrator orchestrator = new TransactionOrchestrator(_provider, _playwright, _locators, _pdfConverter, _standardQueryService, _transactionUsersSelectionService, _actionCoordinatorFactory, _branchSynchronizationService,_userTurnCoordinatorService, _output);
             await orchestrator.TransactionAsync<ClientDataT062800>(loanRequest);
         }
     }

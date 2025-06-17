@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Attributes;
 using AutomationTest.FitbankWeb3.Domain.Enums;
@@ -24,7 +25,7 @@ namespace AutomationTest.FitbankWeb3.Application.Models.ClientDataModels
         public double LoanAmount { get; set; } = 0.0;
         public DisbursementType DisbursementType { get; set; } = DisbursementType.Unspecified;
         public double Income { get; set; } = 0.0;
-        public bool ForceApproval { get; set; } = false;
+        public ModifyLoanApplication ModifyLoanApplication { get; set; } = ModifyLoanApplication.Default;
         public RequestType RequestType { get; set; } = RequestType.Excepcion;
         public RequestStatus RequestState { get; set; } = RequestStatus.APROBAR;
         public string RequestObservation1 { get; set; } = string.Empty;
