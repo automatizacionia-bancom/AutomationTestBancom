@@ -79,6 +79,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             // 6) Registra las demás dependencias (queries, servicios, etc.)
             Services.AddTransient<IStandardQuery<DeleteUserSesionModel>, DeleteUserSesionQuery>();
             Services.AddTransient<IStandardQuery<ForceLoanApprovalModel>, ForceLoanApprovalQuery>();
+            Services.AddTransient<IStandardQuery<ForceLoanRejectionModel>, ForceLoanRejectionQuery>();
             Services.AddScoped<IStandardQueryService, StandardQueryService>();
             Services.AddScoped<ITransactionUsersSelectionService, TransactionUsersSelectionService>();
             Services.AddScoped<IPdfConverter, PdfConverter>();
@@ -93,10 +94,15 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
 
             Services.AddTransient<ILoanApplication<ClientDataT062900>, LoanApplicationT062900>();
             Services.AddTransient<ILoanApplication<ClientDataT062800>, LoanApplicationT062800>();
+            Services.AddTransient<ILoanApplication<ClientDataT062700>, LoanApplicationT062700>();
+            Services.AddTransient<ILoanApplication<ClientDataT062500>, LoanApplicationT062500>();
+            Services.AddTransient<ILoanApplication<ClientDataT062400>, LoanApplicationT062400>();
 
             Services.AddTransient<ILoanApproval<ClientDataT062900>, LoanApproval>();
             Services.AddTransient<ILoanApproval<ClientDataT062800>, LoanApproval>();
-
+            Services.AddTransient<ILoanApproval<ClientDataT062700>, LoanApproval>();
+            Services.AddTransient<ILoanApproval<ClientDataT062500>, LoanApproval>();
+            Services.AddTransient<ILoanApproval<ClientDataT062400>, LoanApproval>();
 
             // 7) Construye el ServiceProvider
             ServiceProvider = Services.BuildServiceProvider(); 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -12,6 +13,22 @@ namespace AutomationTest.FitbankWeb3.Application.Extensions
 {
     public static class FlowExtensions
     {
+        private const string _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        public static string GenerateRandomString(int length)
+        {
+            var result = new StringBuilder(length);
+            var rng = RandomNumberGenerator.Create();
+            var buffer = new byte[sizeof(uint)];
+
+            for (int i = 0; i < length; i++)
+            {
+                rng.GetBytes(buffer);
+                uint num = BitConverter.ToUInt32(buffer, 0);
+                result.Append(_chars[(int)(num % _chars.Length)]);
+            }
+
+            return result.ToString();
+        }
         /// <summary>
         /// Clikk a un elemento y espera a que aparezca el elemento de confirmación.Repite si no aparece en el límite de tiempo o si aparece el elemento de error.
         /// </summary>
@@ -121,7 +138,7 @@ namespace AutomationTest.FitbankWeb3.Application.Extensions
                 }
             }
 
-            throw new TimeoutException("Ni el elemento de éxito ni el de error aparecieron tras los reintentos.");
+            throw new TimeoutException("Se ha alcanzado el numero maximo de reintentos.");
         }
         /// <summary>
         /// Click a un elemento y espera a que aparezca el elemento de confirmación. Repite si no aparece en el límite de tiempo.

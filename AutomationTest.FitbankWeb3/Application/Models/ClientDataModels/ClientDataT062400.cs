@@ -10,17 +10,17 @@ using AutomationTest.FitbankWeb3.Domain.Enums;
 
 namespace AutomationTest.FitbankWeb3.Application.Models.ClientDataModels
 {
-    [TransactionType(TransactionType.T062900)]
-    public class ClientDataT062900 : IClientData
+    [TransactionType(TransactionType.T062400)]
+    public class ClientDataT062400 : IClientData
     {
         public string UserRequest { get; set; } = string.Empty;
         public string Identification { get; set; } = string.Empty;
         public int Address { get; set; } = 1;
         public string Product { get; set; } = string.Empty;
-        public LoanType LoanType { get; set; } = LoanType.Prestamo;
-        public int LoanInstallments { get; set; } = 0;
-        public double LoanAmount { get; set; } = 0.0;
-        public PayrollSourceType PayrollSource { get; set; } = PayrollSourceType.DireccionEconomia;
+        public double RequestedAmount { get; set; } = 0.0;
+        public PaymentTerm PaymentTerm { get; set; } = PaymentTerm.Monthly;
+        public double JewelGrossWeight { get; set; } = 0.0;
+        public double JewelEmbeddedWeight { get; set; } = 0.0;
         public double Income { get; set; } = 0.0;
         public ModifyLoanApplication ModifyLoanApplication { get; set; } = ModifyLoanApplication.Default;
         public RequestType RequestType { get; set; } = RequestType.Excepcion;

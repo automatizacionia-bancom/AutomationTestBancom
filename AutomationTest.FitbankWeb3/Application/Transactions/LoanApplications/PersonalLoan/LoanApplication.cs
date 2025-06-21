@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -13,8 +14,11 @@ using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.LocatorRepository;
+using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Input;
+using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
+using AutomationTest.FitbankWeb3.Application.Services;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
@@ -27,19 +31,39 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
     public abstract class LoanApplication<TClientData> : ILoanApplication<TClientData>
         where TClientData : IClientData
     {
+        protected readonly ElementRepositoryFixture _locators;
+        protected readonly IPdfConverter _pdfConverter;
+        protected readonly IStandardQueryService _standardQueryService;
+        protected readonly IActionCoordinatorFactory _actionCoordinatorFactory;
+        protected readonly ITestOutputAccessor _outputAccessor;
+
+        protected LoanApplication(
+            ElementRepositoryFixture locators,
+            IPdfConverter pdfConverter,
+            IStandardQueryService standardQueryService,
+            IActionCoordinatorFactory actionCoordinatorFactory,
+            ITestOutputAccessor output)
+        {
+            _locators = locators;
+            _pdfConverter = pdfConverter;
+            _standardQueryService = standardQueryService;
+            _actionCoordinatorFactory = actionCoordinatorFactory;
+            _outputAccessor = output;
+        }
         public abstract Task<ILoanApplicationResult> ApplyForLoanAsync(IPage page, LoanApplicationModel<TClientData> loanRequest);
+
         // Agregar métodos comunes para todas las implementaciones de LoanApplication, si es necesario.
-        public async Task GetCalificationResultAsync(IPage page, ElementRepositoryFixture locators, string evidenceFoler, ITestOutputHelper? outputHelper = null)
+        protected async Task GetCalificationResultAsync(IPage page, string evidenceFoler)
         {
             // Tomamos capturas de pantalla del resultado de la calificación
             await page.ClickAndWaitAsync(
-                page.Locator(locators.DashboardPage.CalificationResultSection),
-                page.Locator(locators.DashboardPage.TransactionCorrect),
+                page.Locator(_locators.DashboardPage.CalificationResultSection),
+                page.Locator(_locators.DashboardPage.TransactionCorrect),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
                     State = WaitForSelectorState.Visible
-                }, outputHelper);
+                }, _outputAccessor.Output);
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
@@ -47,37 +71,37 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 FullPage = true               // Captura toda la página, no solo la vista actual
             });
 
-            await page.Locator(locators.DashboardPage.ViewCarsButton).ScrollIntoViewIfNeededAsync();
+            await page.Locator(_locators.DashboardPage.ViewCarsButton).ScrollIntoViewIfNeededAsync();
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
                 Path = Path.Combine(evidenceFoler, "2. Resultado Calificacion 2.jpg"),         // Ruta donde se guarda la imagen
                 FullPage = true               // Captura toda la página, no solo la vista actual
             });
         }
-        public async Task GetCarsResultAsync(IPage page, ElementRepositoryFixture locators, string evidenceFoler, ITestOutputHelper? outputHelper = null)
+        protected async Task GetCarsResultAsync(IPage page, string evidenceFoler)
         {
-            bool viewCarsButton = await page.Locator(locators.DashboardPage.ViewCarsButton).CountAsync() == 1;
+            bool viewCarsButton = await page.Locator(_locators.DashboardPage.ViewCarsButton).CountAsync() == 1;
             if (!viewCarsButton) // Si el botón "Ver Criterios de Aceptación de Riesgos" no está visible, vamos a la sección de resultados de calificación
             {
                 await page.ClickAndWaitAsync(
-                page.Locator(locators.DashboardPage.CalificationResultSection),
-                page.Locator(locators.DashboardPage.TransactionCorrect),
+                page.Locator(_locators.DashboardPage.CalificationResultSection),
+                page.Locator(_locators.DashboardPage.TransactionCorrect),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
                     State = WaitForSelectorState.Visible
-                }, outputHelper);
+                }, _outputAccessor.Output);
             }
 
             // Tomamos capturas de pantalla a los criterios de aprobación de crédito
             await page.ClickAndWaitAsync(
-                page.Locator(locators.DashboardPage.ViewCarsButton),
-                page.Locator(locators.DashboardPage.TransactionCorrect),
+                page.Locator(_locators.DashboardPage.ViewCarsButton),
+                page.Locator(_locators.DashboardPage.TransactionCorrect),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
                     State = WaitForSelectorState.Visible
-                }, outputHelper);
+                }, _outputAccessor.Output);
 
             for (int i = 1; i <= 3; i++)
             {
@@ -88,57 +112,55 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 });
 
                 int scrollOffset = (i) * 250;
-                await page.Locator(locators.DashboardPage.CarsTable).EvaluateAsync($"el => el.scrollTop = {scrollOffset}");
+                await page.Locator(_locators.DashboardPage.CarsTable).EvaluateAsync($"el => el.scrollTop = {scrollOffset}");
             }
 
             await page.ClickAndWaitAsync(
-                page.Locator(locators.DashboardPage.CarsReturn),
-                page.Locator(locators.DashboardPage.TransactionCorrect),
+                page.Locator(_locators.DashboardPage.CarsReturn),
+                page.Locator(_locators.DashboardPage.TransactionCorrect),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
                     State = WaitForSelectorState.Visible
-                }, outputHelper);
+                }, _outputAccessor.Output);
         }
-        public async Task ApproveAndGetPdfAsync(
-            IPage page, ElementRepositoryFixture locators,
+        protected async Task ApproveAndGetPdfAsync(
+            IPage page,
             EvaluationResult evaluationResult,
             RequestStatus requestStatus,
             RequestType requestType,
-            IActionCoordinatorFactory actionCoordinatorFactory,
             string evidenceFoler,
             bool headless,
             string? requestObservation1 = null,
-            string? requestObservation2 = null,
-            ITestOutputHelper? outputHelper = null)
+            string? requestObservation2 = null)
         {
             // Ingresamos a la sección de aprobación de la solicitud
             await page.ClickAndWaitAsync(
-                page.Locator(locators.DashboardPage.ApprovalSection),
-                page.Locator(locators.DashboardPage.OK),
+                page.Locator(_locators.DashboardPage.ApprovalSection),
+                page.Locator(_locators.DashboardPage.OK),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
                     State = WaitForSelectorState.Visible
-                }, outputHelper);
+                }, _outputAccessor.Output);
 
             // Ingresamos el estado de la solicitud, el comentario y las observaciones si es necesario
-            await page.Locator(locators.DashboardPage.RequestState).SelectOptionAsync(requestStatus.ToString());
-            await page.Locator(locators.DashboardPage.RequestComment).FillAsync("QA");
+            await page.Locator(_locators.DashboardPage.RequestState).SelectOptionAsync(requestStatus.ToString());
+            await page.Locator(_locators.DashboardPage.RequestComment).FillAsync("QA");
 
             if (evaluationResult is EvaluationResult.RECHAZADO)
             {
-                await page.Locator(locators.DashboardPage.RequestType).SelectOptionAsync(requestType.GetDescription());
+                await page.Locator(_locators.DashboardPage.RequestType).SelectOptionAsync(requestType.GetDescription());
 
                 if (!string.IsNullOrWhiteSpace(requestObservation1))
                 {
-                    await page.Locator(locators.DashboardPage.RequestObservation1).ClickAsync();
-                    await page.Locator(locators.DashboardPage.ListElement(requestObservation1)).ClickAsync();
+                    await page.Locator(_locators.DashboardPage.RequestObservation1).ClickAsync();
+                    await page.Locator(_locators.DashboardPage.ListElement(requestObservation1)).ClickAsync();
                 }
                 if (!string.IsNullOrWhiteSpace(requestObservation2))
                 {
-                    await page.Locator(locators.DashboardPage.RequestObservation2).ClickAsync();
-                    await page.Locator(locators.DashboardPage.ListElement(requestObservation2)).ClickAsync();
+                    await page.Locator(_locators.DashboardPage.RequestObservation2).ClickAsync();
+                    await page.Locator(_locators.DashboardPage.ListElement(requestObservation2)).ClickAsync();
                 }
             }
             await page.WaitForTimeoutAsync(500); // Esperar un segundo para asegurar que los cambios se reflejen
@@ -150,21 +172,20 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             });
 
             // Presionamos F12 para generar el PDF de aprobación
-            using(var handle = actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.LoanApprovalCoordinator).CreateHandle())
+            using (var handle = _actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.LoanApprovalCoordinator).CreateHandle())
             {
                 await handle.WaitForTurnAsync(); // Esperar a que el coordinador permita continuar
 
                 await page.ClickAndWaitAsync(
-                page.Locator(locators.DashboardPage.F12Button),
-                page.Locator(locators.DashboardPage.OK),
-                page.Locator(locators.DashboardPage.TransactionError),
+                page.Locator(_locators.DashboardPage.F12Button),
+                page.Locator(_locators.DashboardPage.OK),
+                page.Locator(_locators.DashboardPage.TransactionError),
                 new LocatorWaitForOptions
                 {
                     Timeout = 90000,
                     State = WaitForSelectorState.Visible
                 },
-                outputHelper
-                );
+                _outputAccessor.Output);
             }
 
             // Esperamos a que se abra el popup del PDF
@@ -206,36 +227,36 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 FullPage = true
             });
         }
-        public async Task<List<string>> GetApprovingUsersAsync(IPage page, ElementRepositoryFixture locators,string applicationNumber,string evidenceFolder, ITestOutputHelper? outputHelper = null)
+        protected async Task<List<string>> GetApprovingUsersAsync(IPage page, string applicationNumber, string evidenceFolder)
         {
             // Vamos a consultar la solicitud aprobada y verificar los usuarios aprobadores
-            await page.Locator(locators.DashboardPage.TransactionInput).FillAsync("064060");
-            await page.Locator(locators.DashboardPage.TransactionInput).PressAsync("Enter");
-            await page.Locator(locators.DashboardPage.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
+            await page.Locator(_locators.DashboardPage.TransactionInput).FillAsync("064060");
+            await page.Locator(_locators.DashboardPage.TransactionInput).PressAsync("Enter");
+            await page.Locator(_locators.DashboardPage.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
 
-            await page.Locator(locators.DashboardPage.ApplicationNumberSearch).FillAsync(applicationNumber);
+            await page.Locator(_locators.DashboardPage.ApplicationNumberSearch).FillAsync(applicationNumber);
             await page.ClickAndWaitAsync(
-                page.Locator(locators.DashboardPage.F7Button),
-                page.Locator(locators.DashboardPage.TransactionCorrect),
-                page.Locator(locators.DashboardPage.TransactionError),
+                page.Locator(_locators.DashboardPage.F7Button),
+                page.Locator(_locators.DashboardPage.TransactionCorrect),
+                page.Locator(_locators.DashboardPage.TransactionError),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
                     State = WaitForSelectorState.Visible
-                }, outputHelper);
+                }, _outputAccessor.Output);
 
             await page.ClickAndWaitAsync(
-                page.Locator(locators.DashboardPage.ApprovalUsers),
-                page.Locator(locators.DashboardPage.OK),
-                page.Locator(locators.DashboardPage.TransactionError),
+                page.Locator(_locators.DashboardPage.ApprovalUsers),
+                page.Locator(_locators.DashboardPage.OK),
+                page.Locator(_locators.DashboardPage.TransactionError),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
                     State = WaitForSelectorState.Visible
-                }, outputHelper);
+                }, _outputAccessor.Output);
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
@@ -244,7 +265,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             });
 
             // Extraer los usuarios aprobadores de la tabla
-            ILocator usersTable = page.Locator(locators.DashboardPage.AprovalUsersList);
+            ILocator usersTable = page.Locator(_locators.DashboardPage.AprovalUsersList);
             var rows = usersTable.Locator("tbody > tr");
             int rowCount = await rows.CountAsync();
             List<string> approvingUsers = new();
@@ -258,15 +279,15 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 if (!string.IsNullOrWhiteSpace(user) && Regex.IsMatch(user[0].ToString(), @"^[a-zA-Z]"))
                 {
                     approvingUsers.Add(user);
-                    outputHelper?.WriteLine($"Usuario {i + 1}: {user}");
+                    _outputAccessor.Output?.WriteLine($"Usuario {i + 1}: {user}");
                 }
             }
 
             return approvingUsers;
         }
-        public async Task GetImgFromPdfDocument(IPdfConverter pdfConverter,string evidenceFolder, bool keepPdf, ITestOutputHelper? outputHelper = null)
+        protected async Task GetImgFromPdfDocument(string evidenceFolder, bool keepPdf)
         {
-            string pdfFile = await WaitForFileWithExtensionAsync("", evidenceFolder, TimeSpan.FromSeconds(60), TimeSpan.FromMilliseconds(100));
+            string pdfFile = await WaitForFileWithExtensionAsync(extension: "", evidenceFolder, TimeSpan.FromSeconds(90), TimeSpan.FromMilliseconds(100));
 
             // Renombrar el archivo descargado
             string currentFullPath = Path.Combine(evidenceFolder, pdfFile);
@@ -279,11 +300,11 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             }
             File.Move(currentFullPath, newFullPath);
 
-            await pdfConverter.ConvertAllPagesToPngAsync(newFullPath, "4. PRT", evidenceFolder, 300);
+            await _pdfConverter.ConvertAllPagesToPngAsync(newFullPath, "4. PRT", evidenceFolder, 300);
 
             if (keepPdf)
             {
-                outputHelper?.WriteLine($"PDF guardado en: {newFullPath}");
+                _outputAccessor.Output?.WriteLine($"PDF guardado en: {newFullPath}");
             }
             else
             {
@@ -291,13 +312,72 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 if (File.Exists(newFullPath))
                 {
                     File.Delete(newFullPath);
-                    outputHelper?.WriteLine($"PDF eliminado: {newFullPath}");
+                    _outputAccessor.Output?.WriteLine($"PDF eliminado: {newFullPath}");
                 }
             }
         }
-        public async Task SearchProduct(IPage page, string product, string? group = null, CoinType? coin = null, ITestOutputHelper? outputHelper = null)
+        protected async Task<EvaluationResult> ModifyApplicationResultAsync(
+            IPage page,
+            ModifyLoanApplication modifyLoanApplication,
+            string applicationNumber,
+            EvaluationResult firstEvaluationResult)
+        {
+            if (modifyLoanApplication == ModifyLoanApplication.Default) // por el momento solo implementaremos el caso APROBAR
+                return firstEvaluationResult;
+
+            _outputAccessor.Output.WriteLine("Forzando aprobación de la solicitud.");
+
+            Task<DataTable> queryTask = modifyLoanApplication switch
+            {
+                ModifyLoanApplication.APROBAR =>
+                    _standardQueryService.ExecuteStandardQueryAsync<ForceLoanApprovalModel>(
+                        new ForceLoanApprovalModel
+                        {
+                            ApplicationNumber = applicationNumber,
+                            TIPOSOLICITUDCREDITO = "NOR"
+                        }
+                    ),
+                ModifyLoanApplication.ESPECIAL =>
+                    _standardQueryService.ExecuteStandardQueryAsync<ForceLoanApprovalModel>(
+                        new ForceLoanApprovalModel
+                        {
+                            ApplicationNumber = applicationNumber,
+                            TIPOSOLICITUDCREDITO = "ESP"
+                        }
+                    ),
+                ModifyLoanApplication.RECHAZAR =>
+                    _standardQueryService.ExecuteStandardQueryAsync<ForceLoanRejectionModel>(
+                        new ForceLoanRejectionModel
+                        {
+                            ApplicationNumber = applicationNumber,
+                            TIPOSOLICITUDCREDITO = "RIE"
+                        }
+                    ),
+                _ => throw new InvalidOperationException(
+                        $"Operación no soportada: {modifyLoanApplication}")
+            };
+
+            DataTable resultTable = await queryTask;
+
+            await page.ClickAndWaitAsync(
+                page.Locator(_locators.DashboardPage.F7Button),
+                page.Locator(_locators.DashboardPage.OK),
+                new LocatorWaitForOptions
+                {
+                    Timeout = 60000, // 60 seconds timeout
+                    State = WaitForSelectorState.Visible
+                }, _outputAccessor.Output);
+
+            var evalResultStr = await page.Locator(_locators.ApplicationPageT062800.EvaluateResult).InputValueAsync();
+            if (!Enum.TryParse(evalResultStr, out EvaluationResult result))
+                throw new Exception("No se ha podido obtener el resultado de la evaluación correctamente.");
+
+            return result;
+        }
+        protected async Task SearchProduct(IPage page, string product, string? group = null, CoinType? coin = null)
         {
             const string pattern = "**/proc/lv";
+            var output = _outputAccessor.Output; // capturo aquí, en el mismo contexto
             Action<IRoute> handler = null!;
 
             handler = async route =>
@@ -336,7 +416,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                     if (productoField is not null)
                     {
                         productoField["value"] = product;
-                        outputHelper?.WriteLine("Producto modificado a: " + product);
+                        output.WriteLine("Producto modificado a: " + product);
                     }
 
                     if (group is not null)
@@ -347,7 +427,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                         if (grupoField is not null)
                         {
                             grupoField["value"] = group;
-                            outputHelper?.WriteLine("Grupo modificado a: " + group);
+                            output.WriteLine("Grupo modificado a: " + group);
                         }
                     }
 
@@ -359,7 +439,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                         if (monedaField is not null)
                         {
                             monedaField["value"] = coin.GetDescription();
-                            outputHelper?.WriteLine("Moneda modificada a: " + coin);
+                            output.WriteLine("Moneda modificada a: " + coin);
                         }
                     }
 
@@ -393,7 +473,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.RouteAsync(pattern, handler);
         }
-        public async Task<string> WaitForFileWithExtensionAsync(
+        protected async Task<string> WaitForFileWithExtensionAsync(
             string extension,
             string folderPath,
             TimeSpan timeout,

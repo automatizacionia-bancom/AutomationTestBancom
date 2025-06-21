@@ -10,5 +10,6 @@ namespace AutomationTest.FitbankWeb3.Application.Enums
     {
         LoanApplicationCoordinator,
         LoanApprovalCoordinator,
+        ConsultSentinel
     }
 }

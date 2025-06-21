@@ -26,10 +26,13 @@ using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.PersonalLoan
 {
-    public class LoanApproval 
-        : 
+    public class LoanApproval
+        :
         ILoanApproval<ClientDataT062900>,
-        ILoanApproval<ClientDataT062800>
+        ILoanApproval<ClientDataT062800>,
+        ILoanApproval<ClientDataT062700>,
+        ILoanApproval<ClientDataT062500>,
+        ILoanApproval<ClientDataT062400>
     {
         private readonly ElementRepositoryFixture _locators;
         private readonly IPdfConverter _pdfConverter;
@@ -123,22 +126,26 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Pers
             await page.Locator(_locators.DashboardPage.RequestState).SelectOptionAsync(RequestStatus.APROBAR.ToString());
             await page.Locator(_locators.DashboardPage.RequestComment).FillAsync("QA");
 
-            await page.ClickAndWaitAsync(
+            using (var handle = _actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.LoanApprovalCoordinator).CreateHandle())
+            {
+                await handle.WaitForTurnAsync();
+
+                await page.ClickAndWaitAsync(
                 page.Locator(_locators.DashboardPage.F12Button),
                 page.Locator(_locators.DashboardPage.OK_TransactionCorrect),
                 page.Locator(_locators.DashboardPage.TransactionError),
-                _actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.LoanApprovalCoordinator),
                 new LocatorWaitForOptions
                 {
                     State = WaitForSelectorState.Visible,
                     Timeout = 90000 // 90 seconds timeout for the transaction to be processed
                 }, _outputAccessor.Output, maxRetries: 10);
-            await Task.Delay(1000); // Wait for the transaction to be processed
-            await page.Locator(_locators.DashboardPage.OK_TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
-            {
-                State = WaitForSelectorState.Visible,
-                Timeout = 30000 // 30 seconds timeout for the transaction to be processed
-            });
+                await Task.Delay(1000); // Wait for the transaction to be processed
+                await page.Locator(_locators.DashboardPage.OK_TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
+                {
+                    State = WaitForSelectorState.Visible,
+                    Timeout = 30000 // 30 seconds timeout for the transaction to be processed
+                });
+            }
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
@@ -167,7 +174,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Pers
             string approvalStatusResult = await page.Locator(_locators.DashboardPage.ApprovalStatus).InputValueAsync();
             if (!Enum.TryParse(approvalStatusResult, true, out ApprovalStatus approvalStatus))
                 throw new Exception($"El estado de aprobación '{approvalStatusResult}' no es válido.");
-            
+
             List<string> approvingUsers = await GetApprovingUsersAsync(page, approvalStatus);
 
             await page.ScreenshotAsync(new PageScreenshotOptions
@@ -194,7 +201,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Pers
                 {
                     string approvalProcess = await page.Locator(_locators.DashboardPage.ApprovalProcess).InputValueAsync();
 
-                    if (approvalProcess == "DESEMBOLSADO")
+                    if (approvalProcess == "DESEMBOLSADO" || approvalProcess == "EMISION")
                         return new List<string>();
 
                     await page.ClickAndWaitAsync(
