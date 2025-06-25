@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Input;
+using AutomationTest.FitbankWeb3.Domain.Models;
 using Microsoft.Playwright;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.Interfaces

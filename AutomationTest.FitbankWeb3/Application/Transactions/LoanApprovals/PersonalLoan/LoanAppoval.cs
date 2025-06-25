@@ -197,7 +197,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Pers
             // Ejecutamos en bucle F7 para verificar los cambios en el fitbank, estos pueden tardar en reflejarse
             if (approvalStatus == ApprovalStatus.APROBADO)
             {
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 15; i++)
                 {
                     string approvalProcess = await page.Locator(_locators.DashboardPage.ApprovalProcess).InputValueAsync();
 

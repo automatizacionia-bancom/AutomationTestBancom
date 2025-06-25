@@ -20,7 +20,9 @@ namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
         public string LoanInstallments { get; } = "#c_txtCuotas_0";
         public string LoanAmount { get; } = "#c_txtMtoPrestamo_0";
         public string LoanRate { get; } = "#c_txtTasaNegociable_0";
+        public string CreditDataLabel { get; } = "#entorno-formulario > div.entorno-html > form > fieldset:nth-child(8) > legend";
         public string PayrollSource { get; } = "#c_cbbOrigenPlanilla_0";
+        public string DisbursementType { get; } = "#c_cboFormaDesembolso_0";
         public string ApplicationNumber { get; } = "#c_txtCsolicitud_0";
         public string IncomeButtton { get; } = "#c_link_consulta_0";
         public string IncomeDate { get; } = "#c_txtPeriodo1_0";

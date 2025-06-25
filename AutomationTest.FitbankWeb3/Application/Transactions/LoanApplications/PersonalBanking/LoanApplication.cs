@@ -21,12 +21,13 @@ using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryMod
 using AutomationTest.FitbankWeb3.Application.Services;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Enums;
+using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Playwright;
 using Microsoft.VisualStudio.TestPlatform.Utilities;
 using Xunit.Abstractions;
 
-namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalLoan
+namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalBanking
 {
     public abstract class LoanApplication<TClientData> : ILoanApplication<TClientData>
         where TClientData : IClientData
@@ -80,7 +81,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
         }
         protected async Task GetCarsResultAsync(IPage page, string evidenceFoler)
         {
-            bool viewCarsButton = await page.Locator(_locators.DashboardPage.ViewCarsButton).CountAsync() == 1;
+            bool viewCarsButton = await page.Locator(_locators.DashboardPage.ViewCarsButton).IsVisibleAsync();
             if (!viewCarsButton) // Si el botón "Ver Criterios de Aceptación de Riesgos" no está visible, vamos a la sección de resultados de calificación
             {
                 await page.ClickAndWaitAsync(
@@ -346,11 +347,10 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                         }
                     ),
                 ModifyLoanApplication.RECHAZAR =>
-                    _standardQueryService.ExecuteStandardQueryAsync<ForceLoanRejectionModel>(
-                        new ForceLoanRejectionModel
+                    _standardQueryService.ExecuteStandardQueryAsync<ForceOnlyCarsEssentialModel>(
+                        new ForceOnlyCarsEssentialModel
                         {
                             ApplicationNumber = applicationNumber,
-                            TIPOSOLICITUDCREDITO = "RIE"
                         }
                     ),
                 _ => throw new InvalidOperationException(

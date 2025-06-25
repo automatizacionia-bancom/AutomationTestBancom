@@ -11,7 +11,7 @@ using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Playwright;
 
-namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalLoan
+namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalBanking
 {
     public class LoanApplicationT062400 : LoanApplication<ClientDataT062400>
     {
@@ -105,7 +105,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.WaitForTimeoutAsync(500);
 
             // Consulta en sentinel
-            using(var handle = _actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.ConsultSentinel).CreateHandle())
+            using (var handle = _actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.ConsultSentinel).CreateHandle())
             {
                 await handle.WaitForTurnAsync();
 
@@ -136,8 +136,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.Locator(_locators.ApplicationPageT062400.RequestedAmount).PressAsync("Enter");
 
             await page.Locator(_locators.ApplicationPageT062400.PaymentTerm).SelectOptionAsync(clientData.PaymentTerm.GetDescription());
-            await page.WaitForTimeoutAsync(500); // Esperar un segundo para asegurar que los cambios se reflejen
-            await page.Locator(_locators.DashboardPage.OK).WaitForAsync(new LocatorWaitForOptions
+            await page.Locator(_locators.DashboardPage.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
@@ -146,6 +145,15 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             string loanRate = await page.Locator(_locators.ApplicationPageT062400.LoanRate).InputValueAsync();
             if (string.IsNullOrWhiteSpace(loanRate))
                 Assert.Fail("No se ha generado correctamente la tasa de la solicitud");
+
+            if (clientData.DisbursementType == DisbursementType.AbonoACuenta)
+            {
+                await page.Locator(_locators.ApplicationPageT062400.DisbursementAcType).CheckAsync();
+            }
+            else
+            {
+                await page.Locator(_locators.ApplicationPageT062400.DisbursementOpType).CheckAsync();
+            }
 
             await page.WaitForTimeoutAsync(500); // Esperar un segundo para asegurar que los cambios se reflejen
 
@@ -181,7 +189,6 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                     Timeout = 60000, // 60 seconds timeout
                     State = WaitForSelectorState.Visible
                 }, _outputAccessor.Output);
-
 
             if (!Enum.TryParse(await page.Locator(_locators.ApplicationPageT062400.EvaluateResult).InputValueAsync(), out EvaluationResult evaluationResult))
                 throw new Exception("No se ha podido obtener el resultado de la evaluación correctamente.");

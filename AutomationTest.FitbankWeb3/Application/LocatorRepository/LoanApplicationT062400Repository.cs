@@ -33,6 +33,9 @@ namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
         public string RequestedAmount { get; } = "#c_txtMtoPrestamo_0";
         public string LoanRate { get; } = "#c_txtTasaNegociable_0";
         public string PaymentTerm { get; } = "#c_txtPlazo_0";
+        public string DisbursementOpType { get; } = "input[type='radio'][name='chekFPago'][value='0'][registro='0']";
+        public string DisbursementAcType { get; } = "input[type='radio'][name='chekFPago'][registro='0']";
+        public string BankAccount { get; } = "#container_11 > table > tbody > tr:nth-child(5) > td.columna_1 > img";
         public string ApplicationNumber { get; } = "#c_txtCsolicitud_0";
         public string IncomeButtton { get; } = "span:has-text('Ingresos y Descuentos')";
         public string IncomeCategoryList { get; } = "#container_5 > table > tbody > tr:nth-child(3) > td.columna_1 > img";
@@ -45,6 +48,6 @@ namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
         public string IncomeOther { get; } = "#c_txtImporte1_1";
         public string IncomeReturn { get; } = "span.link:has-text('Regresar')";
         public string EvaluateButton { get; } = "#c_Evaluar_0";
-        public string EvaluateResult { get; } = "##c_resultadoCars_0";
+        public string EvaluateResult { get; } = "#c_resultadoCars_0";
     }
 }

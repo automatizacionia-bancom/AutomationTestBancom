@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
+using AutomationTest.FitbankWeb3.Domain.Models;
 using Microsoft.Playwright;
 using Xunit.Abstractions;
 
@@ -218,6 +219,33 @@ namespace AutomationTest.FitbankWeb3.Application.Extensions
             else
             {
                 outputHelper?.WriteLine($"El elemento no es editable: {locator.ToString()}");
+            }
+        }
+        public static async Task WaitForAsync(this ILocator locator, float delayBefore,LocatorWaitForOptions? options = null)
+        {
+            await locator.Page.WaitForTimeoutAsync(delayBefore);
+            await locator.WaitForAsync(options);
+        }
+        public static async Task FillSimulatedAsync(this ILocator locatorFill,
+            string value, string? finalKeyboard = null)
+        {
+            // 1) Hacer click en el elemento para asegurarse de que está enfocado:
+            await locatorFill.ClickAsync();
+
+            // 2) Limpiar el campo antes de escribir:
+            await locatorFill.Page.Keyboard.PressAsync("Control+A");
+            await locatorFill.Page.Keyboard.PressAsync("Backspace");
+
+            // 3) Usas el teclado global:
+            foreach (char c in value)
+            {
+                await locatorFill.Page.Keyboard.PressAsync(c.ToString());
+            }
+
+            // 4) Pulsa elemento final si es necesario:
+            if (!string.IsNullOrEmpty(finalKeyboard))
+            {
+                await locatorFill.Page.Keyboard.PressAsync(finalKeyboard);
             }
         }
     }

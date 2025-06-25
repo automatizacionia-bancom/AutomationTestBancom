@@ -10,7 +10,6 @@ using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
-using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Input;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Output;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApprovalModels.Input;
@@ -22,6 +21,7 @@ using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals;
 using AutomationTest.FitbankWeb3.Domain.Enums;
+using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Playwright;
@@ -91,7 +91,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             await _playwright.PlaywrightVar.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
                 Headless = loanRequest.Headless,
-                DownloadsPath = loanRequest.EvidenceFoler
+                DownloadsPath = loanRequest.EvidenceFoler,
             });
         private async Task RunApprovalLoopAsync<TClientData>(
             IPage page,

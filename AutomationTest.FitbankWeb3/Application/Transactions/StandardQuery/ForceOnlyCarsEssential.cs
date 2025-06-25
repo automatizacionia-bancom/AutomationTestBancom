@@ -9,16 +9,14 @@ using AutomationTest.FitbankWeb3.Domain.Models.AutomationTest.FitbankWeb3.Domain
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery
 {
-    public class ForceLoanRejectionQuery : IStandardQuery<ForceLoanRejectionModel>
+    public class ForceOnlyCarsEssential : IStandardQuery<ForceOnlyCarsEssentialModel>
     {
-        public GenericQueryModel CreateQuery(ForceLoanRejectionModel standardQueryModel)
+        public GenericQueryModel CreateQuery(ForceOnlyCarsEssentialModel standardQueryModel)
         {
             string applcationNumber = standardQueryModel.ApplicationNumber;
-            string creditCondition = standardQueryModel.TIPOSOLICITUDCREDITO ?? string.Empty;
 
             string query = $"UPDATE FITBANK.TEVALUACIONCREDITO " +
-                $"SET DESAPROBADOSINDISPENSABLE = 0.000000, " +
-                $"TIPOSOLICITUDCREDITO = '{creditCondition}' " +
+                $"SET DESAPROBADOSINDISPENSABLE = 0.000000 " +
                 $"WHERE CSOLICITUD = '{applcationNumber}' " +
                 $"AND FHASTA = '2999-12-31 00:00:00.000'";
 

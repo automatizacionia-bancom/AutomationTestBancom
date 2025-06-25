@@ -15,9 +15,10 @@ namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
         public string TransactionCorrect { get; } = "#entorno-estatus-contenido:text('TRANSACCION REALIZADA CORRECTAMENTE')";
         public string OK_TransactionCorrect { get; } = "#entorno-estatus-contenido:text-matches(\"^(?:Ok|TRANSACCION REALIZADA CORRECTAMENTE)$\")";
         public string TransactionError { get; } = "#entorno-estatus-contenido.error";
+        public string TransactionNotAllowed { get; } = "#entorno-estatus-contenido:has-text('TRANSACCION NO PERMITIDA PARA ESTE ROL')";
         public string NonAuthorizingUsers { get; } = "#entorno-estatus-contenido:text('NO TIENE AUTORIZADORES')";
         public string CalificationResultSection { get; } = "a:has-text('Resultado Calificacion')";
-        public string ApprovalSection { get; } = "a:has-text('Aprobaciones')";//":is(li.tab-bar-txtTrxAprobacion, li.tab-bar-062810) >> role=link[name='Aprobaciones']";
+        public string ApprovalSection { get; } = ":is(li.tab-bar-txtTrxAprobacion, li.tab-bar-062810) >> role=link[name='Aprobaciones']"; //"a:has-text('Aprobaciones')"; 
         public string ViewCarsButton { get; } = "span:has-text('Ver Criterios de Aceptacion de Riesgos')";
         public string CarsTable { get; } = "#container_2 > div > table > tbody";
         public string CarsReturn { get; } = "span:has-text('Regresar')";

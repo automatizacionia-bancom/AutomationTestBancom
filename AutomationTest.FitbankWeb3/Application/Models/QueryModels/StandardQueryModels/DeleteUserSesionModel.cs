@@ -10,5 +10,6 @@ namespace AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQuer
     public class DeleteUserSesionModel : IStandardQueryModel
     {
         public required string User { get; set; }
+        ///public string 
     }
 }

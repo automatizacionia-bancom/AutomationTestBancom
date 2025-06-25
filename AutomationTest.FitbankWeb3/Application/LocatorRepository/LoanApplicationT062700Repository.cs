@@ -20,6 +20,7 @@ namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
         public string CreditLine { get; } = "#c_txtMtoPrestamo_0";
         public string LoanRate { get; } = "#c_txtTasaNegociable_0";
         public string ExternalEvaluation { get; } = "#c_v6_evalExterna_0";
+        public string CreditDataLabel { get; } = "#entorno-formulario > div.entorno-html > form > fieldset:nth-child(7) > legend";
         public string Emboss { get; } = "#c_v6_emboss_0";
         public string TcrList { get; } = "#container_6 > table > tbody > tr:nth-child(1) > td.columna_3 > img:nth-child(2)";
         public string TcrElement { get; } = "#entorno-formulario > form:nth-child(13) > div > table > tbody > tr:nth-child(1) > td:nth-child(1)";

@@ -12,10 +12,13 @@ using AutomationTest.FitbankWeb3.Application.Services;
 using AutomationTest.FitbankWeb3.Application.Services.ActionCoordination;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications;
-using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalLoan;
+using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalBanking;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.PersonalLoan;
+using AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators;
 using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
+using AutomationTest.FitbankWeb3.Infrastructure.Adapters.ClientDataAdapters;
+using AutomationTest.FitbankWeb3.Infrastructure.Adapters.Interfaces;
 using AutomationTest.FitbankWeb3.Infrastructure.Configuration;
 using AutomationTest.FitbankWeb3.Infrastructure.Persistence;
 using Meziantou.Xunit;
@@ -29,83 +32,94 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
 {
     public class TestFixture : IAsyncLifetime, IDisposable
     {
-        public IServiceCollection Services { get; }
+        //public IServiceCollection services { get; }
         public IServiceProvider ServiceProvider { get; private set; }
-
         public TestFixture()
         {
             // 1) Levanta la configuración
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddEnvironmentVariables()
+                .AddEnvironmentVariables(prefix: "MYTEST_")
                 .Build();
 
-            var providerSettings = new TransactionUserProviderSettings();
+            var usersProviderSettings = new TransactionUserProviderSettings();
             config.GetSection("TransactionUserProvider")
-                  .Bind(providerSettings);
+                  .Bind(usersProviderSettings);
+
+            var transactionSettings = new TransactionSettings();
+            config.GetSection("TransactionSettings")
+                  .Bind(transactionSettings);
 
             // 2) Crea y llena el ServiceCollection
-            Services = new ServiceCollection();
+            IServiceCollection services = new ServiceCollection();
 
-            // Registra la configuración de TransactionUserProviderSettings POCO
-            Services.AddSingleton(providerSettings);
-            switch (providerSettings.ProviderType)
+            // Registra los settings de configuración
+            services.AddSingleton<IConfiguration>(config);
+            services.AddSingleton(usersProviderSettings);
+            services.AddSingleton(transactionSettings);
+            switch (usersProviderSettings.ProviderType)
             {
                 case "Json":
-                    Services.AddSingleton<ITransactionUsersProvider>(sp =>
-                        new JsonFileTransactionUsersProvider(providerSettings.Connection));
+                    services.AddSingleton<ITransactionUsersProvider>(sp =>
+                        new JsonFileTransactionUsersProvider(usersProviderSettings.Connection));
                     break;
 
                 // otros casos: “Api”, “InMemory” para tests, etc.
                 default:
                     throw new InvalidOperationException(
-                        $"ProviderType “{providerSettings.ProviderType}” no soportado.");
+                        $"ProviderType “{usersProviderSettings.ProviderType}” no soportado.");
             }
 
             var connectionString = config.GetConnectionString("As400Db2")
                 ?? throw new InvalidOperationException("ConnectionString no encontrado");
 
             // 3) Registra el executor DB genérico
-            Services.AddScoped<IGenericQueryExecutor>(_ =>
+            services.AddScoped<IGenericQueryExecutor>(_ =>
                 new Db2GenericQueryExecutor(connectionString));
 
             // 4) Registra PlaywrightFixture como singleton:
             //    queremos compartir la misma instancia para toda la colección de tests.
-            Services.AddSingleton<PlaywrightFixture>();
+            services.AddSingleton<PlaywrightFixture>();
 
             // 5) Registra ElementRepositoryFixture como singleton (si no guarda estado mutable)
-            Services.AddSingleton<ElementRepositoryFixture>();
+            services.AddSingleton<ElementRepositoryFixture>();
 
             // 6) Registra las demás dependencias (queries, servicios, etc.)
-            Services.AddTransient<IStandardQuery<DeleteUserSesionModel>, DeleteUserSesionQuery>();
-            Services.AddTransient<IStandardQuery<ForceLoanApprovalModel>, ForceLoanApprovalQuery>();
-            Services.AddTransient<IStandardQuery<ForceLoanRejectionModel>, ForceLoanRejectionQuery>();
-            Services.AddScoped<IStandardQueryService, StandardQueryService>();
-            Services.AddScoped<ITransactionUsersSelectionService, TransactionUsersSelectionService>();
-            Services.AddScoped<IPdfConverter, PdfConverter>();
+            services.AddTransient<IStandardQuery<DeleteUserSesionModel>, DeleteUserSesionQuery>();
+            services.AddTransient<IStandardQuery<ForceLoanApprovalModel>, ForceLoanApprovalQuery>();
+            services.AddTransient<IStandardQuery<ForceOnlyCarsEssentialModel>, ForceOnlyCarsEssential>();
+            services.AddScoped<IStandardQueryService, StandardQueryService>();
+            services.AddScoped<ITransactionUsersSelectionService, TransactionUsersSelectionService>();
+            services.AddScoped<IPdfConverter, PdfConverter>();
+            services.AddSingleton<ITestDataProvider, SpireTestDataProvider>();
 
-            Services.AddTransient<IActionCoordinatorService, ActionCoordinatorService>();
-            Services.AddSingleton<IActionCoordinatorFactory, ActionCoordinatorFactory>();
-            Services.AddSingleton<ITransactionDataResolver, TransactionDataResolver>();
+            services.AddTransient<IActionCoordinatorService, ActionCoordinatorService>();
+            services.AddSingleton<IActionCoordinatorFactory, ActionCoordinatorFactory>();
+            services.AddSingleton<ITransactionDataResolver, TransactionDataResolver>();
 
-            Services.AddSingleton<IBranchSynchronizationService, DynamicBranchBarrier>();
-            Services.AddSingleton<IUserTurnCoordinatorService,  UserTurnCoordinatorService>();
-            Services.AddSingleton<ITestOutputAccessor, TestOutputAccessor>();
+            services.AddSingleton<IBranchSynchronizationService, DynamicBranchBarrier>();
+            services.AddSingleton<IUserTurnCoordinatorService,  UserTurnCoordinatorService>();
+            services.AddSingleton<ITestOutputAccessor, TestOutputAccessor>();
 
-            Services.AddTransient<ILoanApplication<ClientDataT062900>, LoanApplicationT062900>();
-            Services.AddTransient<ILoanApplication<ClientDataT062800>, LoanApplicationT062800>();
-            Services.AddTransient<ILoanApplication<ClientDataT062700>, LoanApplicationT062700>();
-            Services.AddTransient<ILoanApplication<ClientDataT062500>, LoanApplicationT062500>();
-            Services.AddTransient<ILoanApplication<ClientDataT062400>, LoanApplicationT062400>();
+            services.AddTransient<ITransactionOrchestrator, FullTransactionOrchestrator>();
 
-            Services.AddTransient<ILoanApproval<ClientDataT062900>, LoanApproval>();
-            Services.AddTransient<ILoanApproval<ClientDataT062800>, LoanApproval>();
-            Services.AddTransient<ILoanApproval<ClientDataT062700>, LoanApproval>();
-            Services.AddTransient<ILoanApproval<ClientDataT062500>, LoanApproval>();
-            Services.AddTransient<ILoanApproval<ClientDataT062400>, LoanApproval>();
+            services.AddTransient<ILoanApplication<ClientDataT062900>, LoanApplicationT062900>();
+            services.AddTransient<ILoanApplication<ClientDataT062800>, LoanApplicationT062800>();
+            services.AddTransient<ILoanApplication<ClientDataT062700>, LoanApplicationT062700>();
+            services.AddTransient<ILoanApplication<ClientDataT062500>, LoanApplicationT062500>();
+            services.AddTransient<ILoanApplication<ClientDataT062400>, LoanApplicationT062400>();
+
+            services.AddTransient<ILoanApproval<ClientDataT062900>, LoanApproval>();
+            services.AddTransient<ILoanApproval<ClientDataT062800>, LoanApproval>();
+            services.AddTransient<ILoanApproval<ClientDataT062700>, LoanApproval>();
+            services.AddTransient<ILoanApproval<ClientDataT062500>, LoanApproval>();
+            services.AddTransient<ILoanApproval<ClientDataT062400>, LoanApproval>();
+
+            // Adaptadores por cada TClientData
+            services.AddTransient<IClientDataAdapter<ClientDataT062900>, ClientDataT062900Adapter>();
 
             // 7) Construye el ServiceProvider
-            ServiceProvider = Services.BuildServiceProvider(); 
+            ServiceProvider = services.BuildServiceProvider();
         }
 
         /// <summary>
