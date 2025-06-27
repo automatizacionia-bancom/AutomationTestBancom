@@ -27,8 +27,8 @@ namespace AutomationTest.FitbankWeb3.Application.Services
                     Type = t,
                     Attr = t.GetCustomAttribute<TransactionTypeAttribute>()
                 })
-                .Where(x => x.Attr != null)
-                .GroupBy(x => x.Attr.Type)
+                .Where(x => x.Attr is not null)
+                .GroupBy(x => x.Attr!.Type)
                 .ToDictionary(
                     g => g.Key,
                     g => g.Select(x => x.Type).ToList()

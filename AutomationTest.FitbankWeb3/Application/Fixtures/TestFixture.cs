@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutomationTest.FitbankWeb3.Application.Adapters;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
@@ -16,6 +17,7 @@ using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.Perso
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.PersonalLoan;
 using AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators;
 using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
+using AutomationTest.FitbankWeb3.Domain.Ports.Inbound;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using AutomationTest.FitbankWeb3.Infrastructure.Adapters.ClientDataAdapters;
 using AutomationTest.FitbankWeb3.Infrastructure.Adapters.Interfaces;
@@ -36,6 +38,10 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
         public IServiceProvider ServiceProvider { get; private set; }
         public TestFixture()
         {
+            ServiceProvider = Configure();
+        }
+        public static IServiceProvider Configure()
+        {
             // 1) Levanta la configuración
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -55,6 +61,8 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
 
             // Registra los settings de configuración
             services.AddSingleton<IConfiguration>(config);
+            services.AddSingleton<ITestConfigurationProvider, ConfigurationTestProvider>();
+
             services.AddSingleton(usersProviderSettings);
             services.AddSingleton(transactionSettings);
             switch (usersProviderSettings.ProviderType)
@@ -119,7 +127,9 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddTransient<IClientDataAdapter<ClientDataT062900>, ClientDataT062900Adapter>();
 
             // 7) Construye el ServiceProvider
-            ServiceProvider = services.BuildServiceProvider();
+            var ServiceProvider = services.BuildServiceProvider();
+
+            return ServiceProvider;
         }
 
         /// <summary>

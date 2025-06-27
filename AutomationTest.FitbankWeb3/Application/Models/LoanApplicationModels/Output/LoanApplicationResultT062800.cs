@@ -11,7 +11,7 @@ namespace AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Ou
     public class LoanApplicationResultT062800 : ILoanApplicationResult
     {
         public string ApplicationNumber { get; set; } = string.Empty;
-        public Transacion062800Type Transacion062800Type { get; set; } = Transacion062800Type.Unspecified;
+        public Transaction062800Type Transacion062800Type { get; set; } = Transaction062800Type.Unspecified;
         public EvaluationResult EvaluationResult { get; set; } = EvaluationResult.Failed;
         public List<string> RecognizedApprovingUsers { get; set; } = new List<string>();
     }

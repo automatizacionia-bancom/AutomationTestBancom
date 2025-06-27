@@ -69,20 +69,22 @@ namespace AutomationTest.FitbankWeb3.Tests
             _userTurnCoordinatorService = _scope.ServiceProvider.GetRequiredService<IUserTurnCoordinatorService>();
 
         }
-        private static readonly List<FullLoanRequest<ClientDataT062700>> ClientDataList = new()
+        private static readonly List<FullLoanRequest<ClientDataT062400>> ClientDataList = new()
         {
-            new FullLoanRequest<ClientDataT062700>
+            new FullLoanRequest<ClientDataT062400>
             {
-                ClientData = new ClientDataT062700
+                ClientData = new ClientDataT062400
                 {
                     UserRequest = "ILADINES",
-                    Identification = "76310952",
+                    Identification = "03843877",
                     Address = 1,
                     Income = 2000.00,
                     Product = "001",
-                    BillingCycle = BillingCycle.PimeraQuincena,
-                    CreditLine = 8000.00,
-                    GuaranteeType = GuaranteeType.SinGarantia,
+                    DisbursementType = DisbursementType.Unspecified,
+                    JewelGrossWeight = 100,
+                    JewelEmbeddedWeight = 50,
+                    PaymentTerm = PaymentTerm.Monthly,
+                    RequestedAmount = 8000.00,
                     ModifyLoanApplication = ModifyLoanApplication.APROBAR,
                     RequestType = RequestType.IngresoARiesgos,
                     RequestState = RequestStatus.APROBAR,
@@ -90,14 +92,14 @@ namespace AutomationTest.FitbankWeb3.Tests
                     RequestObservation2 = "OTROS",
                 },
                 IpPort = "http://10.0.2.54:8380",
-                EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\cajamarca\\Caso1",
-                Headless = true,
+                EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\Prueba",
+                Headless = false,
                 KeepPdf = false,
                 MaxApprovalUser = 10,
             },
-            //new FullLoanRequest<ClientDataT062700>
+            //new FullLoanRequest<ClientDataT062400>
             //{
-            //    ClientData = new ClientDataT062700
+            //    ClientData = new ClientDataT062400
             //    {
             //        UserRequest = "ILADINES",
             //        Identification = "76310952",
@@ -119,103 +121,104 @@ namespace AutomationTest.FitbankWeb3.Tests
             //    KeepPdf = false,
             //    MaxApprovalUser = 10,
             //},
-            new FullLoanRequest<ClientDataT062700>
-            {
-                ClientData = new ClientDataT062700
-                {
-                    UserRequest = "ILADINES",
-                    Identification = "07812813",
-                    Address = 1,
-                    Income = 2000.00,
-                    Product = "001",
-                    BillingCycle = BillingCycle.PimeraQuincena,
-                    CreditLine = 8000.00,
-                    GuaranteeType = GuaranteeType.GarantiaLiquida,
-                    ModifyLoanApplication = ModifyLoanApplication.APROBAR,
-                    RequestType = RequestType.IngresoARiesgos,
-                    RequestState = RequestStatus.APROBAR,
-                    RequestObservation1 = "SUPERVISADOS",
-                    RequestObservation2 = "OTROS",
-                },
-                IpPort = "http://10.0.2.54:8380",
-                EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\cajamarca\\Caso3",
-                Headless = true,
-                KeepPdf = false,
-                MaxApprovalUser = 10,
-            },
-            new FullLoanRequest<ClientDataT062700>
-            {
-                ClientData = new ClientDataT062700
-                {
-                    UserRequest = "ILADINES",
-                    Identification = "74885761",
-                    Address = 1,
-                    Income = 2000.00,
-                    Product = "001",
-                    BillingCycle = BillingCycle.PimeraQuincena,
-                    CreditLine = 8000.00,
-                    GuaranteeType = GuaranteeType.GarantiaLiquida,
-                    ModifyLoanApplication = ModifyLoanApplication.Default,
-                    RequestType = RequestType.IngresoARiesgos,
-                    RequestState = RequestStatus.APROBAR,
-                    RequestObservation1 = "SUPERVISADOS",
-                    RequestObservation2 = "OTROS",
-                },
-                IpPort = "http://10.0.2.54:8380",
-                EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\cajamarca\\Caso4",
-                Headless = true,
-                KeepPdf = false,
-                MaxApprovalUser = 10,
-            },
-            new FullLoanRequest<ClientDataT062700>
-            {
-                ClientData = new ClientDataT062700
-                {
-                    UserRequest = "ILADINES",
-                    Identification = "07577279",
-                    Address = 1,
-                    Income = 2000.00,
-                    Product = "001",
-                    BillingCycle = BillingCycle.PimeraQuincena,
-                    CreditLine = 8000.00,
-                    GuaranteeType = GuaranteeType.GarantiaNoLiquida,
-                    ModifyLoanApplication = ModifyLoanApplication.APROBAR,
-                    RequestType = RequestType.IngresoARiesgos,
-                    RequestState = RequestStatus.APROBAR,
-                    RequestObservation1 = "SUPERVISADOS",
-                    RequestObservation2 = "OTROS",
-                },
-                IpPort = "http://10.0.2.54:8380",
-                EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\cajamarca\\Caso5",
-                Headless = true,
-                KeepPdf = false,
-                MaxApprovalUser = 10,
-            },
-            new FullLoanRequest<ClientDataT062700>
-            {
-                ClientData = new ClientDataT062700
-                {
-                    UserRequest = "ILADINES",
-                    Identification = "74885761",
-                    Address = 1,
-                    Income = 2000.00,
-                    Product = "001",
-                    BillingCycle = BillingCycle.PimeraQuincena,
-                    CreditLine = 8000.00,
-                    GuaranteeType = GuaranteeType.GarantiaNoLiquida,
-                    ModifyLoanApplication = ModifyLoanApplication.Default,
-                    RequestType = RequestType.IngresoARiesgos,
-                    RequestState = RequestStatus.APROBAR,
-                    RequestObservation1 = "SUPERVISADOS",
-                    RequestObservation2 = "OTROS",
-                },
-                IpPort = "http://10.0.2.54:8380",
-                EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\cajamarca\\Caso6",
-                Headless = true,
-                KeepPdf = false,
-                MaxApprovalUser = 10,
-            },
+        //    new FullLoanRequest<ClientDataT062400>
+        //    {
+        //        ClientData = new ClientDataT062400
+        //        {
+        //            UserRequest = "ILADINES",
+        //            Identification = "07812813",
+        //            Address = 1,
+        //            Income = 2000.00,
+        //            Product = "001",
+        //            BillingCycle = BillingCycle.PimeraQuincena,
+        //            CreditLine = 8000.00,
+        //            GuaranteeType = GuaranteeType.GarantiaLiquida,
+        //            ModifyLoanApplication = ModifyLoanApplication.APROBAR,
+        //            RequestType = RequestType.IngresoARiesgos,
+        //            RequestState = RequestStatus.APROBAR,
+        //            RequestObservation1 = "SUPERVISADOS",
+        //            RequestObservation2 = "OTROS",
+        //        },
+        //        IpPort = "http://10.0.2.54:8380",
+        //        EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\cajamarca\\Caso3",
+        //        Headless = true,
+        //        KeepPdf = false,
+        //        MaxApprovalUser = 10,
+        //    },
+        //    new FullLoanRequest<ClientDataT062400>
+        //    {
+        //        ClientData = new ClientDataT062400
+        //        {
+        //            UserRequest = "ILADINES",
+        //            Identification = "74885761",
+        //            Address = 1,
+        //            Income = 2000.00,
+        //            Product = "001",
+        //            BillingCycle = BillingCycle.PimeraQuincena,
+        //            CreditLine = 8000.00,
+        //            GuaranteeType = GuaranteeType.GarantiaLiquida,
+        //            ModifyLoanApplication = ModifyLoanApplication.Default,
+        //            RequestType = RequestType.IngresoARiesgos,
+        //            RequestState = RequestStatus.APROBAR,
+        //            RequestObservation1 = "SUPERVISADOS",
+        //            RequestObservation2 = "OTROS",
+        //        },
+        //        IpPort = "http://10.0.2.54:8380",
+        //        EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\cajamarca\\Caso4",
+        //        Headless = true,
+        //        KeepPdf = false,
+        //        MaxApprovalUser = 10,
+        //    },
+        //    new FullLoanRequest<ClientDataT062400>
+        //    {
+        //        ClientData = new ClientDataT062400
+        //        {
+        //            UserRequest = "ILADINES",
+        //            Identification = "07577279",
+        //            Address = 1,
+        //            Income = 2000.00,
+        //            Product = "001",
+        //            BillingCycle = BillingCycle.PimeraQuincena,
+        //            CreditLine = 8000.00,
+        //            GuaranteeType = GuaranteeType.GarantiaNoLiquida,
+        //            ModifyLoanApplication = ModifyLoanApplication.APROBAR,
+        //            RequestType = RequestType.IngresoARiesgos,
+        //            RequestState = RequestStatus.APROBAR,
+        //            RequestObservation1 = "SUPERVISADOS",
+        //            RequestObservation2 = "OTROS",
+        //        },
+        //        IpPort = "http://10.0.2.54:8380",
+        //        EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\cajamarca\\Caso5",
+        //        Headless = true,
+        //        KeepPdf = false,
+        //        MaxApprovalUser = 10,
+        //    },
+        //    new FullLoanRequest<ClientDataT062400>
+        //    {
+        //        ClientData = new ClientDataT062400
+        //        {
+        //            UserRequest = "ILADINES",
+        //            Identification = "74885761",
+        //            Address = 1,
+        //            Income = 2000.00,
+        //            Product = "001",
+        //            BillingCycle = BillingCycle.PimeraQuincena,
+        //            CreditLine = 8000.00,
+        //            GuaranteeType = GuaranteeType.GarantiaNoLiquida,
+        //            ModifyLoanApplication = ModifyLoanApplication.Default,
+        //            RequestType = RequestType.IngresoARiesgos,
+        //            RequestState = RequestStatus.APROBAR,
+        //            RequestObservation1 = "SUPERVISADOS",
+        //            RequestObservation2 = "OTROS",
+        //        },
+        //        IpPort = "http://10.0.2.54:8380",
+        //        EvidenceFoler = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\cajamarca\\Caso6",
+        //        Headless = true,
+        //        KeepPdf = false,
+        //        MaxApprovalUser = 10,
+        //    },
         };
+
         // Returns the test indices (primitive values), always matching the ClientDataList size
         public static TheoryData<int> GetData()
         {
@@ -226,8 +229,8 @@ namespace AutomationTest.FitbankWeb3.Tests
             return data;
         }
 
-        // Maps index to ClientDataT062700 from the list
-        private static FullLoanRequest<ClientDataT062700> GetClientDataByIndex(int index)
+        // Maps index to ClientDataT062400 from the list
+        private static FullLoanRequest<ClientDataT062400> GetClientDataByIndex(int index)
         {
             if (index < 0 || index >= ClientDataList.Count)
                 throw new ArgumentOutOfRangeException(nameof(index), "Invalid test data index");
@@ -245,10 +248,10 @@ namespace AutomationTest.FitbankWeb3.Tests
             }
             
             ITransactionOrchestrator orchestrator = _provider.GetRequiredService<ITransactionOrchestrator>();
-            await orchestrator.TransactionAsync<ClientDataT062700>(loanRequest);
+            await orchestrator.TransactionAsync<ClientDataT062400>(loanRequest);
             
             //ApprovalOnlyTransactionOrchestrator approvalOrchestrator = new ApprovalOnlyTransactionOrchestrator(_provider, _playwright, _locators, _pdfConverter, _standardQueryService, _transactionUsersSelectionService, _actionCoordinatorFactory, _branchSynchronizationService, _userTurnCoordinatorService, _outputAccessor.Output);
-            //var approvalRequestModel = new ApprovalRequestModel<ClientDataT062700>
+            //var approvalRequestModel = new ApprovalRequestModel<ClientDataT062400>
             //{
             //    ApplicationNumber = "1061702007",
             //    EvidenceFoler = loanRequest.EvidenceFoler,

@@ -384,7 +384,13 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             {
                 // 1) Leer y decodificar el POST body
                 var raw = route.Request.PostData;    // e.g. "_contexto=lv&_lv=%7B...%7D"
-                var decoded = WebUtility.UrlDecode(raw);
+                var decoded = WebUtility.UrlDecode(raw) ?? string.Empty;
+
+                if(string.IsNullOrEmpty(decoded) || !decoded.Contains("_lv="))
+                {
+                    await route.ContinueAsync();
+                    return;
+                }
 
                 // 2) Separar parámetros y extraer JSON de _lv
                 var nvc = HttpUtility.ParseQueryString(decoded);
@@ -400,8 +406,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 // 4) Cambiar únicamente los objetos con "alias":"TPP"
                 foreach (var fieldNode in fieldsArray)
                 {
-                    var obj = fieldNode.AsObject();
-                    if (obj["alias"]?.GetValue<string>() == "TPP")
+                    var obj = fieldNode?.AsObject();
+                    if (obj?["alias"]?.GetValue<string>() == "TPP")
                     {
                         modified = true;
                     }

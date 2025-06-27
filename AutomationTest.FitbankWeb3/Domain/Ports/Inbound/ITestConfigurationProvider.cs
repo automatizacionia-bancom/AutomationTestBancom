@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutomationTest.FitbankWeb3.Domain.Enums;
 
 namespace AutomationTest.FitbankWeb3.Domain.Ports.Inbound
 {
@@ -11,6 +12,10 @@ namespace AutomationTest.FitbankWeb3.Domain.Ports.Inbound
     /// </summary>
     public interface ITestConfigurationProvider
     {
+        /// <summary>
+        /// Tipo de transaccion
+        /// </summary>
+        TransactionType Transaction { get; }
         /// <summary>
         /// Ruta al archivo de Excel que contiene los casos.
         /// </summary>
@@ -26,6 +31,24 @@ namespace AutomationTest.FitbankWeb3.Domain.Ports.Inbound
         /// </summary>
         string EvidenceFolderBase { get; }
 
-        // … otros valores que necesites …
+        /// <summary>
+        /// Indica si se debe ejecutar en modo headless (sin interfaz gráfica).
+        /// </summary>
+        bool Headless { get; }
+
+        /// <summary>
+        /// Dirección IP y puerto del servidor de pruebas.
+        /// </summary>
+        string IpPort { get; }
+
+        /// <summary>
+        /// Indica si se debe mantener el PDF generado después de la prueba. (Solo se aplica a headless)
+        /// </summary>
+        bool KeepPdf { get; }
+
+        /// <summary>
+        /// Limite de seguridad maximo de aprobaciones se puede realizar a una misma solicitud de crédito.
+        /// </summary>
+        int MaxApprovalUser { get; }
     }
 }

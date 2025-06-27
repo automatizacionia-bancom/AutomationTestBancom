@@ -10,26 +10,15 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
 {
     public class PlaywrightFixture : IAsyncLifetime
     {
-        public IPlaywright PlaywrightVar { get; private set; }
-        //public IBrowser Browser { get; private set; }
-        //public IBrowserContext Context { get; private set; }
-
+        public IPlaywright PlaywrightVar { get; private set; } = null!;
         public async Task InitializeAsync()
         {
             PlaywrightVar = await Playwright.CreateAsync();
-            //Browser = await PlaywrightVar.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-            //{
-            //    Headless = true,
-            //    //DownloadsPath = "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA\\Evidencias\\Prueba\\Caso1", // Ruta para las descargas
-            //});
-           // Context = await Browser.NewContextAsync();
         }
-
         public async Task DisposeAsync()
         {
-            //await Context.CloseAsync();
-            //await Browser.CloseAsync();
             PlaywrightVar?.Dispose();
+            await Task.CompletedTask;
         }
     }
 }

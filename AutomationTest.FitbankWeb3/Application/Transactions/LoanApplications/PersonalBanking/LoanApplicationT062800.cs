@@ -66,11 +66,11 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 State = WaitForSelectorState.Visible
             });
             
-            Transacion062800Type transacion062800Type = clientData.ProductGroup switch
+            Transaction062800Type transacion062800Type = clientData.ProductGroup switch
             {
-                "05" => Transacion062800Type.Maxiprestamos,
-                "11" => Transacion062800Type.Convenios,
-                _ => Transacion062800Type.Unspecified
+                "05" => Transaction062800Type.Maxiprestamos,
+                "11" => Transaction062800Type.Convenios,
+                _ => Transaction062800Type.Unspecified
             };
 
             await page.Locator(_locators.ApplicationPageT062800.ManagerList).ClickAsync();
@@ -206,20 +206,20 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             // Realizamos las aprobacion de verificacion domiciliaria y laboral
             await ValidateDocumentationAsync(page, applicationNumber, transacion062800Type); // Verificacion 1
-            if (transacion062800Type == Transacion062800Type.Maxiprestamos)
+            if (transacion062800Type == Transaction062800Type.Maxiprestamos)
             {
-                await ValidateDocumentationAsync(page, applicationNumber, Transacion062800Type.Maxiprestamos); // Verificacion 2 para Maxiprestamos
+                await ValidateDocumentationAsync(page, applicationNumber, Transaction062800Type.Maxiprestamos); // Verificacion 2 para Maxiprestamos
             }
 
             return new LoanApplicationResultT062800
             {
                 ApplicationNumber = applicationNumber,
-                Transacion062800Type = Transacion062800Type.Maxiprestamos,
+                Transacion062800Type = Transaction062800Type.Maxiprestamos,
                 EvaluationResult = evaluationResult,
                 RecognizedApprovingUsers = approvingUsers
             };
         }
-        private async Task ValidateDocumentationAsync(IPage page, string applicationNumber, Transacion062800Type transacion062800Type)
+        private async Task ValidateDocumentationAsync(IPage page, string applicationNumber, Transaction062800Type transacion062800Type)
         {
             await page.Locator(_locators.DashboardPage.TransactionInput).FillAsync("064000");
             await page.Locator(_locators.DashboardPage.TransactionInput).PressAsync("Enter");
@@ -319,9 +319,9 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                     State = WaitForSelectorState.Visible
                 }, _outputAccessor.Output);
         }
-        private async Task AssingGuaranteeAsync(IPage page, LoanApplicationModel<ClientDataT062800> loanApplication, Transacion062800Type transacion062800Type)
+        private async Task AssingGuaranteeAsync(IPage page, LoanApplicationModel<ClientDataT062800> loanApplication, Transaction062800Type transacion062800Type)
         {
-            if (transacion062800Type != Transacion062800Type.Maxiprestamos)
+            if (transacion062800Type != Transaction062800Type.Maxiprestamos)
                 return;
             if (loanApplication.ClientData.GuaranteeType == GuaranteeType.SinGarantia)
                 return;

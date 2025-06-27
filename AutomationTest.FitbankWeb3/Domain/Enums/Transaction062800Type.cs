@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AutomationTest.FitbankWeb3.Domain.Enums
 {
-    public enum Transacion062800Type
+    public enum Transaction062800Type
     {
         Maxiprestamos = 0,
         Convenios = 1,

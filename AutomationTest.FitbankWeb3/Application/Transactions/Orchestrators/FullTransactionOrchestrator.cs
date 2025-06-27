@@ -134,12 +134,17 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             // En cuanto aparezca: excepción
             throw new Exception($"¡Elemento inesperado detectado: {locator}!");
         }
-        private async Task<IBrowser> LaunchBrowserAsync<TClientData>(FullLoanRequest<TClientData> loanRequest) where TClientData : IClientData =>
-            await _playwright.PlaywrightVar.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+        private async Task<IBrowser> LaunchBrowserAsync<TClientData>(FullLoanRequest<TClientData> loanRequest) where TClientData : IClientData
+        {
+            if (_playwright.PlaywrightVar is null)
+                throw new InvalidOperationException("Playwright no ha sido inicializado.");
+
+            return await _playwright.PlaywrightVar.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
                 Headless = loanRequest.Headless,
                 DownloadsPath = loanRequest.EvidenceFoler,
             });
+        }
         private async Task<ILoanApplicationResult> RunLoanApplicationAsync<TClientData>(
             IPage page,
             FullLoanRequest<TClientData> loanRequest)

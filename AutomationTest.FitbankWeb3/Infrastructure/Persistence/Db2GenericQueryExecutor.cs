@@ -74,7 +74,7 @@ namespace AutomationTest.FitbankWeb3.Infrastructure.Persistence
                 }
                 return new DataTable();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (queryModel.ThrowOnError)
                     throw;
