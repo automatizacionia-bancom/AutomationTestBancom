@@ -9,8 +9,9 @@ using AutomationTest.FitbankWeb3.Application.Services;
 using Meziantou.Xunit;
 using Xunit.Abstractions;
 
-namespace AutomationTest.FitbankWeb3.Tests
+namespace AutomationTest.FitbankWeb3.Tests.CoreTest
 {
+    [Trait("Grupo", "CoreTest")]
     public class UserTurnCoordinatorServiceTests
     {
         // private readonly IUserTurnCoordinatorService svc = new UserTurnCoordinatorService();
@@ -165,13 +166,13 @@ namespace AutomationTest.FitbankWeb3.Tests
             for (int i = 0; i < branchCount; i = i + 2)
             {
                 // terminaran las ramas co user0
-                await (tasks[i]);
+                await tasks[i];
                 sessions[i].Dispose(); // desregistrar las ramas
             }
             for (int i = 1; i < branchCount; i = i + 2)
             {
                 // terminaran las ramas co user1
-                await (tasks[i]);
+                await tasks[i];
                 sessions[i].Dispose(); // desregistrar las ramas
             }
 

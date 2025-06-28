@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 
-namespace AutomationTest.FitbankWeb3.Domain.Ports.Inbound
+namespace AutomationTest.FitbankWeb3.Domain.Ports.Outbound
 {
     /// <summary>
     /// Puerto de entrada: obtiene parámetros de configuración para los tests.
@@ -15,7 +15,7 @@ namespace AutomationTest.FitbankWeb3.Domain.Ports.Inbound
         /// <summary>
         /// Tipo de transaccion
         /// </summary>
-        TransactionType Transaction { get; }
+        TransactionType TransactionType { get; }
         /// <summary>
         /// Ruta al archivo de Excel que contiene los casos.
         /// </summary>

@@ -12,19 +12,20 @@ using Ghostscript.NET.Processor;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
-namespace AutomationTest.FitbankWeb3.Tests
+namespace AutomationTest.FitbankWeb3.Tests.CoreTest
 {
-    public class usersTest
+    [Trait("Grupo", "CoreTest")]
+    public class GetTransactionUsersTest: IClassFixture<TestFixture>
     {
         private readonly ITransactionUsersProvider _usersProvider;
         private readonly ITestOutputHelper _output;
 
-        public usersTest(TestFixture fixture, ITestOutputHelper output)
+        public GetTransactionUsersTest(TestFixture fixture, ITestOutputHelper output)
         {
             _usersProvider = fixture.ServiceProvider.GetRequiredService<ITransactionUsersProvider>();
             _output = output;
         }
-        //[Fact]
+        [Fact]
         public async Task Prueba()
         {
             List<string> users = await _usersProvider.GetUsersForTransactionAsync(TransactionType.T062900);

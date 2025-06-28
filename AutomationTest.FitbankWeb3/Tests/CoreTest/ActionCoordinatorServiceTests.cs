@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Services.ActionCoordination;
 
-namespace AutomationTest.FitbankWeb3.Tests
+namespace AutomationTest.FitbankWeb3.Tests.CoreTest
 {
+    [Trait("Grupo", "CoreTest")]
     public class ActionCoordinatorServiceTests
     {
         [Fact]

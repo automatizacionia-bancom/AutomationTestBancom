@@ -11,21 +11,23 @@ using AutomationTest.FitbankWeb3.Infrastructure.Adapters.Interfaces;
 
 namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.ClientDataAdapters
 {
-    public class ClientDataT062900Adapter : IClientDataAdapter<ClientDataT062900>
+    public class ClientDataT062800Adapter : IClientDataAdapter<ClientDataT062800>
     {
-        public ClientDataT062900 Adapt(DataRow row)
+        public ClientDataT062800 Adapt(DataRow row)
         {
-            return new ClientDataT062900
+            return new ClientDataT062800
             {
                 UserRequest = row.SafeField<string>("Usuario") ?? string.Empty,
                 Identification = row.SafeField<string>("DNI") ?? string.Empty,
                 Address = row.SafeField<int?>("Direccion") ?? 1,
+                ProductGroup = row.SafeField<string>("Grupo") ?? string.Empty,
                 Product = row.SafeField<string>("Producto") ?? string.Empty,
+                CoinType = row.SafeField<CoinType?>("Moneda") ?? CoinType.Soles,
+                GuaranteeType = row.SafeField<GuaranteeType?>("Garantia") ?? GuaranteeType.SinGarantia,
                 LoanType = row.SafeField<LoanType?>("TipoPrestamo") ?? LoanType.Prestamo,
                 LoanInstallments = row.SafeField<int?>("Cuotas") ?? 0,
                 LoanAmount = row.SafeField<double?>("Monto") ?? 0.0,
-                Income = row.SafeField<double?>("OtrosIngresos") ?? 0.0,
-                PayrollSource = row.SafeField<PayrollSourceType?>("OrigenPlanilla") ?? PayrollSourceType.DireccionEconomia,
+                Income = row.SafeField<double?>("SueldoNeto") ?? 0.0,
                 DisbursementType = row.SafeField<DisbursementType?>("FormaDesembolso") ?? DisbursementType.Unspecified,
                 ModifyLoanApplication = row.SafeField<ModifyLoanApplication?>("ModificarSolicitud") ?? ModifyLoanApplication.Default,
                 RequestState = row.SafeField<RequestStatus?>("TipoSolicitud") ?? RequestStatus.APROBAR,

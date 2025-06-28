@@ -101,15 +101,18 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddScoped<IPdfConverter, PdfConverter>();
             services.AddSingleton<ITestDataProvider, SpireTestDataProvider>();
 
+            services.AddSingleton<IFullWorkflowExecutor, FullWorkflowExecutor>();
+
             services.AddTransient<IActionCoordinatorService, ActionCoordinatorService>();
             services.AddSingleton<IActionCoordinatorFactory, ActionCoordinatorFactory>();
             services.AddSingleton<ITransactionDataResolver, TransactionDataResolver>();
+            services.AddSingleton<ITestCaseLoader, TestCaseLoader>();
 
             services.AddSingleton<IBranchSynchronizationService, DynamicBranchBarrier>();
             services.AddSingleton<IUserTurnCoordinatorService,  UserTurnCoordinatorService>();
             services.AddSingleton<ITestOutputAccessor, TestOutputAccessor>();
 
-            services.AddTransient<ITransactionOrchestrator, FullTransactionOrchestrator>();
+            services.AddSingleton<ITransactionOrchestrator, FullTransactionOrchestrator>();
 
             services.AddTransient<ILoanApplication<ClientDataT062900>, LoanApplicationT062900>();
             services.AddTransient<ILoanApplication<ClientDataT062800>, LoanApplicationT062800>();
@@ -125,6 +128,8 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
 
             // Adaptadores por cada TClientData
             services.AddTransient<IClientDataAdapter<ClientDataT062900>, ClientDataT062900Adapter>();
+            services.AddTransient<IClientDataAdapter<ClientDataT062800>, ClientDataT062800Adapter>();
+
 
             // 7) Construye el ServiceProvider
             var ServiceProvider = services.BuildServiceProvider();

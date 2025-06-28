@@ -9,8 +9,9 @@ using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
-namespace AutomationTest.FitbankWeb3.Tests
+namespace AutomationTest.FitbankWeb3.Tests.CoreTest
 {
+    [Trait("Grupo", "CoreTest")]
     public class DataProviderTest : IClassFixture<TestFixture>
     {
         private readonly ITestDataProvider _dataProvider;

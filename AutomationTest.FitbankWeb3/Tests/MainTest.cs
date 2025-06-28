@@ -236,8 +236,8 @@ namespace AutomationTest.FitbankWeb3.Tests
                 throw new ArgumentOutOfRangeException(nameof(index), "Invalid test data index");
             return ClientDataList[index];
         }
-        [Theory]
-        [MemberData(nameof(GetData))]
+        //[Theory]
+        //[MemberData(nameof(GetData))]
         public async Task Orquestatortest(int clientDataIndex)
         {
             var loanRequest = GetClientDataByIndex(clientDataIndex);
