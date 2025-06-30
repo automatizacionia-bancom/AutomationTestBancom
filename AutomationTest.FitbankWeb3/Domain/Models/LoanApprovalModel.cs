@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Domain.Models;
+using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
+using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 
-namespace AutomationTest.FitbankWeb3.Application.Models.OrchestratorsModels
+namespace AutomationTest.FitbankWeb3.Domain.Models
 {
-    public class ApprovalRequestModel<TClientData> where TClientData : IClientData
+    public class LoanApprovalModel<TClientData> : IOrchestratorModel<TClientData> where TClientData : IClientData
     {
         public required string ApplicationNumber { get; set; }
         public required List<string> RecognizedApprovingUsers { get; set; }

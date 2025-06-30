@@ -3,11 +3,11 @@ using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Input;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Output;
 using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalBanking;
 using AutomationTest.FitbankWeb3.Domain.Enums;
+using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Playwright;
 

@@ -50,11 +50,6 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Pers
         }
         public async Task<LoanApprovalResultModel> ApproveLoanAsync(IPage page, LoanApprovalModel loanAppproval)
         {
-            await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel
-            {
-                User = loanAppproval.ApprovingUser
-            });
-
             await page.GotoAsync($"{loanAppproval.IpPort}/WEB3/ingreso.html");
 
             // Forzar cierre de sesión anterior

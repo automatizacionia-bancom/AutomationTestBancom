@@ -10,11 +10,8 @@ using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Input;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Output;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApprovalModels.Input;
-using AutomationTest.FitbankWeb3.Application.Models.OrchestratorsModels;
-using AutomationTest.FitbankWeb3.Application.Models.TransactionModels;
 using AutomationTest.FitbankWeb3.Application.Services;
 using AutomationTest.FitbankWeb3.Application.Services.ActionCoordination;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
@@ -22,6 +19,7 @@ using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals;
 using AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators;
 using AutomationTest.FitbankWeb3.Domain.Enums;
+using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using AutomationTest.FitbankWeb3.Infrastructure.Configuration;
 using Meziantou.Xunit;
@@ -69,9 +67,9 @@ namespace AutomationTest.FitbankWeb3.Tests
             _userTurnCoordinatorService = _scope.ServiceProvider.GetRequiredService<IUserTurnCoordinatorService>();
 
         }
-        private static readonly List<FullLoanRequest<ClientDataT062400>> ClientDataList = new()
+        private static readonly List<FullWorkflowModel<ClientDataT062400>> ClientDataList = new()
         {
-            new FullLoanRequest<ClientDataT062400>
+            new FullWorkflowModel<ClientDataT062400>
             {
                 ClientData = new ClientDataT062400
                 {
@@ -230,7 +228,7 @@ namespace AutomationTest.FitbankWeb3.Tests
         }
 
         // Maps index to ClientDataT062400 from the list
-        private static FullLoanRequest<ClientDataT062400> GetClientDataByIndex(int index)
+        private static FullWorkflowModel<ClientDataT062400> GetClientDataByIndex(int index)
         {
             if (index < 0 || index >= ClientDataList.Count)
                 throw new ArgumentOutOfRangeException(nameof(index), "Invalid test data index");
@@ -247,7 +245,7 @@ namespace AutomationTest.FitbankWeb3.Tests
                 Directory.CreateDirectory(loanRequest.EvidenceFoler);
             }
             
-            ITransactionOrchestrator orchestrator = _provider.GetRequiredService<ITransactionOrchestrator>();
+            IFullWorkflowOrchestrator orchestrator = _provider.GetRequiredService<IFullWorkflowOrchestrator>();
             await orchestrator.TransactionAsync<ClientDataT062400>(loanRequest);
             
             //ApprovalOnlyTransactionOrchestrator approvalOrchestrator = new ApprovalOnlyTransactionOrchestrator(_provider, _playwright, _locators, _pdfConverter, _standardQueryService, _transactionUsersSelectionService, _actionCoordinatorFactory, _branchSynchronizationService, _userTurnCoordinatorService, _outputAccessor.Output);

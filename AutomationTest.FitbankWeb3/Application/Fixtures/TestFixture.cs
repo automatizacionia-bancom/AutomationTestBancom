@@ -102,17 +102,18 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddSingleton<ITestDataProvider, SpireTestDataProvider>();
 
             services.AddSingleton<IFullWorkflowExecutor, FullWorkflowExecutor>();
+            services.AddSingleton<ILoanApplicationExecutor, LoanApplicationExecutor>();
 
             services.AddTransient<IActionCoordinatorService, ActionCoordinatorService>();
             services.AddSingleton<IActionCoordinatorFactory, ActionCoordinatorFactory>();
             services.AddSingleton<ITransactionDataResolver, TransactionDataResolver>();
-            services.AddSingleton<ITestCaseLoader, TestCaseLoader>();
 
             services.AddSingleton<IBranchSynchronizationService, DynamicBranchBarrier>();
-            services.AddSingleton<IUserTurnCoordinatorService,  UserTurnCoordinatorService>();
+            services.AddSingleton<IUserTurnCoordinatorService, UserTurnCoordinatorService>();
             services.AddSingleton<ITestOutputAccessor, TestOutputAccessor>();
 
-            services.AddSingleton<ITransactionOrchestrator, FullTransactionOrchestrator>();
+            services.AddSingleton<IFullWorkflowOrchestrator, FullWorkflowOrchestrator>();
+            services.AddSingleton<ILoanApplicationOrchestrator, LoanApplicationOrchestrator>();
 
             services.AddTransient<ILoanApplication<ClientDataT062900>, LoanApplicationT062900>();
             services.AddTransient<ILoanApplication<ClientDataT062800>, LoanApplicationT062800>();
@@ -133,6 +134,11 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
 
             // 7) Construye el ServiceProvider
             var ServiceProvider = services.BuildServiceProvider();
+
+            // *** Nuevo bloque: inicializamos PlaywrightFixture ahora mismo ***
+            var pw = ServiceProvider.GetRequiredService<PlaywrightFixture>();
+            // Como estamos en contexto sincrónico:
+            pw.InitializeAsync().GetAwaiter().GetResult();
 
             return ServiceProvider;
         }

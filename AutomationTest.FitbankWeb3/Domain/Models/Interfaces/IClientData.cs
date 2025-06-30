@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutomationTest.FitbankWeb3.Domain.Models
+namespace AutomationTest.FitbankWeb3.Domain.Models.Interfaces
 {
     public interface IClientData
     {

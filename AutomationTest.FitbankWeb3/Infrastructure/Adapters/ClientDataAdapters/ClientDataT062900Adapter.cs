@@ -29,7 +29,7 @@ namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.ClientDataAdapters
                 DisbursementType = row.SafeField<DisbursementType?>("FormaDesembolso") ?? DisbursementType.Unspecified,
                 ModifyLoanApplication = row.SafeField<ModifyLoanApplication?>("ModificarSolicitud") ?? ModifyLoanApplication.Default,
                 RequestState = row.SafeField<RequestStatus?>("TipoSolicitud") ?? RequestStatus.APROBAR,
-                RequestType = row.SafeField<RequestType?>("OrigenPlanilla") ?? RequestType.Excepcion,
+                RequestType = row.SafeField<RequestType?>("TipoSolicitud") ?? RequestType.Excepcion,
                 RequestObservation1 = row.SafeField<string>("TipoObservacion") ?? string.Empty,
                 RequestObservation2 = row.SafeField<string>("TipoObservacion2") ?? string.Empty
             };

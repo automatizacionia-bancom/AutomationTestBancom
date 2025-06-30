@@ -9,7 +9,7 @@ namespace AutomationTest.FitbankWeb3.Domain.Enums
 {
     public enum RequestType
     {
-        [Description("EXEPCION")] Excepcion,
+        [Description("EXCEPCION")] Excepcion,
         [Description("INGRESO A RIESGOS")] IngresoARiesgos
     }
 }

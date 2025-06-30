@@ -10,23 +10,22 @@ using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Inbound;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AutomationTest.FitbankWeb3.Application.Adapters
 {
-    public class FullWorkflowExecutor : IFullWorkflowExecutor
+    public class LoanApplicationExecutor: ILoanApplicationExecutor
     {
         private readonly ITestConfigurationProvider _config;
         private readonly ITestDataProvider _dataProvider;
         private readonly ITransactionDataResolver _resolver;
-        private readonly IFullWorkflowOrchestrator _orchestrator;
+        private readonly ILoanApplicationOrchestrator _orchestrator;
         private readonly ITestOutputAccessor _outputAccessor;
 
-        public FullWorkflowExecutor(
+        public LoanApplicationExecutor(
             ITestConfigurationProvider config,
             ITestDataProvider dataProvider,
             ITransactionDataResolver resolver,
-            IFullWorkflowOrchestrator orchestrator,
+            ILoanApplicationOrchestrator orchestrator,
             ITestOutputAccessor outputAccessor)
         {
             _config = config;
@@ -35,7 +34,7 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
             _orchestrator = orchestrator;
             _outputAccessor = outputAccessor;
         }
-        public async Task ExecuteWorkflow(FullWorkflowModel<IClientData> fullLoanRequest)
+        public async Task ExecuteWorkflow(LoanApplicationModel<IClientData> fullLoanRequest)
         {
             if (!Directory.Exists(fullLoanRequest.EvidenceFoler))
             {
@@ -44,7 +43,7 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
 
             await ExecuteTypedTransactionAsync(fullLoanRequest);
         }
-        public IEnumerable<FullWorkflowModel<IClientData>> LoadCases()
+        public IEnumerable<LoanApplicationModel<IClientData>> LoadCases()
         {
             // 1) Determina el tipo de ClientData a usar
             var txType = _config.TransactionType;
@@ -68,41 +67,40 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
                 var client = (IClientData)cd;
                 string caseFolder = Path.Combine(_config.EvidenceFolderBase, $"Caso {index}");
 
-                yield return new FullWorkflowModel<IClientData>
+                yield return new LoanApplicationModel<IClientData>
                 {
                     ClientData = client,
                     EvidenceFoler = caseFolder,
                     IpPort = _config.IpPort,
                     Headless = _config.Headless,
                     KeepPdf = _config.KeepPdf,
-                    MaxApprovalUser = _config.MaxApprovalUser
                 };
                 index++;
             }
         }
-        private async Task ExecuteTypedTransactionAsync(FullWorkflowModel<IClientData> fullLoanRequest)
+        private async Task ExecuteTypedTransactionAsync(LoanApplicationModel<IClientData> loanRequestApplication)
         {
             // 2) Descubre el tipo real de TClientData
-            var clientData = fullLoanRequest.ClientData!;
+            var clientData = loanRequestApplication.ClientData!;
             var clientType = clientData.GetType(); // e.g. typeof(ClientDataT062900)
 
             // 3) Crea un FullLoanRequest<TClientData> dinámicamente
-            var fullReqType = typeof(FullWorkflowModel<>).MakeGenericType(clientType);
+            var fullReqType = typeof(LoanApplicationModel<>).MakeGenericType(clientType);
             var typedReq = Activator.CreateInstance(fullReqType)!;
 
             // 4) Copia cada propiedad de untypedReq a typedReq
             foreach (var prop in fullReqType.GetProperties().Where(p => p.CanWrite))
             {
                 // obtiene el valor de la propiedad genérica IClientData
-                var value = typeof(FullWorkflowModel<IClientData>)
-                    .GetProperty(prop.Name)!.GetValue(fullLoanRequest);
+                var value = typeof(LoanApplicationModel<IClientData>)
+                    .GetProperty(prop.Name)!.GetValue(loanRequestApplication);
                 prop.SetValue(typedReq, value);
             }
 
             // 5) Invoca TransactionAsync<TClientData>(typedReq) por reflexión
             var method = _orchestrator
                .GetType()
-               .GetMethod(nameof(IFullWorkflowOrchestrator.TransactionAsync))!
+               .GetMethod(nameof(ILoanApplicationOrchestrator.TransactionAsync))!
                .MakeGenericMethod(clientType);
 
             var task = (Task)method.Invoke(_orchestrator, new object[] { typedReq })!;

@@ -5,23 +5,25 @@ using System.Text;
 using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Models.TransactionModels;
 using AutomationTest.FitbankWeb3.Domain.Models;
+using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Inbound;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Tests
 {
-    public class FullTransactionSequentialTest : IClassFixture<TestFixture>
+    public class LoanApplicationSequentialTest : IClassFixture<TestFixture>
     {
-        private static List<FullLoanRequest<IClientData>> _cases = null!;
-        static FullTransactionSequentialTest()
+        private static List<LoanApplicationModel<IClientData>> _cases = null!;
+        private static ILoanApplicationExecutor _workflowExecutor;
+        static LoanApplicationSequentialTest()
         {
             var serviceProvider = TestFixture.Configure();
 
-            var loader = serviceProvider.GetRequiredService<ITestCaseLoader>();
-            _cases = loader.LoadCases().ToList();
+            _workflowExecutor = serviceProvider.GetRequiredService<ILoanApplicationExecutor>();
+
+            _cases = _workflowExecutor.LoadCases().ToList();
         }
         public static TheoryData<int> GetData()
         {
@@ -30,16 +32,11 @@ namespace AutomationTest.FitbankWeb3.Tests
                 data.Add(i);
             return data;
         }
-
-        private readonly IFullWorkflowExecutor _workflowExecutor;
-        public FullTransactionSequentialTest(TestFixture fixture, ITestOutputHelper output)
+        public LoanApplicationSequentialTest(TestFixture fixture, ITestOutputHelper output)
         {
             var accessor = fixture.ServiceProvider
                .GetRequiredService<ITestOutputAccessor>();
             accessor.Set(output);
-
-            // Resuelve tu orquestador de DI
-            _workflowExecutor = fixture.ServiceProvider.GetRequiredService<IFullWorkflowExecutor>();
         }
         [Theory]
         [MemberData(nameof(GetData), DisableDiscoveryEnumeration = true)]

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Application.Models.TransactionModels;
 using AutomationTest.FitbankWeb3.Domain.Models;
+using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 
 namespace AutomationTest.FitbankWeb3.Application.Interfaces
 {
@@ -17,6 +17,6 @@ namespace AutomationTest.FitbankWeb3.Application.Interfaces
         /// Devuelve una lista de petición de préstamo genéricas (IClientData) 
         /// basadas en la configuración actual.
         /// </summary>
-        IEnumerable<FullLoanRequest<IClientData>> LoadCases();
+        IEnumerable<FullWorkflowModel<IClientData>> LoadCases();
     }
 }
