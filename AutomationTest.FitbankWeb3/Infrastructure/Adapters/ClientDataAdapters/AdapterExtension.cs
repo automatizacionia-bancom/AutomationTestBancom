@@ -27,8 +27,14 @@ namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.ClientDataAdapters
             if (targetType.IsEnum)
             {
                 var str = val.ToString();
-                if (Enum.TryParse(targetType, str, ignoreCase: true, out var enumVal))
-                    return (T?)enumVal;
+                if (Enum.TryParse(targetType, str, ignoreCase: true, out var enumValObj))
+                {
+                    // Comprueba que enumValObj realmente corresponde a un nombre existente:
+                    if (!Enum.IsDefined(targetType, enumValObj))
+                        return default;    // “5000” no está definido → devolvemos default
+
+                    return (T?)enumValObj;
+                }
                 return default;
             }
 

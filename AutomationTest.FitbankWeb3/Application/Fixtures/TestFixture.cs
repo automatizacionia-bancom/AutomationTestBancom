@@ -130,7 +130,9 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             // Adaptadores por cada TClientData
             services.AddTransient<IClientDataAdapter<ClientDataT062900>, ClientDataT062900Adapter>();
             services.AddTransient<IClientDataAdapter<ClientDataT062800>, ClientDataT062800Adapter>();
-
+            services.AddTransient<IClientDataAdapter<ClientDataT062700>, ClientDataT062700Adapter>();
+            services.AddTransient<IClientDataAdapter<ClientDataT062500>, ClientDataT062500Adapter>();
+            services.AddTransient<IClientDataAdapter<ClientDataT062400>, ClientDataT062400Adapter>();
 
             // 7) Construye el ServiceProvider
             var ServiceProvider = services.BuildServiceProvider();

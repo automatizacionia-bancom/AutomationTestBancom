@@ -111,14 +111,14 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
                 await page.ClickAndWaitAsync(
                     page.Locator(_locators.ApplicationPageT062400.ConsultSentinel),
-                    page.Locator(_locators.DashboardPage.OK),
+                    page.Locator(_locators.ApplicationPageT062400.OK_RangeError),
                     new LocatorWaitForOptions
                     {
                         Timeout = 60000, // 60 seconds timeout
                         State = WaitForSelectorState.Visible
                     }, _outputAccessor.Output);
                 await page.WaitForTimeoutAsync(500); // Esperar un segundo para asegurar que los cambios se reflejen
-                await page.Locator(_locators.DashboardPage.OK).WaitForAsync(new LocatorWaitForOptions
+                await page.Locator(_locators.ApplicationPageT062400.OK_RangeError).WaitForAsync(new LocatorWaitForOptions
                 {
                     State = WaitForSelectorState.Visible
                 });
@@ -135,6 +135,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.Locator(_locators.ApplicationPageT062400.RequestedAmount).FillAsync(clientData.RequestedAmount.ToString());
             await page.Locator(_locators.ApplicationPageT062400.RequestedAmount).PressAsync("Enter");
 
+            _outputAccessor.Output.WriteLine(clientData.PaymentTerm.GetDescription());
+            _outputAccessor.Output.WriteLine(clientData.PaymentTerm.ToString());
             await page.Locator(_locators.ApplicationPageT062400.PaymentTerm).SelectOptionAsync(clientData.PaymentTerm.GetDescription());
             await page.Locator(_locators.DashboardPage.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
             {
