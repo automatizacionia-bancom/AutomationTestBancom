@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 
-namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.Interfaces
+namespace AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.Interfaces
 {
     /// <summary>
     /// Adaptador para convertir una fila (DataRow) a un ClientData concreto.

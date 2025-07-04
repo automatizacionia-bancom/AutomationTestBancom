@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 
-namespace AutomationTest.FitbankWeb3.Infrastructure.Persistence
+namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.FileProcessing
 {
     public class JsonFileTransactionUsersProvider : ITransactionUsersProvider
     {

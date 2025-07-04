@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.ClientDataAdapters
+namespace AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.ClientDataAdapters
 {
     public static  class AdapterExtension
     {

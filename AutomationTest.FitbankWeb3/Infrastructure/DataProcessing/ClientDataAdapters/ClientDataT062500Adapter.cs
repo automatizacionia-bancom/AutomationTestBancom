@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Domain.Enums;
-using AutomationTest.FitbankWeb3.Infrastructure.Adapters.Interfaces;
+using AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.Interfaces;
 
-namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.ClientDataAdapters
+namespace AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.ClientDataAdapters
 {
     public class ClientDataT062500Adapter : IClientDataAdapter<ClientDataT062500>
     {

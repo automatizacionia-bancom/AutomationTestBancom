@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Domain.Models.AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 
-namespace AutomationTest.FitbankWeb3.Infrastructure.Persistence
+namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.Database
 {
     public class Db2GenericQueryExecutor : IGenericQueryExecutor
     {

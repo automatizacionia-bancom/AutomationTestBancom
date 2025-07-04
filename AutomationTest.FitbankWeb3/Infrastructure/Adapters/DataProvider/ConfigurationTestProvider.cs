@@ -7,7 +7,7 @@ using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Extensions.Configuration;
 
-namespace AutomationTest.FitbankWeb3.Infrastructure.Persistence
+namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.DataProvider
 {
     public class ConfigurationTestProvider : ITestConfigurationProvider
     {

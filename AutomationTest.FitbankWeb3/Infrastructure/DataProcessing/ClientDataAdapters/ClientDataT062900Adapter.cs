@@ -7,25 +7,25 @@ using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Domain.Enums;
-using AutomationTest.FitbankWeb3.Infrastructure.Adapters.Interfaces;
+using AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.Interfaces;
 
-namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.ClientDataAdapters
+namespace AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.ClientDataAdapters
 {
-    public class ClientDataT062400Adapter : IClientDataAdapter<ClientDataT062400>
+    public class ClientDataT062900Adapter : IClientDataAdapter<ClientDataT062900>
     {
-        public ClientDataT062400 Adapt(DataRow row)
+        public ClientDataT062900 Adapt(DataRow row)
         {
-            return new ClientDataT062400
+            return new ClientDataT062900
             {
                 UserRequest = row.SafeField<string>("Usuario") ?? string.Empty,
                 Identification = row.SafeField<string>("DNI") ?? string.Empty,
                 Address = row.SafeField<int?>("Direccion") ?? 1,
                 Product = row.SafeField<string>("Producto") ?? string.Empty,
-                JewelGrossWeight = row.SafeField<double?>("PesoBruto") ?? 0.0,
-                JewelEmbeddedWeight = row.SafeField<double?>("PesoInscrustacion") ?? 0.0,
-                RequestedAmount = row.SafeField<double?>("Monto") ?? 0.0,
-                PaymentTerm = row.SafeField<PaymentTerm?>("Monto") ?? PaymentTerm.Monthly,
-                Income = row.SafeField<double?>("IngresoNeto") ?? 0.0,
+                LoanType = row.SafeField<LoanType?>("TipoPrestamo") ?? LoanType.Prestamo,
+                LoanInstallments = row.SafeField<int?>("Cuotas") ?? 0,
+                LoanAmount = row.SafeField<double?>("Monto") ?? 0.0,
+                Income = row.SafeField<double?>("OtrosIngresos") ?? 0.0,
+                PayrollSource = row.SafeField<PayrollSourceType?>("OrigenPlanilla") ?? PayrollSourceType.DireccionEconomia,
                 DisbursementType = row.SafeField<DisbursementType?>("FormaDesembolso") ?? DisbursementType.Unspecified,
                 ModifyLoanApplication = row.SafeField<ModifyLoanApplication?>("ModificarSolicitud") ?? ModifyLoanApplication.Default,
                 RequestState = row.SafeField<RequestStatus?>("TipoSolicitud") ?? RequestStatus.APROBAR,

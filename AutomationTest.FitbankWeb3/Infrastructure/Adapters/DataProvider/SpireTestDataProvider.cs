@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
-using AutomationTest.FitbankWeb3.Infrastructure.Adapters.Interfaces;
+using AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Spire.Xls;
 
-namespace AutomationTest.FitbankWeb3.Infrastructure.Persistence
+namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.DataProvider
 {
     /// <summary>
     /// Implementación usando Spire.XLS; el path se pasa al método.

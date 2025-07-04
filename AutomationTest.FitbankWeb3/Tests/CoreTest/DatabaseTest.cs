@@ -6,7 +6,6 @@ using AutomationTest.FitbankWeb3.Application.Models.QueryModels;
 using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
-using AutomationTest.FitbankWeb3.Infrastructure.Persistence;
 using Ghostscript.NET;
 using Ghostscript.NET.Processor;
 using Microsoft.Extensions.DependencyInjection;

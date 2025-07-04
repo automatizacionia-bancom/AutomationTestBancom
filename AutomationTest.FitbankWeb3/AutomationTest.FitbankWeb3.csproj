@@ -1,44 +1,66 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 
-    <IsPackable>false</IsPackable>
-    <IsTestProject>true</IsTestProject>
-  </PropertyGroup>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Ghostscript.NET" Version="1.3.0" />
-    <PackageReference Include="Meziantou.Xunit.ParallelTestFramework" Version="2.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageReference Include="Microsoft.Playwright.Xunit" Version="1.52.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.9" />
-    <PackageReference Include="Spire.XLS" Version="15.5.2" />
-    <PackageReference Include="System.Data.Odbc" Version="9.0.5" />
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="coverlet.collector" Version="6.0.4">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Ghostscript.NET" Version="1.3.0" />
+		<PackageReference Include="Meziantou.Xunit.ParallelTestFramework" Version="2.3.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+		<PackageReference Include="Microsoft.Playwright.Xunit" Version="1.52.0" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.9" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.116.0" />
+		<PackageReference Include="Spire.Officefor.NETStandard" Version="10.6.0" />
+		<PackageReference Include="System.Data.Odbc" Version="9.0.5" />
+		<PackageReference Include="xunit" Version="2.9.3" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	
 
-  <ItemGroup>
-    <Using Include="Xunit" />
-  </ItemGroup>
+	<ItemGroup>
+		<Using Include="Xunit" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\Transactions\LoanApplications\BusinessBanking\" />
-    <Folder Include="Application\Transactions\LoanApprovals\CreditProposal\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Application\Transactions\LoanApplications\BusinessBanking\" />
+		<Folder Include="Application\Transactions\LoanApprovals\CreditProposal\" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<!-- Asegúrate de que appsettings.json viaja a bin/… al build -->
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Asegúrate de que appsettings.json viaja a bin/… al build -->
+		<None Update="transactionUsers.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+
+	<!-- Install Playwright browsers after publish -->
+	<ItemGroup>
+		<None Include="setup.bat" CopyToOutputDirectory="Always" />
+	</ItemGroup>
 </Project>

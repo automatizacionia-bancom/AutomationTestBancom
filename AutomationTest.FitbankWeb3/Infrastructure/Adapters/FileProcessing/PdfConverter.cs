@@ -7,7 +7,7 @@ using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Ghostscript.NET;
 using Ghostscript.NET.Processor;
 
-namespace AutomationTest.FitbankWeb3.Infrastructure.Persistence
+namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.FileProcessing
 {
     public class PdfConverter : IPdfConverter
     {

@@ -6,7 +6,6 @@ using AutomationTest.FitbankWeb3.Application.Services;
 using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
-using AutomationTest.FitbankWeb3.Infrastructure.Persistence;
 using Ghostscript.NET;
 using Ghostscript.NET.Processor;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +25,7 @@ namespace AutomationTest.FitbankWeb3.Tests.CoreTest
             _output = output;
         }
         [Fact]
-        public async Task Prueba()
+        public async Task GetTransactionUsersForR062900()
         {
             List<string> users = await _usersProvider.GetUsersForTransactionAsync(TransactionType.T062900);
 
