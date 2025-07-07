@@ -167,7 +167,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
         protected async Task HandleErrorAsync<TClientData>(Exception ex, IOrchestratorModel<TClientData> loanRequest, IPage page) where TClientData : IClientData
         {
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-            var screenshotPath = Path.Combine(loanRequest.EvidenceFoler, $"Incidencia_{timestamp}.jpg");
+            var screenshotPath = Path.Combine(loanRequest.EvidenceFoler, $"Incidencia_{timestamp}.jpeg");
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {

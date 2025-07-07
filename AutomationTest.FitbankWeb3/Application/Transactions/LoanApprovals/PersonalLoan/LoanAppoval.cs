@@ -144,7 +144,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Pers
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = Path.Combine(loanAppproval.EvidenceFoler, $"Aprobacion {loanAppproval.ApprovalNumber} - Estado.jpg"),
+                Path = Path.Combine(loanAppproval.EvidenceFoler, $"Aprobacion {loanAppproval.ApprovalNumber} - Estado.jpeg"),
                 FullPage = true
             });
 
@@ -174,7 +174,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Pers
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = Path.Combine(loanAppproval.EvidenceFoler, $"Aprobacion {loanAppproval.ApprovalNumber} - Usuarios.jpg"),
+                Path = Path.Combine(loanAppproval.EvidenceFoler, $"Aprobacion {loanAppproval.ApprovalNumber} - Usuarios.jpeg"),
                 FullPage = true
             });
 

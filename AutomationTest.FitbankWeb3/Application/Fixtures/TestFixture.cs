@@ -19,18 +19,18 @@ using AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators;
 using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
 using AutomationTest.FitbankWeb3.Domain.Ports.Inbound;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
-using AutomationTest.FitbankWeb3.Infrastructure.Adapters.FileProcessing;
+using AutomationTest.FitbankWeb3.Infrastructure.Adapters.Database;
 using AutomationTest.FitbankWeb3.Infrastructure.Adapters.DataProvider;
+using AutomationTest.FitbankWeb3.Infrastructure.Adapters.FileProcessing;
 using AutomationTest.FitbankWeb3.Infrastructure.Configuration;
+using AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.ClientDataAdapters;
+using AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.Interfaces;
 using Meziantou.Xunit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
-using AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.Interfaces;
-using AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.ClientDataAdapters;
-using AutomationTest.FitbankWeb3.Infrastructure.Adapters.Database;
 
 namespace AutomationTest.FitbankWeb3.Application.Fixtures
 {
@@ -100,7 +100,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddTransient<IStandardQuery<ForceOnlyCarsEssentialModel>, ForceOnlyCarsEssential>();
             services.AddScoped<IStandardQueryService, StandardQueryService>();
             services.AddScoped<ITransactionUsersSelectionService, TransactionUsersSelectionService>();
-            services.AddScoped<IPdfConverter, PdfConverter>();
+            services.AddScoped<IPdfConverter, CrossPlatformPdfConverter>();
             services.AddSingleton<ITestDataProvider, SpireTestDataProvider>();
 
             services.AddSingleton<IFullWorkflowExecutor, FullWorkflowExecutor>();

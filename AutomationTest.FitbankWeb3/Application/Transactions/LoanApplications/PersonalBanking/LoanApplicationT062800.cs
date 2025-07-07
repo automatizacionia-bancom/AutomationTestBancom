@@ -176,7 +176,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = Path.Combine(loanApplication.EvidenceFoler, "1. Solicitud.jpg"),         // Ruta donde se guarda la imagen
+                Path = Path.Combine(loanApplication.EvidenceFoler, "1. Solicitud.jpeg"),         // Ruta donde se guarda la imagen
                 FullPage = true               // Captura toda la página, no solo la vista actual
             });
 
@@ -369,7 +369,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = Path.Combine(loanApplication.EvidenceFoler, "7. Garantia.jpg"),         // Ruta donde se guarda la imagen
+                Path = Path.Combine(loanApplication.EvidenceFoler, "7. Garantia.jpeg"),         // Ruta donde se guarda la imagen
                 FullPage = true               // Captura toda la página, no solo la vista actual
             });
 

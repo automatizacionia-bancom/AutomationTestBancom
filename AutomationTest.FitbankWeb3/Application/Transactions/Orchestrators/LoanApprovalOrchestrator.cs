@@ -151,7 +151,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
         private async Task HandleErrorAsync(Exception ex, IPage page, string resultFolder) 
         {
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-            var screenshotPath = Path.Combine(resultFolder, $"Incidencia_{timestamp}.jpg");
+            var screenshotPath = Path.Combine(resultFolder, $"Incidencia_{timestamp}.jpeg");
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {

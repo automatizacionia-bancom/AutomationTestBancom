@@ -68,14 +68,14 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = Path.Combine(evidenceFoler, "2. Resultado Calificacion 1.jpg"),         // Ruta donde se guarda la imagen
+                Path = Path.Combine(evidenceFoler, "2. Resultado Calificacion 1.jpeg"),         // Ruta donde se guarda la imagen
                 FullPage = true               // Captura toda la página, no solo la vista actual
             });
 
             await page.Locator(_locators.DashboardPage.ViewCarsButton).ScrollIntoViewIfNeededAsync();
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = Path.Combine(evidenceFoler, "2. Resultado Calificacion 2.jpg"),         // Ruta donde se guarda la imagen
+                Path = Path.Combine(evidenceFoler, "2. Resultado Calificacion 2.jpeg"),         // Ruta donde se guarda la imagen
                 FullPage = true               // Captura toda la página, no solo la vista actual
             });
         }
@@ -108,7 +108,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             {
                 await page.ScreenshotAsync(new PageScreenshotOptions
                 {
-                    Path = Path.Combine(evidenceFoler, $"3. CARS {i}.jpg"),         // Ruta donde se guarda la imagen
+                    Path = Path.Combine(evidenceFoler, $"3. CARS {i}.jpeg"),         // Ruta donde se guarda la imagen
                     FullPage = true               // Captura toda la página, no solo la vista actual
                 });
 
@@ -208,7 +208,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 {
                     await pdfpage.ScreenshotAsync(new PageScreenshotOptions
                     {
-                        Path = Path.Combine(evidenceFoler, $"4. PRT 0{i + 1}.jpg"),
+                        Path = Path.Combine(evidenceFoler, $"4. PRT 0{i + 1}.jpeg"),
                         FullPage = true
                     });
                     // Desplazar hacia abajo para capturar más contenido si es necesario
@@ -224,7 +224,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = Path.Combine(evidenceFoler, $"5. Aprobacion.jpg"),
+                Path = Path.Combine(evidenceFoler, $"5. Aprobacion.jpeg"),
                 FullPage = true
             });
         }
@@ -261,7 +261,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = Path.Combine(evidenceFolder, $"6. Consulta.jpg"),
+                Path = Path.Combine(evidenceFolder, $"6. Consulta.jpeg"),
                 FullPage = true
             });
 
@@ -301,7 +301,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             }
             File.Move(currentFullPath, newFullPath);
 
-            await _pdfConverter.ConvertAllPagesToPngAsync(newFullPath, "4. PRT", evidenceFolder, 300);
+            await _pdfConverter.ConvertAllPagesToImgAsync(newFullPath, "4. PRT", evidenceFolder, 1800);
 
             if (keepPdf)
             {

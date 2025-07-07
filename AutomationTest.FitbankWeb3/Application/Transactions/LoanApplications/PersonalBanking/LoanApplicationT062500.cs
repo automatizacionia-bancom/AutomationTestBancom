@@ -171,7 +171,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = Path.Combine(loanApplication.EvidenceFoler, "1. Solicitud.jpg"),         // Ruta donde se guarda la imagen
+                Path = Path.Combine(loanApplication.EvidenceFoler, "1. Solicitud.jpeg"),         // Ruta donde se guarda la imagen
                 FullPage = true               // Captura toda la página, no solo la vista actual
             });
 

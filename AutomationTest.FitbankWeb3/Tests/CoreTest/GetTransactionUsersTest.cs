@@ -6,8 +6,6 @@ using AutomationTest.FitbankWeb3.Application.Services;
 using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
-using Ghostscript.NET;
-using Ghostscript.NET.Processor;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
