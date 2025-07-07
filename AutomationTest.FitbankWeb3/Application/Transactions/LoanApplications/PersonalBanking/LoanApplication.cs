@@ -25,6 +25,7 @@ using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Playwright;
 using Microsoft.VisualStudio.TestPlatform.Utilities;
+using PdfSharpCore.Pdf;
 using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalBanking
@@ -167,10 +168,16 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.WaitForTimeoutAsync(500); // Esperar un segundo para asegurar que los cambios se reflejen
 
             // Iniciamos la espera por el popup del PDF
-            var pdfpageTask = page.Context.WaitForPageAsync(new BrowserContextWaitForPageOptions
+            var pdfPages = new List<IPage>();
+            var isCollecting = true;
+
+            page.Context.Page += (sender, newPage) => // Configurar listener para capturar TODOS los PDFs que aparezcan
             {
-                Timeout = 0  // espera indefinidamente por el popup
-            });
+                if (isCollecting)
+                {
+                    pdfPages.Add(newPage);
+                }
+            };
 
             // Presionamos F12 para generar el PDF de aprobación
             using (var handle = _actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.LoanApprovalCoordinator).CreateHandle())
@@ -189,38 +196,50 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 _outputAccessor.Output);
             }
 
-            // Esperamos a que se abra el popup del PDF
-            var pdfpage = await pdfpageTask;
+            // Terminado el proceso de aprobación, dejamos de capturar PDFs
+            isCollecting = false;
+
+            _outputAccessor.Output.WriteLine($"Acción completada. Total PDFs capturados: {pdfPages.Count}");
 
             // Tomamos una captura de pantalla de la página del PDF si no es headless
             // En el caso headless, no se puede tomar screenshot de un PDF directamente, se guardara el PDF en la carpeta de evidencia
             if (!headless)
             {
-                await pdfpage.WaitForURLAsync(
-                    url => url.Contains("/WEB3/proc/rep/") && url.Contains("directDownload"),
-                    new PageWaitForURLOptions { Timeout = 60000 }
-                );
-
-                await pdfpage.WaitForLoadStateAsync(LoadState.NetworkIdle);
-                await pdfpage.WaitForTimeoutAsync(1000);
-
-                for (int i = 0; i < 3; i++)
+                for (int pdfIndex = 0; pdfIndex < pdfPages.Count; pdfIndex++) // Iteramos sobre cada PDF capturado
                 {
-                    await pdfpage.ScreenshotAsync(new PageScreenshotOptions
+                    IPage pdfPage = pdfPages[pdfIndex];
+
+                    await pdfPage.BringToFrontAsync();
+
+                    // Refresca la pagina del PDF para asegurarse de que se cargue correctamente
+                    await pdfPage.GotoAsync(pdfPage.Url, new PageGotoOptions
                     {
-                        Path = Path.Combine(evidenceFoler, $"4. PRT 0{i + 1}.jpeg"),
-                        FullPage = true
+                        Timeout = 60_000,
+                        WaitUntil = WaitUntilState.NetworkIdle
                     });
-                    // Desplazar hacia abajo para capturar más contenido si es necesario
-                    await pdfpage.Locator("body > embed").HoverAsync();
-                    await pdfpage.Mouse.WheelAsync(0, 400);
+
+                    // Espera a que el PDF sea scrollable y toma capturas de pantalla
+                    await pdfPage.Locator("body > embed").HoverAsync();
+                    await pdfPage.Mouse.WheelAsync(0, 0);
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        await pdfPage.ScreenshotAsync(new PageScreenshotOptions
+                        {
+                            Path = Path.Combine(evidenceFoler, $"4. Documento {pdfIndex + 1}_{i + 1:D2}.jpeg"),
+                            FullPage = true
+                        });
+                        // Desplazar hacia abajo para capturar más contenido si es necesario
+                        await pdfPage.Locator("body > embed").HoverAsync();
+                        await pdfPage.Mouse.WheelAsync(0, 400);
+                    }
+
+                    await pdfPage.CloseAsync();
                 }
 
-                await pdfpage.CloseAsync();
+                // Traemos la página principal al frente para continuar con el flujo
+                await page.BringToFrontAsync();
             }
-
-            // Traemos la página principal al frente para continuar con el flujo
-            await page.BringToFrontAsync();
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
@@ -288,33 +307,40 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
         }
         protected async Task GetImgFromPdfDocument(string evidenceFolder, bool keepPdf)
         {
-            string pdfFile = await WaitForFileWithExtensionAsync(extension: "", evidenceFolder, TimeSpan.FromSeconds(90), TimeSpan.FromMilliseconds(100));
+            List<string> pdfFiles = await WaitForFilesWithExtensionAsync(extension: "", evidenceFolder, TimeSpan.FromSeconds(90), TimeSpan.FromMilliseconds(100));
 
-            // Renombrar el archivo descargado
-            string currentFullPath = Path.Combine(evidenceFolder, pdfFile);
-            string newFullPath = Path.Combine(evidenceFolder, "PRT.pdf");
+            if (pdfFiles.Count == 0)
+                throw new Exception("No se encontraron archivos PDF en la carpeta de evidencia.");
 
-            // Cambiar el nombre del archivo descargado, sobreescribir si existe
-            if (File.Exists(newFullPath))
+            int index = 1;
+            foreach (var pdfFile in pdfFiles)
             {
-                File.Delete(newFullPath);
-            }
-            File.Move(currentFullPath, newFullPath);
+                string currentFullPath = Path.Combine(evidenceFolder, pdfFile);
 
-            await _pdfConverter.ConvertAllPagesToImgAsync(newFullPath, "4. PRT", evidenceFolder, 1800);
+                // Renombrar el archivo a Documento_1.pdf, Documento_1_2.pdf, etc.
+                string newFileName = pdfFiles.Count == 1 ? "Documento.pdf" : $"Documento_{index}.pdf";
+                string newFullPath = Path.Combine(evidenceFolder, newFileName);
 
-            if (keepPdf)
-            {
-                _outputAccessor.Output?.WriteLine($"PDF guardado en: {newFullPath}");
-            }
-            else
-            {
-                // Eliminar el PDF si no se necesita
+                // Sobreescribir si existe
                 if (File.Exists(newFullPath))
+                    File.Delete(newFullPath);
+
+                File.Move(currentFullPath, newFullPath);
+
+                // Convertir PDF a imágenes
+                await _pdfConverter.ConvertAllPagesToImgAsync(newFullPath, $"4. Documento {index}_", evidenceFolder, 1800);
+
+                if (keepPdf)
+                {
+                    _outputAccessor.Output?.WriteLine($"PDF guardado en: {newFullPath}");
+                }
+                else
                 {
                     File.Delete(newFullPath);
                     _outputAccessor.Output?.WriteLine($"PDF eliminado: {newFullPath}");
                 }
+
+                index++;
             }
         }
         protected async Task<EvaluationResult> ModifyApplicationResultAsync(
@@ -386,7 +412,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 var raw = route.Request.PostData;    // e.g. "_contexto=lv&_lv=%7B...%7D"
                 var decoded = WebUtility.UrlDecode(raw) ?? string.Empty;
 
-                if(string.IsNullOrEmpty(decoded) || !decoded.Contains("_lv="))
+                if (string.IsNullOrEmpty(decoded) || !decoded.Contains("_lv="))
                 {
                     await route.ContinueAsync();
                     return;
@@ -479,36 +505,34 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.RouteAsync(pattern, handler);
         }
-        protected async Task<string> WaitForFileWithExtensionAsync(
+        protected async Task<List<string>> WaitForFilesWithExtensionAsync(
             string extension,
             string folderPath,
             TimeSpan timeout,
             TimeSpan pollInterval,
             CancellationToken cancellationToken = default)
         {
-            // Calculate the deadline for the timeout
             var deadline = DateTime.UtcNow + timeout;
 
             while (DateTime.UtcNow < deadline)
             {
-                // Throw if cancellation is requested
                 cancellationToken.ThrowIfCancellationRequested();
 
-                // Find the first file with the given extension in the folder
-                var filePath = Directory.EnumerateFiles(folderPath)
-                    .FirstOrDefault(f => string.Equals(Path.GetExtension(f), extension, StringComparison.OrdinalIgnoreCase));
+                // Buscar todos los archivos con la extensión dada
+                var matchingFiles = Directory.EnumerateFiles(folderPath)
+                    .Where(f => string.Equals(Path.GetExtension(f), extension, StringComparison.OrdinalIgnoreCase))
+                    .Select(f => Path.GetFileName(f)!)
+                    .ToList();
 
-                if (filePath != null)
+                if (matchingFiles.Any())
                 {
-                    // Return only the file name if found
-                    return Path.GetFileName(filePath);
+                    return matchingFiles;
                 }
 
-                // Wait for the specified poll interval (cancellable)
                 await Task.Delay(pollInterval, cancellationToken);
             }
-            // Timeout expired without finding a file
-            throw new TimeoutException($"No file with extension '{extension}' was found in '{folderPath}' within {timeout}.");
+
+            throw new TimeoutException($"No files with extension '{extension}' were found in '{folderPath}' within {timeout}.");
         }
     }
 }
