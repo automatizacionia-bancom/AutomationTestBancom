@@ -74,19 +74,6 @@ namespace AutomationTest.FitbankWeb3.Tests.CoreTest
                     $"Imagen {Path.GetFileName(file)} inválida o vacía.");
             }
         }
-        [Fact]
-        public async Task ConvertAllPageAsync()
-        {
-            string filePath = "C:\\Users\\HASANCHEZ\\Desktop\\Proyecto - Formatos\\Productos Chiclayo\\Ob_2024_Dic_LRetenc_BcoComercio.pdf";
-
-            var converter = new CrossPlatformPdfConverter();
-            bool result = await converter.ConvertAllPagesToImgAsync(
-                pdfPath: filePath,
-                prefix: "4. PRT ",
-                outputFolder: "C:\\Users\\HASANCHEZ\\Desktop\\Fitbank RPA",
-                dpi: 1800
-            );
-        }
         public void Dispose()
         {
             if (Directory.Exists(_tempFolder))

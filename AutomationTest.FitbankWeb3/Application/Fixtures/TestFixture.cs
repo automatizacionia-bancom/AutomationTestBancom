@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Application.Adapters;
 using AutomationTest.FitbankWeb3.Application.Extensions;
@@ -36,19 +37,70 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
 {
     public class TestFixture : IAsyncLifetime, IDisposable
     {
-        //public IServiceCollection services { get; }
         public IServiceProvider ServiceProvider { get; private set; }
         public TestFixture()
         {
             ServiceProvider = Configure();
         }
-        public static IServiceProvider Configure()
+        public static IConfigurationRoot BuildUserConfiguration()
         {
-            // 1) Levanta la configuración
-            var config = new ConfigurationBuilder()
+            // 1) Ruta base de la aplicación
+            var baseDir = AppContext.BaseDirectory;
+
+            // 2) Detectar si estamos en un build local (no publicado)
+            bool isLocalBuild = baseDir.Contains(Path.Combine("bin", "Debug"))
+                             || baseDir.Contains(Path.Combine("bin", "Release"));
+
+            if (isLocalBuild)
+            {
+                // --- En Debug/Release no publicado: lee directamente el JSON de proyecto ---
+                return new ConfigurationBuilder()
+                    .SetBasePath(baseDir)
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddEnvironmentVariables(prefix: "MYTEST_")
+                    .Build();
+            }
+
+            // --- En modo publicado: usa la carpeta de APPDATA ---
+            var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var myAppFolder = Path.Combine(userFolder, "AutomationTest-FitbankWeb3");
+            var userSettings = Path.Combine(myAppFolder, "appsettings.json");
+
+            if (!Directory.Exists(myAppFolder))
+                Directory.CreateDirectory(myAppFolder);
+
+            if (!File.Exists(userSettings))
+            {
+                // Copia el JSON de proyecto a APPDATA
+                var projectSettings = Path.Combine(baseDir, "appsettings.json");
+                if (File.Exists(projectSettings))
+                {
+                    File.Copy(projectSettings, userSettings);
+                }
+                else
+                {
+                    // Fallback: crea un esqueleto mínimo
+                    var skeleton = new
+                    {
+                        ConnectionStrings = new { As400Db2 = "" },
+                        TransactionUserProvider = new { ProviderType = "Json", Connection = "transactionUsers.json" },
+                        TransactionSettings = new { GeneralTimeout = 90000 },
+                        TestData = new { }
+                    };
+                    var json = JsonSerializer.Serialize(skeleton, new JsonSerializerOptions { WriteIndented = true });
+                    File.WriteAllText(userSettings, json);
+                }
+            }
+
+            return new ConfigurationBuilder()
+                .SetBasePath(myAppFolder)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables(prefix: "MYTEST_")
                 .Build();
+        }
+        public static IServiceProvider Configure()
+        {
+            var config = BuildUserConfiguration();
 
             var usersProviderSettings = new TransactionUserProviderSettings();
             config.GetSection("TransactionUserProvider")
