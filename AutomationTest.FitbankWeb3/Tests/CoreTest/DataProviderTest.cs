@@ -30,12 +30,12 @@ namespace AutomationTest.FitbankWeb3.Tests.CoreTest
         public void GetDataTest()
         {
             // Act
-            var data = _dataProvider.GetTestCases<ClientDataT062900>(_config.ExcelPath, _config.SheetName);
+            var data = _dataProvider.GetTestCases<ClientDataT062600>(_config.ExcelPath, _config.SheetName);
 
             // Assert/Output
             foreach (var item in data)
             {
-                var properties = typeof(ClientDataT062900).GetProperties();
+                var properties = typeof(ClientDataT062600).GetProperties();
                 foreach (var prop in properties)
                 {
                     var value = prop.GetValue(item);

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Domain.Attributes;
 
-namespace AutomationTest.FitbankWeb3.Domain.Enums
+namespace AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum
 {
     public enum CoinType
     {

@@ -13,6 +13,8 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
         public LoanApplicationT062900Repository ApplicationPageT062900 { get; } = new LoanApplicationT062900Repository();
         public LoanApplicationT062800Repository ApplicationPageT062800 { get; } = new LoanApplicationT062800Repository();
         public LoanApplicationT062700Repository ApplicationPageT062700 { get; } = new LoanApplicationT062700Repository();
+        public LoanApplicationT062600Repository ApplicationPageT062600 { get; } = new LoanApplicationT062600Repository();
+
         public LoanApplicationT062500Repository ApplicationPageT062500 { get; } = new LoanApplicationT062500Repository();
         public LoanApplicationT062400Repository ApplicationPageT062400 { get; } = new LoanApplicationT062400Repository();
         public LoanApprovalRepository ApprovalPage { get; } = new LoanApprovalRepository();

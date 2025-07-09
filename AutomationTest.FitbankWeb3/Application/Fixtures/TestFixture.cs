@@ -120,12 +120,14 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddTransient<ILoanApplication<ClientDataT062900>, LoanApplicationT062900>();
             services.AddTransient<ILoanApplication<ClientDataT062800>, LoanApplicationT062800>();
             services.AddTransient<ILoanApplication<ClientDataT062700>, LoanApplicationT062700>();
+            services.AddTransient<ILoanApplication<ClientDataT062600>, LoanApplicationT062600>();
             services.AddTransient<ILoanApplication<ClientDataT062500>, LoanApplicationT062500>();
             services.AddTransient<ILoanApplication<ClientDataT062400>, LoanApplicationT062400>();
 
             services.AddTransient<ILoanApproval<ClientDataT062900>, LoanApproval>();
             services.AddTransient<ILoanApproval<ClientDataT062800>, LoanApproval>();
             services.AddTransient<ILoanApproval<ClientDataT062700>, LoanApproval>();
+            services.AddTransient<ILoanApproval<ClientDataT062600>, LoanApproval>();
             services.AddTransient<ILoanApproval<ClientDataT062500>, LoanApproval>();
             services.AddTransient<ILoanApproval<ClientDataT062400>, LoanApproval>();
 
@@ -133,6 +135,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddTransient<IClientDataAdapter<ClientDataT062900>, ClientDataT062900Adapter>();
             services.AddTransient<IClientDataAdapter<ClientDataT062800>, ClientDataT062800Adapter>();
             services.AddTransient<IClientDataAdapter<ClientDataT062700>, ClientDataT062700Adapter>();
+            services.AddTransient<IClientDataAdapter<ClientDataT062600>, ClientDataT062600Adapter>();
             services.AddTransient<IClientDataAdapter<ClientDataT062500>, ClientDataT062500Adapter>();
             services.AddTransient<IClientDataAdapter<ClientDataT062400>, ClientDataT062400Adapter>();
 

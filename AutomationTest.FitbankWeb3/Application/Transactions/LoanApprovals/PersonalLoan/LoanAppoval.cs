@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Application.Enums;
+using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
@@ -19,7 +20,6 @@ using AutomationTest.FitbankWeb3.Application.Services.ActionCoordination;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications;
 using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
-using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Playwright;
 using Xunit.Abstractions;
@@ -31,6 +31,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Pers
         ILoanApproval<ClientDataT062900>,
         ILoanApproval<ClientDataT062800>,
         ILoanApproval<ClientDataT062700>,
+        ILoanApproval<ClientDataT062600>,
         ILoanApproval<ClientDataT062500>,
         ILoanApproval<ClientDataT062400>
     {

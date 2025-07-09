@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using AutomationTest.FitbankWeb3.Application.Enums;
+using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
@@ -387,7 +388,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.ClickAndWaitAsync(
                 page.Locator(_locators.DashboardPage.F7Button),
-                page.Locator(_locators.DashboardPage.OK),
+                page.Locator(_locators.DashboardPage.OK_TransactionCorrect),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
