@@ -137,12 +137,12 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
                 await pdfPage.CloseAsync();
             }
         }
-        protected async Task GetImgFromPdfDocument(string evidenceFolder, bool keepPdf, bool headless)
+        protected async Task GetImgFromPdfDocument(LoanApplicationWorkflowModel<TClientData> loanRequest, string sufix)
         {
-            if (!headless) // Si no es headless, no se procesan PDFs a imagenes
+            if (!loanRequest.Headless) // Si no es headless, no se procesan PDFs a imagenes
                 return;
 
-            List<string> pdfFiles = await WaitForFilesWithExtensionAsync(extension: "", evidenceFolder, TimeSpan.FromSeconds(90), TimeSpan.FromMilliseconds(100));
+            List<string> pdfFiles = await WaitForFilesWithExtensionAsync(extension: "", loanRequest.EvidenceFolder, TimeSpan.FromSeconds(90), TimeSpan.FromMilliseconds(100));
 
             if (pdfFiles.Count == 0)
                 throw new Exception("No se encontraron archivos PDF en la carpeta de evidencia.");
@@ -150,11 +150,11 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
             int index = 1;
             foreach (var pdfFile in pdfFiles)
             {
-                string currentFullPath = Path.Combine(evidenceFolder, pdfFile);
+                string currentFullPath = Path.Combine(loanRequest.EvidenceFolder, pdfFile);
 
                 // Renombrar el archivo a Documento_1.pdf, Documento_1_2.pdf, etc.
                 string newFileName = pdfFiles.Count == 1 ? "Documento.pdf" : $"Documento_{index}.pdf";
-                string newFullPath = Path.Combine(evidenceFolder, newFileName);
+                string newFullPath = Path.Combine(loanRequest.EvidenceFolder, newFileName);
 
                 // Sobreescribir si existe
                 if (File.Exists(newFullPath))
@@ -163,9 +163,9 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
                 File.Move(currentFullPath, newFullPath);
 
                 // Convertir PDF a imágenes
-                await _pdfConverter.ConvertAllPagesToImgAsync(newFullPath, $"4. Documento {index}_", evidenceFolder, 1800);
+                await _pdfConverter.ConvertAllPagesToImgAsync(newFullPath, $"{sufix} {index}_", loanRequest.EvidenceFolder, 1800);
 
-                if (keepPdf)
+                if (loanRequest.KeepPdf)
                 {
                     _outputAccessor.Output?.WriteLine($"PDF guardado en: {newFullPath}");
                 }

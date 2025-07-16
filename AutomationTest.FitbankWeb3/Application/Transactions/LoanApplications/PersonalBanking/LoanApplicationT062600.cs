@@ -193,7 +193,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             // Convertir el PDF a PNG solo si es headless
             if (loanApplication.Headless)
             {
-                await GetImgFromPdfDocument(loanApplication.EvidenceFolder, loanApplication.KeepPdf, loanApplication.Headless); // Convertir el PDF del PRT a JPEG
+                await GetImgFromPdfDocument(loanApplication, "4. PRT"); // Convertir el PDF del PRT a JPEG
             }
 
             // Realizamos las aprobacion de verificacion domiciliaria y laboral

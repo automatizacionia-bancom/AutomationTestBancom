@@ -195,7 +195,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
             // Convertir los PDF's a JPEG solo si es headless
             if (loanApplication.Headless)
             {
-                await GetImgFromPdfDocument(loanApplication.EvidenceFolder, loanApplication.KeepPdf, loanApplication.Headless); // Convertir el PDF del PRT a JPEG
+                await GetImgFromPdfDocument(loanApplication, "3. Documento CARS"); // Convertir el PDF del PRT a JPEG
             }
 
             return new LoanApplicationResultT072100Pe
