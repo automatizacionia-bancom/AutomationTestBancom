@@ -142,7 +142,6 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
             var selected = options.FirstOrDefault(opt => approvalStatusElements.Contains(opt))
                            ?? options.Last();
 
-
             // Haz click en el elemento correspondiente
             await page.Locator(_locators.LocatorsGeneralDashboard.ListElement(selected)).ClickAsync();
 

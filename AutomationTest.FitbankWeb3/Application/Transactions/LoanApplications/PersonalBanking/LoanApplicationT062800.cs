@@ -14,7 +14,7 @@ using Microsoft.Playwright;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalBanking
 {
-    public class LoanApplicationT062800 : LoanApplication<ClientDataT062800>
+    public class LoanApplicationT062800 : LoanApplicationPersonalBanking<ClientDataT062800>
     {
         public LoanApplicationT062800(
             LocatorRepositoryFixture locators,
@@ -168,41 +168,42 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                     }, _outputAccessor.Output);
             }
 
-            if (!Enum.TryParse(await page.Locator(_locators.LocatorsT062800.EvaluateResult).InputValueAsync(), out EvaluationResult evaluationResult))
+            // Se modificara el resultado si es necesario
+            await ModifyApplicationResultAsync(page, clientData.ModifyLoanApplication, applicationNumber);
+
+            if (!Enum.TryParse(await page.Locator(_locators.LocatorsT062400.EvaluateResult).InputValueAsync(), out EvaluationResult evaluationResult))
                 throw new Exception("No se ha podido obtener el resultado de la evaluación correctamente.");
 
-            // Se modificara el resultado si es necesario
-            evaluationResult = await ModifyApplicationResultAsync(page, clientData.ModifyLoanApplication, applicationNumber, evaluationResult);
             _outputAccessor.Output.WriteLine($"Resultado de la evaluación: {evaluationResult}");
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = Path.Combine(loanApplication.EvidenceFoler, "1. Solicitud.jpeg"),         // Ruta donde se guarda la imagen
+                Path = Path.Combine(loanApplication.EvidenceFolder, "1. Solicitud.jpeg"),         // Ruta donde se guarda la imagen
                 FullPage = true               // Captura toda la página, no solo la vista actual
             });
 
             // Tomar Capturas de pantalla de los resultados de la evaluación
-            await GetCalificationResultAsync(page, loanApplication.EvidenceFoler);
+            await GetCalificationResultAsync(page, loanApplication.EvidenceFolder);
 
             // Tomar capturas de pantalla a los criterios de evaluación de riesgo la solicitud
-            await GetCarsResultAsync(page, loanApplication.EvidenceFoler);
+            await GetCarsResultAsync(page, loanApplication.EvidenceFolder);
 
             await ApproveAndGetPdfAsync(
                 page,
                 evaluationResult,
                 clientData.RequestState,
                 clientData.RequestType,
-                loanApplication.EvidenceFoler,
+                loanApplication.EvidenceFolder,
                 loanApplication.Headless,
                 clientData.RequestObservation1,
                 clientData.RequestObservation2);
 
-            List<string> approvingUsers = await GetApprovingUsersAsync(page, applicationNumber, loanApplication.EvidenceFoler);
+            List<string> approvingUsers = await GetApprovingUsersAsync(page, applicationNumber, loanApplication.EvidenceFolder);
 
             // Convertir el PDF a PNG solo si es headless
             if (loanApplication.Headless)
             {
-                await GetImgFromPdfDocument(loanApplication.EvidenceFoler, loanApplication.KeepPdf); // Convertir el PDF del PRT a PNG
+                await GetImgFromPdfDocument(loanApplication.EvidenceFolder, loanApplication.KeepPdf, loanApplication.Headless); // Convertir el PDF del PRT a JPEG
             }
 
             // Realizamos las aprobacion de verificacion domiciliaria y laboral
@@ -370,7 +371,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = Path.Combine(loanApplication.EvidenceFoler, "7. Garantia.jpeg"),         // Ruta donde se guarda la imagen
+                Path = Path.Combine(loanApplication.EvidenceFolder, "7. Garantia.jpeg"),         // Ruta donde se guarda la imagen
                 FullPage = true               // Captura toda la página, no solo la vista actual
             });
 

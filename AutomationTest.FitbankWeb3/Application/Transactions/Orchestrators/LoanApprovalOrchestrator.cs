@@ -79,7 +79,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
                         page,
                         loanRequest.ApplicationNumber,
                         loanRequest.RecognizedApprovingUsers,
-                        loanRequest.EvidenceFoler,
+                        loanRequest.EvidenceFolder,
                         loanRequest.IpPort,
                         loanRequest.MaxApprovalUser);//, userTurnSession);
                 });

@@ -13,10 +13,10 @@ namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
         public string EvaluationResult { get; } = "#c_resultadoCars_0";
         public string CarsReportButton { get; } = "button.button.report.none:has-text(\"Reporte Cars\")";
         public string ApprovalSection { get; } = "a[registro=\"0\"]:has-text(\"Aprobaciones\")";
-        public string ApprovalStatusList { get; } = "img.asistente-icono[src$=\"listavalores.png\"][alt=\"ESTADOS\"][title=\"ESTADOS\"]";//"#container_4 > table > tbody > tr > td.columna_1 > img";#container_5 > table > tbody > tr > td.columna_1 > img
+        public string ApprovalStatusList { get; } = "img.asistente-icono[src$=\"listavalores.png\"][alt=\"ESTADOS\"][title=\"ESTADOS\"]";
         public string ApprovalStatusElements { get; } = "#entorno-formulario > form:nth-child(7) > div > table > tbody";
         public string ApprovalComment { get; } = "#c_txtComentario_0";
-        public string ApprovalUsersButton { get; } = "img.asistente-icono[src$=\"listavalores.png\"][alt=\"Evaluador\"][title=\"Evaluador\"]";// "#container_5 > table > tbody > tr:nth-child(2) > td.columna_1 > img";
+        public string ApprovalUsersButton { get; } = "img.asistente-icono[src$=\"listavalores.png\"][alt=\"Evaluador\"][title=\"Evaluador\"]";
         public string ApprovalUsersList { get; } = "#entorno-formulario > form:nth-child(9) > div > table > tbody > tr > td";
         public string ApplicationNumberSearchTransaction { get; } = "input.control.input.none.number-formatter[type=\"text\"][registro=\"0\"]";
         public string ApplicationNumberSearchTransactionResult { get; } = "span.input-label.none.criterios.link[registro=\"0\"]";

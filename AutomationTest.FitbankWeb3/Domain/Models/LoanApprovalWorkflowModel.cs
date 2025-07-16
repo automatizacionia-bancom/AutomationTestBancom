@@ -12,7 +12,7 @@ namespace AutomationTest.FitbankWeb3.Domain.Models
     {
         public required string ApplicationNumber { get; set; }
         public required List<string> RecognizedApprovingUsers { get; set; }
-        public required string EvidenceFoler { get; set; }
+        public required string EvidenceFolder { get; set; }
         public required int Attempt { get; set; }
         public required string IpPort { get; set; }
         public required bool Headless { get; set; }

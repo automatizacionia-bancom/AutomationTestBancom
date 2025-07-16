@@ -80,7 +80,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
                     await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel { User = loanRequest.ClientData.UserRequest });
 
                     // Ejecutamos el lujo de aprobacion
-                    var applicationResult = await RunLoanApplicationAsync<TClientData>(page, loanRequest.ClientData, loanRequest.EvidenceFoler, loanRequest.IpPort, loanRequest.Headless, loanRequest.KeepPdf);
+                    var applicationResult = await RunLoanApplicationAsync<TClientData>(page, loanRequest.ClientData, loanRequest.EvidenceFolder, loanRequest.IpPort, loanRequest.Headless, loanRequest.KeepPdf);
 
                     _outputAccessor.Output.WriteLine("Flujo de solicitud de préstamo completado con éxito.");
 
@@ -88,7 +88,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
                         page,
                         applicationResult.ApplicationNumber,
                         applicationResult.RecognizedApprovingUsers,
-                        loanRequest.EvidenceFoler,
+                        loanRequest.EvidenceFolder,
                         loanRequest.IpPort,
                         loanRequest.MaxApprovalUser);//, userTurnSession);
                 });

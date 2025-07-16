@@ -66,7 +66,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
                     });
 
                     var applicationResult = await RunLoanApplicationAsync<TClientData>
-                        (page, loanRequest.ClientData, loanRequest.EvidenceFoler, loanRequest.IpPort, loanRequest.Headless, loanRequest.KeepPdf);
+                        (page, loanRequest.ClientData, loanRequest.EvidenceFolder, loanRequest.IpPort, loanRequest.Headless, loanRequest.KeepPdf);
 
                     _outputAccessor.Output.WriteLine("Flujo de solicitud de préstamo completado con éxito.");
                 });

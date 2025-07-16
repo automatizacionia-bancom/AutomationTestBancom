@@ -81,7 +81,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             return await _playwright.PlaywrightVar.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
                 Headless = loanRequest.Headless,
-                DownloadsPath = loanRequest.EvidenceFoler,
+                DownloadsPath = loanRequest.EvidenceFolder,
             });
         }
         protected async Task<ILoanApplicationResult> RunLoanApplicationAsync<TClientData>(
@@ -92,7 +92,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             var model = new LoanApplicationWorkflowModel<TClientData>
             {
                 ClientData = clientData,
-                EvidenceFoler = evidenceFolder,
+                EvidenceFolder = evidenceFolder,
                 IpPort = ipPort,
                 Headless = headless,
                 KeepPdf = keepPdf
@@ -168,7 +168,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
         protected async Task HandleErrorAsync<TClientData>(Exception ex, IOrchestratorModel<TClientData> loanRequest, IPage page) where TClientData : IClientData
         {
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-            var screenshotPath = Path.Combine(loanRequest.EvidenceFoler, $"Incidencia_{timestamp}.jpeg");
+            var screenshotPath = Path.Combine(loanRequest.EvidenceFolder, $"Incidencia_{timestamp}.jpeg");
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {

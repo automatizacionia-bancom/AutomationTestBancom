@@ -36,9 +36,9 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
         }
         public async Task ExecuteWorkflow(LoanApplicationWorkflowModel<IClientData> fullLoanRequest)
         {
-            if (!Directory.Exists(fullLoanRequest.EvidenceFoler))
+            if (!Directory.Exists(fullLoanRequest.EvidenceFolder))
             {
-                Directory.CreateDirectory(fullLoanRequest.EvidenceFoler);
+                Directory.CreateDirectory(fullLoanRequest.EvidenceFolder);
             }
 
             await ExecuteTypedTransactionAsync(fullLoanRequest);
@@ -70,7 +70,7 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
                 yield return new LoanApplicationWorkflowModel<IClientData>
                 {
                     ClientData = client,
-                    EvidenceFoler = caseFolder,
+                    EvidenceFolder = caseFolder,
                     IpPort = _config.IpPort,
                     Headless = _config.Headless,
                     KeepPdf = _config.KeepPdf,
