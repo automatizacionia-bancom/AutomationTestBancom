@@ -45,38 +45,9 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
 
             await ExecuteTypedTransactionAsync(fullLoanRequest);
         }
-        private async Task ExecuteTypedTransactionAsync(LoanApprovalWorkflowModel<IClientData> loanRequestApplication)
-        {
-            var txType = _config.TransactionType;
-            var clientType = _resolver.GetDataType<IClientData>(txType);
-
-            // 3) Crea un FullLoanRequest<TClientData> dinámicamente
-            var fullReqType = typeof(LoanApprovalWorkflowModel<>).MakeGenericType(clientType);
-            var typedReq = Activator.CreateInstance(fullReqType)!;
-
-            // 4) Copia cada propiedad de untypedReq a typedReq
-            foreach (var prop in fullReqType.GetProperties().Where(p => p.CanWrite))
-            {
-                // obtiene el valor de la propiedad genérica IClientData
-                var value = typeof(LoanApprovalWorkflowModel<IClientData>)
-                    .GetProperty(prop.Name)!.GetValue(loanRequestApplication);
-                prop.SetValue(typedReq, value);
-            }
-
-            // 5) Invoca TransactionAsync<TClientData>(typedReq) por reflexión
-            var method = _orchestrator
-               .GetType()
-               .GetMethod(nameof(ILoanApprovalOrchestrator.TransactionAsync))!
-               .MakeGenericMethod(clientType);
-
-            var task = (Task)method.Invoke(_orchestrator, new object[] { typedReq })!;
-
-            // 6) Await al task
-            await task;
-        }
         public IEnumerable<LoanApprovalWorkflowModel<IClientData>> LoadCases()
         {
-            string sheetName = "QA";
+            const string sheetName = "QA";
             var wb = new Workbook();
             wb.LoadFromFile(_config.ApprovalCases);
 
@@ -84,29 +55,71 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
                         ?? throw new InvalidOperationException(
                             $"Hoja '{sheetName}' no existe en '{_config.ApprovalCases}'.");
 
-            // 2) Exporta a DataTable
+            // 1) Exporta a DataTable
             var dt = sheet.ExportDataTable(
                 exportColumnNames: true,
                 firstRow: 1, firstColumn: 1,
                 maxRows: sheet.LastRow, maxColumns: sheet.LastColumn);
 
-            // 2.1) Elimina filas vacías **solamente al final**
+            // 2) Elimina filas vacías **solamente al final**
             var trimmed = TrimTrailingEmptyRows(dt);
 
-            // 3) Para cada elemento (que es un TClientData),
+            // 3) Lista de índices a ejecutar (1‑based)
+            var selected = _config.TestCaseList;
+            bool all = !selected.Any(); // Si no contiene elementos se considera "todos los casos"
+
+            // 4) Itera y filtra
+            int index = 1;
             foreach (DataRow row in trimmed.Rows.Cast<DataRow>())
             {
-                yield return new LoanApprovalWorkflowModel<IClientData>
+                if (all || selected.Contains(index))
                 {
-                    EvidenceFolder = row.SafeField<string>("CarpetaEvidencia") ?? string.Empty,
-                    IpPort = _config.IpPort,
-                    Headless = _config.Headless,
-                    MaxApprovalUser = _config.MaxApprovalUser,
-                    ApplicationNumber = row.SafeField<string>("NumeroSolicitud") ?? string.Empty,
-                    Attempt = row.SafeField<int?>("Aprobacion") ?? 1,
-                    RecognizedApprovingUsers = ParseUsers(row.SafeField<string>("Usuarios") ?? string.Empty),
-                };
+                    yield return new LoanApprovalWorkflowModel<IClientData>
+                    {
+                        EvidenceFolder = row.SafeField<string>("CarpetaEvidencia") ?? string.Empty,
+                        IpPort = _config.IpPort,
+                        Headless = _config.Headless,
+                        MaxApprovalUser = _config.MaxApprovalUser,
+                        ApplicationNumber = row.SafeField<string>("NumeroSolicitud") ?? string.Empty,
+                        Attempt = row.SafeField<int?>("Aprobacion") ?? 1,
+                        RecognizedApprovingUsers = ParseUsers(row.SafeField<string>("Usuarios") ?? string.Empty),
+                    };
+                }
+                index++;
             }
+        }
+        /// <summary>
+        /// Ejecuta la transacción tipada de aprobación de préstamo.
+        /// </summary>
+        /// <param name="loanRequestApplication">Modelo genérico de la solicitud de préstamo.</param>
+        private async Task ExecuteTypedTransactionAsync(LoanApprovalWorkflowModel<IClientData> loanRequestApplication)
+        {
+            // 1) Obtiene el tipo de transacción y el tipo concreto de datos de cliente
+            var txType = _config.TransactionType;
+            var clientType = _resolver.GetDataType<IClientData>(txType);
+
+            // 2) Crea dinámicamente un LoanApprovalWorkflowModel<TClientData>
+            var fullReqType = typeof(LoanApprovalWorkflowModel<>).MakeGenericType(clientType);
+            var typedReq = Activator.CreateInstance(fullReqType)!;
+
+            // 3) Copia las propiedades del modelo genérico al modelo tipado
+            foreach (var prop in fullReqType.GetProperties().Where(p => p.CanWrite))
+            {
+                var value = typeof(LoanApprovalWorkflowModel<IClientData>)
+                    .GetProperty(prop.Name)!.GetValue(loanRequestApplication);
+                prop.SetValue(typedReq, value);
+            }
+
+            // 4) Invoca TransactionAsync<TClientData>(typedReq) usando reflexión
+            var method = _orchestrator
+               .GetType()
+               .GetMethod(nameof(ILoanApprovalOrchestrator.TransactionAsync))!
+               .MakeGenericMethod(clientType);
+
+            var task = (Task)method.Invoke(_orchestrator, new object[] { typedReq })!;
+
+            // 5) Espera la finalización de la tarea
+            await task;
         }
         private List<string> ParseUsers(string usersCsv)
         {

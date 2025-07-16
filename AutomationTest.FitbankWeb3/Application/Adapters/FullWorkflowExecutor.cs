@@ -60,46 +60,50 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
                 new object[] { _config.ExcelPath, _config.SheetName }
             )!;
 
-            // 3) Para cada elemento (que es un TClientData),
-            //    conviértelo a FullLoanRequest<IClientData>
-            var index = 1;
-            foreach (var cd in rawList)
-            {
-                var client = (IClientData)cd;
-                string caseFolder = Path.Combine(_config.EvidenceFolderBase, $"Caso {index}");
+            // 3) Obtén la lista de índices a ejecutar (1‑based)
+            var selected = _config.TestCaseList; // List<int>
+            bool all = !selected.Any(); // Si no contiene elementos se considera "todos los casos"
 
-                yield return new FullWorkflowModel<IClientData>
+            // 4) Filtra y proyecta
+            int index = 1;
+            foreach (var cd in rawList.Cast<IClientData>())
+            {
+                if (all || selected.Contains(index))
                 {
-                    ClientData = client,
-                    EvidenceFolder = caseFolder,
-                    IpPort = _config.IpPort,
-                    Headless = _config.Headless,
-                    KeepPdf = _config.KeepPdf,
-                    MaxApprovalUser = _config.MaxApprovalUser
-                };
+                    var caseFolder = Path.Combine(_config.EvidenceFolderBase, $"Caso {index}");
+                    yield return new FullWorkflowModel<IClientData>
+                    {
+                        ClientData = cd,
+                        EvidenceFolder = caseFolder,
+                        IpPort = _config.IpPort,
+                        Headless = _config.Headless,
+                        KeepPdf = _config.KeepPdf,
+                        MaxApprovalUser = _config.MaxApprovalUser
+                    };
+                }
                 index++;
             }
         }
         private async Task ExecuteTypedTransactionAsync(FullWorkflowModel<IClientData> fullLoanRequest)
         {
-            // 2) Descubre el tipo real de TClientData
+            // 1) Obtiene el tipo concreto de TClientData
             var clientData = fullLoanRequest.ClientData!;
-            var clientType = clientData.GetType(); // e.g. typeof(ClientDataT062900)
+            var clientType = clientData.GetType(); // Ejemplo: typeof(ClientDataT062900)
 
-            // 3) Crea un FullLoanRequest<TClientData> dinámicamente
+            // 2) Crea dinámicamente una instancia de FullWorkflowModel<TClientData>
             var fullReqType = typeof(FullWorkflowModel<>).MakeGenericType(clientType);
             var typedReq = Activator.CreateInstance(fullReqType)!;
 
-            // 4) Copia cada propiedad de untypedReq a typedReq
+            // 3) Copia las propiedades del modelo genérico FullWorkflowModel<IClientData> a la instancia tipada
             foreach (var prop in fullReqType.GetProperties().Where(p => p.CanWrite))
             {
-                // obtiene el valor de la propiedad genérica IClientData
+                // Obtiene el valor de la propiedad en el modelo genérico y lo asigna en la instancia tipada
                 var value = typeof(FullWorkflowModel<IClientData>)
                     .GetProperty(prop.Name)!.GetValue(fullLoanRequest);
                 prop.SetValue(typedReq, value);
             }
 
-            // 5) Invoca TransactionAsync<TClientData>(typedReq) por reflexión
+            // 4) Invoca TransactionAsync<TClientData>(typedReq) usando reflexión
             var method = _orchestrator
                .GetType()
                .GetMethod(nameof(IFullWorkflowOrchestrator.TransactionAsync))!
@@ -107,7 +111,7 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
 
             var task = (Task)method.Invoke(_orchestrator, new object[] { typedReq })!;
 
-            // 6) Await al task
+            // 5) Espera la finalización de la tarea
             await task;
         }
     }

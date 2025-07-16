@@ -43,6 +43,11 @@ namespace AutomationTest.FitbankWeb3.Tests.CoreTest
                 }
                 _output.WriteLine("-----");
             }
+
+            foreach(int caseTest in _config.TestCaseList)
+            {
+                _output.WriteLine($"Caso de prueba: {caseTest}");
+            }
         }
     }
 }

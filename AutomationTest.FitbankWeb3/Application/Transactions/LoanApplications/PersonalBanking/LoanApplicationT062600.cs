@@ -339,6 +339,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.Locator(_locators.LocatorsT062600.GuaranteeDate).FillAsync(DateTime.Now.ToString("dd/MM/yyyy"));
             await page.Locator(_locators.LocatorsT062600.GuaranteeDescription).FillAsync("QA");
 
+            await page.WaitForTimeoutAsync(500);
             await page.ClickAndWaitAsync(
                 page.Locator(_locators.LocatorsGeneralDashboard.F12Button),
                 page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect),

@@ -50,6 +50,14 @@ namespace AutomationTest.FitbankWeb3.Domain.Ports.Outbound
         /// Limite de seguridad maximo de aprobaciones se puede realizar a una misma solicitud de crédito.
         /// </summary>
         int MaxApprovalUser { get; }
+        /// <summary>
+        /// Lista de casos de prueba a ejecutar, separados por comas o dos puntos para diferenciar grupos.
+        /// </summary>
+        List<int> TestCaseList { get; }
+
+        /// <summary>
+        /// Archivo de los casos unicamente de aprobaciones.
+        /// </summary>
         string ApprovalCases { get; }
     }
 }

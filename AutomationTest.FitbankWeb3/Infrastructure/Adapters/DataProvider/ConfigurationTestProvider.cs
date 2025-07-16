@@ -82,8 +82,56 @@ namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.DataProvider
         public int MaxApprovalUser =>
             _config.GetValue("TestData:MaxApprovalUser", defaultValue: 10);
 
+        public List<int> TestCaseList =>
+            ParseTestCaseList(_config["TestData:TestCaseList"] ?? throw new InvalidOperationException("Se requiere TestData:TestCaseList"));
+
         public string ApprovalCases =>
             _config["TestData:ApprovalCases"]
             ?? throw new InvalidOperationException("Se requiere TestData:ApprovalCases");
+
+        private static List<int> ParseTestCaseList(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                // Vacío = todos; aquí decides qué significa “todos” en tu contexto
+                return new List<int>();
+            }
+
+            var result = new HashSet<int>();
+            foreach (var part in input.Split(',', StringSplitOptions.RemoveEmptyEntries))
+            {
+                var trimmed = part.Trim();
+                if (trimmed.Contains(':'))
+                {
+                    var bounds = trimmed.Split(':', StringSplitOptions.RemoveEmptyEntries);
+                    if (bounds.Length == 2
+                        && int.TryParse(bounds[0], out var start)
+                        && int.TryParse(bounds[1], out var end)
+                        && start > 0
+                        && end >= start)
+                    {
+                        for (int i = start; i <= end; i++)
+                            result.Add(i);
+                    }
+                    else
+                    {
+                        throw new FormatException($"Rango inválido (debe ser positivos y start≤end): '{trimmed}'");
+                    }
+                }
+                else
+                {
+                    if (int.TryParse(trimmed, out var single) && single > 0)
+                    {
+                        result.Add(single);
+                    }
+                    else
+                    {
+                        throw new FormatException($"Número inválido (debe ser positivo): '{trimmed}'");
+                    }
+                }
+            }
+
+            return result.OrderBy(x => x).ToList();
+        }
     }
 }
