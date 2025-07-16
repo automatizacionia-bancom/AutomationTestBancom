@@ -18,8 +18,8 @@ namespace AutomationTest.FitbankWeb3.Application.Models.ClientDataModels
         public required string Identification { get; set; } = string.Empty;
         public required int Address { get; set; } = 1;
         public required string Product { get; set; } = string.Empty;
-        public required MortgageInsuranceType MortgageInsurance1 { get; set; } = MortgageInsuranceType.Mancomunado;
-        public required MortgageInsuranceType MortgageInsurance2 { get; set; } = MortgageInsuranceType.Individual;
+        public required InsuranceType MortgageInsurance1 { get; set; } = InsuranceType.Mancomunado;
+        public required InsuranceType MortgageInsurance2 { get; set; } = InsuranceType.Individual;
         public required MortgageGoodType MortgageGood { get; set; } = MortgageGoodType.BienFuturo;
         public required MortgageProjectType MortgageProject { get; set; } = MortgageProjectType.ProyectoPropio;
         public required double EstimatedValue { get; set; } = 0.0;

@@ -15,11 +15,11 @@ namespace AutomationTest.FitbankWeb3.Domain.Ports.Inbound
         /// </summary>
         /// <param name="fullLoanRequest"></param>
         /// <returns></returns>
-        Task ExecuteWorkflow(LoanApprovalModel<IClientData> fullLoanRequest);
+        Task ExecuteWorkflow(LoanApprovalWorkflowModel<IClientData> fullLoanRequest);
         /// <summary>
         /// Devuelve una lista de petición de préstamo genéricas (IClientData) 
         /// basadas en la configuración actual.
         /// </summary>
-        IEnumerable<LoanApprovalModel<IClientData>> LoadCases();
+        IEnumerable<LoanApprovalWorkflowModel<IClientData>> LoadCases();
     }
 }

@@ -40,11 +40,6 @@
 	<ItemGroup>
 		<Using Include="Xunit" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Application\Transactions\LoanApplications\BusinessBanking\" />
-		<Folder Include="Application\Transactions\LoanApprovals\CreditProposal\" />
-	</ItemGroup>
 	
 	<ItemGroup>
 		<!-- Asegúrate de que appsettings.json viaja a bin/… al build -->

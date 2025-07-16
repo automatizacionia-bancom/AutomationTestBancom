@@ -7,7 +7,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
 {
-    public class LoanApplicationT062900Repository
+    public class LocatorRepositoryT062900
     {
         public string Identification { get; } = "#c_v2_identificacion_0";
         public string Adress { get; } = "#c_v2_cdireccion_0";

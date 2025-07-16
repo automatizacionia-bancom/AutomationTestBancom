@@ -19,7 +19,7 @@ using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryMod
 using AutomationTest.FitbankWeb3.Application.Services;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications;
-using AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals;
+using AutomationTest.FitbankWeb3.Application.Transactions.PersonalBanking;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
@@ -37,7 +37,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
         public FullWorkflowOrchestrator(
             IServiceProvider provider,
             PlaywrightFixture playwright,
-            ElementRepositoryFixture locators,
+            LocatorRepositoryFixture locators,
             IPdfConverter pdfConverter,
             IStandardQueryService standardQueryService,
             ITransactionUsersSelectionService transactionUsersSelectionService,
@@ -71,28 +71,25 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
 
             //using var userTurnSession = _userTurnCoordinatorService.RegisterBranch();
             // Preparamos el watcher (esperará indefinidamente hasta que aparezca)
-            var watcherTask = WatcherAsync(page, _locators.DashboardPage.TransactionNotAllowed);
+            var watcherTask = WatcherAsync(page, _locators.LocatorsGeneralDashboard.TransactionNotAllowed);
             try
             {
-                // Verificar que el usuario no tenga una sesión activa
                 var mainFlowTask = Task.Run(async () =>
                 {
-                    await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel
-                    {
-                        User = loanRequest.ClientData.UserRequest
-                    });
+                    // Liberamos el usuario
+                    await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel { User = loanRequest.ClientData.UserRequest });
 
-                    var applicationResult = await RunLoanApplicationAsync<TClientData>
-                        (page, loanRequest.ClientData, loanRequest.EvidenceFoler, loanRequest.IpPort, loanRequest.Headless, loanRequest.KeepPdf);
+                    // Ejecutamos el lujo de aprobacion
+                    var applicationResult = await RunLoanApplicationAsync<TClientData>(page, loanRequest.ClientData, loanRequest.EvidenceFoler, loanRequest.IpPort, loanRequest.Headless, loanRequest.KeepPdf);
 
                     _outputAccessor.Output.WriteLine("Flujo de solicitud de préstamo completado con éxito.");
 
                     await RunApprovalLoopAsync<TClientData>(
-                        page, 
-                        applicationResult.ApplicationNumber, 
-                        applicationResult.RecognizedApprovingUsers, 
-                        loanRequest.EvidenceFoler, 
-                        loanRequest.IpPort, 
+                        page,
+                        applicationResult.ApplicationNumber,
+                        applicationResult.RecognizedApprovingUsers,
+                        loanRequest.EvidenceFoler,
+                        loanRequest.IpPort,
                         loanRequest.MaxApprovalUser);//, userTurnSession);
                 });
 

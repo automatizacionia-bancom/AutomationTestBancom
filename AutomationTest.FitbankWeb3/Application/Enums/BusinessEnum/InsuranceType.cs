@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum
 {
-    public enum MortgageInsuranceType
+    public enum InsuranceType
     {
         [Description("PROPIO")] Propio,
         [Description("ENDOSADO")] Endosado,

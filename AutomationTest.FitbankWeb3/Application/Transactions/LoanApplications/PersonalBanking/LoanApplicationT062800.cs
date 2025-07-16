@@ -17,14 +17,14 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
     public class LoanApplicationT062800 : LoanApplication<ClientDataT062800>
     {
         public LoanApplicationT062800(
-            ElementRepositoryFixture locators,
+            LocatorRepositoryFixture locators,
             IPdfConverter pdfConverter,
             IStandardQueryService standardQueryService,
             IActionCoordinatorFactory actionCoordinatorFactory,
             ITestOutputAccessor output)
         : base(locators, pdfConverter, standardQueryService, actionCoordinatorFactory, output)
         { }
-        public override async Task<ILoanApplicationResult> ApplyForLoanAsync(IPage page, LoanApplicationModel<ClientDataT062800> loanApplication)
+        public override async Task<ILoanApplicationResult> ApplyForLoanAsync(IPage page, LoanApplicationWorkflowModel<ClientDataT062800> loanApplication)
         {
             ClientDataT062800 clientData = loanApplication.ClientData;
 
@@ -36,33 +36,33 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.GotoAsync($"{loanApplication.IpPort}/WEB3/ingreso.html");
 
             // Ingresar las credenciales del usuario
-            await page.Locator(_locators.Login.UsernameInput).FillAsync(clientData.UserRequest);
-            await page.Locator(_locators.Login.PasswordInput).FillAsync("fitbank123");
-            await page.Locator(_locators.Login.SubmitButton).ClickAsync();
+            await page.Locator(_locators.LocatorsLogin.UsernameInput).FillAsync(clientData.UserRequest);
+            await page.Locator(_locators.LocatorsLogin.PasswordInput).FillAsync("fitbank123");
+            await page.Locator(_locators.LocatorsLogin.SubmitButton).ClickAsync();
 
             // Ingresamos a la transacción T062800 para convenios
-            await page.Locator(_locators.DashboardPage.TransactionInput).FillAsync("062800");
-            await page.Locator(_locators.DashboardPage.TransactionInput).PressAsync("Enter");
-            await page.Locator(_locators.DashboardPage.OK).WaitForAsync(new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionInput).FillAsync("062800");
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionInput).PressAsync("Enter");
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
 
             // Ingresamos la identificación del cliente y una dirección válida
-            await page.Locator(_locators.ApplicationPageT062800.Identification).FillAsync(clientData.Identification);
-            await page.Locator(_locators.ApplicationPageT062800.Identification).PressAsync("Enter");
-            await page.Locator(_locators.DashboardPage.OK).WaitForAsync(new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsT062800.Identification).FillAsync(clientData.Identification);
+            await page.Locator(_locators.LocatorsT062800.Identification).PressAsync("Enter");
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
 
-            await page.Locator(_locators.ApplicationPageT062800.AdressList).ClickAsync();
-            await page.Locator(_locators.ApplicationPageT062800.AddressElement).ClickAsync();
+            await page.Locator(_locators.LocatorsT062800.AdressList).ClickAsync();
+            await page.Locator(_locators.LocatorsT062800.AddressElement).ClickAsync();
 
             // Seleccionamos el producto, gestor y tipo de préstamo
-            await page.Locator(_locators.ApplicationPageT062800.ProductList).ClickAsync();
-            await page.Locator(_locators.DashboardPage.ListElement(clientData.Product)).ClickAsync();
-            await page.Locator(_locators.DashboardPage.OK).WaitForAsync(new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsT062800.ProductList).ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.ListElement(clientData.Product)).ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
@@ -74,46 +74,46 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 _ => Transaction062800Type.Unspecified
             };
 
-            await page.Locator(_locators.ApplicationPageT062800.ManagerList).ClickAsync();
-            await page.Locator(_locators.ApplicationPageT062800.ManagerElement).ClickAsync();
+            await page.Locator(_locators.LocatorsT062800.ManagerList).ClickAsync();
+            await page.Locator(_locators.LocatorsT062800.ManagerElement).ClickAsync();
 
-            await page.Locator(_locators.ApplicationPageT062800.LoanTypeList).ClickAsync();
-            await page.Locator(_locators.DashboardPage.ListElement(clientData.LoanType.ToString())).ClickAsync();
+            await page.Locator(_locators.LocatorsT062800.LoanTypeList).ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.ListElement(clientData.LoanType.ToString())).ClickAsync();
             await page.WaitForTimeoutAsync(200);
 
             // Ingresamos el monto del préstamo y las cuotas
-            await page.Locator(_locators.ApplicationPageT062800.LoanAmount).FillSimulatedAsync(clientData.LoanAmount.ToString(), "Enter");
-            await page.Locator(_locators.DashboardPage.OK).WaitForAsync(delayBefore: 500,new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsT062800.LoanAmount).FillSimulatedAsync(clientData.LoanAmount.ToString(), "Enter");
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500,new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
 
-            await page.Locator(_locators.ApplicationPageT062800.CreditDataLabel).ClickAsync();
-            await page.Locator(_locators.DashboardPage.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsT062800.CreditDataLabel).ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
 
-            await page.Locator(_locators.ApplicationPageT062800.LoanInstallments).FillSimulatedAsync(clientData.LoanInstallments.ToString(), "Enter");
-            await page.Locator(_locators.DashboardPage.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsT062800.LoanInstallments).FillSimulatedAsync(clientData.LoanInstallments.ToString(), "Enter");
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
 
             // Verificar que se haya generado correctamente la tasa de interés
-            string loanRate = await page.Locator(_locators.ApplicationPageT062800.LoanRate).InputValueAsync();
+            string loanRate = await page.Locator(_locators.LocatorsT062800.LoanRate).InputValueAsync();
             if (string.IsNullOrWhiteSpace(loanRate))
                 Assert.Fail("No se ha generado correctamente la tasa de la solicitud");
 
             // Seleccionar forma de desembolso
             if (clientData.DisbursementType != DisbursementType.Unspecified)
             {
-                await page.Locator(_locators.ApplicationPageT062800.DisbursementType).SelectOptionAsync(clientData.DisbursementType.GetDescription());
+                await page.Locator(_locators.LocatorsT062800.DisbursementType).SelectOptionAsync(clientData.DisbursementType.GetDescription());
 
                 if (clientData.DisbursementType == DisbursementType.AbonoACuenta)
                 {
-                    await page.Locator(_locators.ApplicationPageT062800.BankAccountList).ClickAsync();
-                    await page.Locator(_locators.ApplicationPageT062800.BankAccountElement).ClickAsync();
+                    await page.Locator(_locators.LocatorsT062800.BankAccountList).ClickAsync();
+                    await page.Locator(_locators.LocatorsT062800.BankAccountElement).ClickAsync();
                 }
 
             }
@@ -125,9 +125,9 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 await handle.WaitForTurnAsync();
 
                 await page.ClickAndWaitAsync(
-                page.Locator(_locators.DashboardPage.F12Button),
-                page.Locator(_locators.DashboardPage.OK),
-                page.Locator(_locators.DashboardPage.TransactionError),
+                page.Locator(_locators.LocatorsGeneralDashboard.F12Button),
+                page.Locator(_locators.LocatorsGeneralDashboard.OK),
+                page.Locator(_locators.LocatorsGeneralDashboard.TransactionError),
                 new LocatorWaitForOptions
                 {
                     Timeout = 90000, // 90 seconds timeout
@@ -135,7 +135,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 }, _outputAccessor.Output);
             }
 
-            string applicationNumber = await page.Locator(_locators.ApplicationPageT062800.ApplicationNumber).InputValueAsync();
+            string applicationNumber = await page.Locator(_locators.LocatorsT062800.ApplicationNumber).InputValueAsync();
             _outputAccessor.Output.WriteLine($"Solicitud: {applicationNumber}");
 
             // Ingresar los datos de ingresos del cliente si es necesario
@@ -147,20 +147,20 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             // Evaluar la solicitud de préstamo y esperamos el resultado de la evaluación, tomando capturas de pantalla en el proceso
             // Consideramos el error en el ambiente de QA, donde el botón de evaluación puede dar 'Error al procesar la consulta'
             await page.ClickAndWaitAsync(
-                page.Locator(_locators.ApplicationPageT062800.EvaluateButton),
-                page.Locator(_locators.ApplicationPageT062800.OK_ApprovalError),
+                page.Locator(_locators.LocatorsT062800.EvaluateButton),
+                page.Locator(_locators.LocatorsT062800.OK_ApprovalError),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 90 seconds timeout
                     State = WaitForSelectorState.Visible
                 }, _outputAccessor.Output);
 
-            bool approvalError = await page.Locator(_locators.ApplicationPageT062800.ApprovalError).IsVisibleAsync();
+            bool approvalError = await page.Locator(_locators.LocatorsT062800.ApprovalError).IsVisibleAsync();
             if (approvalError)
             {
                 await page.ClickAndWaitAsync(
-                    page.Locator(_locators.DashboardPage.F7Button),
-                    page.Locator(_locators.DashboardPage.OK),
+                    page.Locator(_locators.LocatorsGeneralDashboard.F7Button),
+                    page.Locator(_locators.LocatorsGeneralDashboard.OK),
                     new LocatorWaitForOptions
                     {
                         Timeout = 60000, // 90 seconds timeout
@@ -168,7 +168,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                     }, _outputAccessor.Output);
             }
 
-            if (!Enum.TryParse(await page.Locator(_locators.ApplicationPageT062800.EvaluateResult).InputValueAsync(), out EvaluationResult evaluationResult))
+            if (!Enum.TryParse(await page.Locator(_locators.LocatorsT062800.EvaluateResult).InputValueAsync(), out EvaluationResult evaluationResult))
                 throw new Exception("No se ha podido obtener el resultado de la evaluación correctamente.");
 
             // Se modificara el resultado si es necesario
@@ -222,24 +222,24 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
         }
         private async Task ValidateDocumentationAsync(IPage page, string applicationNumber, Transaction062800Type transacion062800Type)
         {
-            await page.Locator(_locators.DashboardPage.TransactionInput).FillAsync("064000");
-            await page.Locator(_locators.DashboardPage.TransactionInput).PressAsync("Enter");
-            await page.Locator(_locators.DashboardPage.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionInput).FillAsync("064000");
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionInput).PressAsync("Enter");
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
 
-            await page.Locator(_locators.ApprovalPage.ApplicationNumber).FillAsync(applicationNumber);
+            await page.Locator(_locators.LocatorsPersonalBankingDashboard.ApplicationNumberSearchTransaction).FillAsync(applicationNumber);
             await page.ClickAndWaitAsync(
-                page.Locator(_locators.DashboardPage.F7Button),
-                page.Locator(_locators.DashboardPage.TransactionCorrect),
+                page.Locator(_locators.LocatorsGeneralDashboard.F7Button),
+                page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect),
                 new LocatorWaitForOptions
                 {
                     State = WaitForSelectorState.Visible,
                     Timeout = 60000 // 60 seconds timeout for the transaction to be processed
                 }, _outputAccessor.Output);
 
-            string applicationNumberResult = await page.Locator(_locators.ApprovalPage.ApplicationNumberResult).InputValueAsync();
+            string applicationNumberResult = await page.Locator(_locators.LocatorsPersonalBankingDashboard.ApplicationNumberSearchTransactionResult).InputValueAsync();
 
             if (applicationNumberResult != applicationNumber)
             {
@@ -249,20 +249,20 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             }
 
             await page.ClickAndWaitAsync(
-                page.Locator(_locators.ApprovalPage.ApplicationNumberResult),
-                page.Locator(_locators.DashboardPage.OK_TransactionCorrect),
+                page.Locator(_locators.LocatorsPersonalBankingDashboard.ApplicationNumberSearchTransactionResult),
+                page.Locator(_locators.LocatorsGeneralDashboard.OK_TransactionCorrect),
                 new LocatorWaitForOptions
                 {
                     State = WaitForSelectorState.Visible,
                     Timeout = 60000 // 60 seconds timeout for the transaction to be processed
                 }, _outputAccessor.Output);
 
-            await page.Locator(_locators.ApplicationPageT062800.ValidateDocumentationVerification).CheckAsync();
-            await page.Locator(_locators.ApplicationPageT062800.ValidateDocumentationType).ClickAsync();
-            await page.Locator(_locators.ApplicationPageT062800.ValidateDocumentationTypeElement).ClickAsync();
-            await page.Locator(_locators.ApplicationPageT062800.ValidateDocumentationDate).FillAsync(DateTime.Now.ToString("dd/MM/yyyy"));
-            await page.Locator(_locators.ApplicationPageT062800.ValidateDocumentationObservation).FillAsync("QA");
-            await page.Locator(_locators.ApplicationPageT062800.ValidateDocumentationResult).SelectOptionAsync("CONFORME");
+            await page.Locator(_locators.LocatorsT062800.ValidateDocumentationVerification).CheckAsync();
+            await page.Locator(_locators.LocatorsT062800.ValidateDocumentationType).ClickAsync();
+            await page.Locator(_locators.LocatorsT062800.ValidateDocumentationTypeElement).ClickAsync();
+            await page.Locator(_locators.LocatorsT062800.ValidateDocumentationDate).FillAsync(DateTime.Now.ToString("dd/MM/yyyy"));
+            await page.Locator(_locators.LocatorsT062800.ValidateDocumentationObservation).FillAsync("QA");
+            await page.Locator(_locators.LocatorsT062800.ValidateDocumentationResult).SelectOptionAsync("CONFORME");
 
             await page.WaitForTimeoutAsync(500); // Esperar para asegurar que los cambios se reflejen
 
@@ -271,9 +271,9 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 await handle.WaitForTurnAsync();
                 // Presionar F12 para guardar los cambios
                 await page.ClickAndWaitAsync(
-                page.Locator(_locators.DashboardPage.F12Button),
-                page.Locator(_locators.DashboardPage.TransactionCorrect),
-                page.Locator(_locators.DashboardPage.TransactionError),
+                page.Locator(_locators.LocatorsGeneralDashboard.F12Button),
+                page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect),
+                page.Locator(_locators.LocatorsGeneralDashboard.TransactionError),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
@@ -286,24 +286,24 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             if (Convert.ToInt32(clientData.Income) == 0)
                 return;
 
-            await page.Locator(_locators.ApplicationPageT062800.IncomeButtton).ClickAsync();
-            await page.Locator(_locators.DashboardPage.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsT062800.IncomeButtton).ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
 
-            await page.Locator(_locators.ApplicationPageT062800.IncomeDate).FillIfEditableAsync(DateTime.Now.AddMonths(-1).ToString("MMyyyy"));
-            await page.Locator(_locators.ApplicationPageT062800.IncomeDate).PressAsync("Enter");
+            await page.Locator(_locators.LocatorsT062800.IncomeDate).FillIfEditableAsync(DateTime.Now.AddMonths(-1).ToString("MMyyyy"));
+            await page.Locator(_locators.LocatorsT062800.IncomeDate).PressAsync("Enter");
 
-            await page.Locator(_locators.ApplicationPageT062800.IncomeAssets).FillAsync(clientData.Income.ToString());
+            await page.Locator(_locators.LocatorsT062800.IncomeAssets).FillAsync(clientData.Income.ToString());
 
-            await page.Locator(_locators.ApplicationPageT062800.IncomeOther1).FillIfEditableAsync(clientData.Income.ToString());
-            await page.Locator(_locators.ApplicationPageT062800.IncomeOther2).FillIfEditableAsync(clientData.Income.ToString());
+            await page.Locator(_locators.LocatorsT062800.IncomeOther1).FillIfEditableAsync(clientData.Income.ToString());
+            await page.Locator(_locators.LocatorsT062800.IncomeOther2).FillIfEditableAsync(clientData.Income.ToString());
 
             // Presionar F12 para guardar los cambios
             await page.ClickAndWaitAsync(
-                    page.Locator(_locators.DashboardPage.F12Button),
-                    page.Locator(_locators.DashboardPage.TransactionCorrect),
+                    page.Locator(_locators.LocatorsGeneralDashboard.F12Button),
+                    page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect),
                     new LocatorWaitForOptions
                     {
                         Timeout = 60000, // 60 seconds timeout
@@ -312,23 +312,23 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             // Presionar regresar para guardar los cambios
             await page.ClickAndWaitAsync(
-                page.Locator(_locators.ApplicationPageT062800.IncomeReturn),
-                page.Locator(_locators.DashboardPage.OK),
+                page.Locator(_locators.LocatorsT062800.IncomeReturn),
+                page.Locator(_locators.LocatorsGeneralDashboard.OK),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
                     State = WaitForSelectorState.Visible
                 }, _outputAccessor.Output);
         }
-        private async Task AssingGuaranteeAsync(IPage page, LoanApplicationModel<ClientDataT062800> loanApplication, Transaction062800Type transacion062800Type)
+        private async Task AssingGuaranteeAsync(IPage page, LoanApplicationWorkflowModel<ClientDataT062800> loanApplication, Transaction062800Type transacion062800Type)
         {
             if (transacion062800Type != Transaction062800Type.Maxiprestamos)
                 return;
             if (loanApplication.ClientData.GuaranteeType == GuaranteeType.SinGarantia)
                 return;
 
-            await page.Locator(_locators.ApplicationPageT062800.GuaranteeButton).ClickAsync();
-            await page.Locator(_locators.DashboardPage.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsT062800.GuaranteeButton).ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
@@ -340,30 +340,30 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 _ => throw new ArgumentOutOfRangeException(nameof(loanApplication.ClientData.GuaranteeType), "Tipo de garantía no soportado.")
             };
 
-            await page.Locator(_locators.ApplicationPageT062800.GuaranteeType).ClickAsync();
-            await page.Locator(_locators.DashboardPage.ListElement(guaranteeType)).ClickAsync();
+            await page.Locator(_locators.LocatorsT062800.GuaranteeType).ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.ListElement(guaranteeType)).ClickAsync();
 
-            await page.Locator(_locators.ApplicationPageT062800.GuaranteeGoodsType).ClickAsync();
-            await page.Locator(_locators.ApplicationPageT062800.GuaranteeGoodsTypeElement).ClickAsync();
+            await page.Locator(_locators.LocatorsT062800.GuaranteeGoodsType).ClickAsync();
+            await page.Locator(_locators.LocatorsT062800.GuaranteeGoodsTypeElement).ClickAsync();
 
-            await page.Locator(_locators.ApplicationPageT062800.GuaranteeCoinType).SelectOptionAsync(CoinType.Soles.ToString());
+            await page.Locator(_locators.LocatorsT062800.GuaranteeCoinType).SelectOptionAsync(CoinType.Soles.ToString());
 
             double guaranteeValue = loanApplication.ClientData.LoanAmount * 1.2;
-            await page.Locator(_locators.ApplicationPageT062800.GuaranteeTaxAmount).FillAsync(guaranteeValue.ToString());
-            await page.Locator(_locators.ApplicationPageT062800.GuaranteeAmount).FillAsync(guaranteeValue.ToString());
-            await page.Locator(_locators.ApplicationPageT062800.GuaranteeDate).FillAsync(DateTime.Now.ToString("dd/MM/yyyy"));
-            await page.Locator(_locators.ApplicationPageT062800.GuaranteeDescription).FillAsync("QA");
+            await page.Locator(_locators.LocatorsT062800.GuaranteeTaxAmount).FillAsync(guaranteeValue.ToString());
+            await page.Locator(_locators.LocatorsT062800.GuaranteeAmount).FillAsync(guaranteeValue.ToString());
+            await page.Locator(_locators.LocatorsT062800.GuaranteeDate).FillAsync(DateTime.Now.ToString("dd/MM/yyyy"));
+            await page.Locator(_locators.LocatorsT062800.GuaranteeDescription).FillAsync("QA");
 
             await page.ClickAndWaitAsync(
-                page.Locator(_locators.DashboardPage.F12Button),
-                page.Locator(_locators.DashboardPage.TransactionCorrect),
+                page.Locator(_locators.LocatorsGeneralDashboard.F12Button),
+                page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
                     State = WaitForSelectorState.Visible
                 }, _outputAccessor.Output);
             await page.WaitForTimeoutAsync(500);
-            await page.Locator(_locators.DashboardPage.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
@@ -375,8 +375,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             });
 
             await page.ClickAndWaitAsync(
-                page.Locator(_locators.ApplicationPageT062800.GuaranteeReturn),
-                page.Locator(_locators.DashboardPage.OK),
+                page.Locator(_locators.LocatorsT062800.GuaranteeReturn),
+                page.Locator(_locators.LocatorsGeneralDashboard.OK),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout

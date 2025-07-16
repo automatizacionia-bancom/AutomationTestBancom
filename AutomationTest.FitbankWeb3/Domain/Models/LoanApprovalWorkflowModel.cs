@@ -8,7 +8,7 @@ using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 
 namespace AutomationTest.FitbankWeb3.Domain.Models
 {
-    public class LoanApprovalModel<TClientData> : IOrchestratorModel<TClientData> where TClientData : IClientData
+    public class LoanApprovalWorkflowModel<TClientData> : IOrchestratorModel<TClientData> where TClientData : IClientData
     {
         public required string ApplicationNumber { get; set; }
         public required List<string> RecognizedApprovingUsers { get; set; }

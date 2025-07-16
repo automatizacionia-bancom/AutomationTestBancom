@@ -81,5 +81,9 @@ namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.DataProvider
 
         public int MaxApprovalUser =>
             _config.GetValue("TestData:MaxApprovalUser", defaultValue: 10);
+
+        public string ApprovalCases =>
+            _config["TestData:ApprovalCases"]
+            ?? throw new InvalidOperationException("Se requiere TestData:ApprovalCases");
     }
 }

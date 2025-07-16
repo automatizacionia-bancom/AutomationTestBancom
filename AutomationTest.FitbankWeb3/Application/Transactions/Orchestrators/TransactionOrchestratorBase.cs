@@ -25,7 +25,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
     {
         protected readonly IServiceProvider _provider;
         protected readonly PlaywrightFixture _playwright;
-        protected readonly ElementRepositoryFixture _locators;
+        protected readonly LocatorRepositoryFixture _locators;
         protected readonly IPdfConverter _pdfConverter;
         protected readonly IStandardQueryService _standardQueryService;
         protected readonly ITransactionUsersSelectionService _transactionUsersSelectionService;
@@ -38,7 +38,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
         protected TransactionOrchestratorBase(
             IServiceProvider provider,
             PlaywrightFixture playwright,
-            ElementRepositoryFixture locators,
+            LocatorRepositoryFixture locators,
             IPdfConverter pdfConverter,
             IStandardQueryService standardQueryService,
             ITransactionUsersSelectionService transactionUsersSelectionService,
@@ -89,7 +89,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
         {
             var approvalFlow = _provider.GetRequiredService<ILoanApplication<TClientData>>();
 
-            var model = new LoanApplicationModel<TClientData>
+            var model = new LoanApplicationWorkflowModel<TClientData>
             {
                 ClientData = clientData,
                 EvidenceFoler = evidenceFolder,

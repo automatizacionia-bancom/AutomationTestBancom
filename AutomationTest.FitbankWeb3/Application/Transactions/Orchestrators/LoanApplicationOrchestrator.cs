@@ -20,7 +20,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
         public LoanApplicationOrchestrator(
             IServiceProvider provider,
             PlaywrightFixture playwright,
-            ElementRepositoryFixture locators,
+            LocatorRepositoryFixture locators,
             IPdfConverter pdfConverter,
             IStandardQueryService standardQueryService,
             ITransactionUsersSelectionService transactionUsersSelectionService,
@@ -44,7 +44,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             )
         {
         }
-        public async Task TransactionAsync<TClientData>(LoanApplicationModel<TClientData> loanRequest) where TClientData : IClientData
+        public async Task TransactionAsync<TClientData>(LoanApplicationWorkflowModel<TClientData> loanRequest) where TClientData : IClientData
         {
             await using var browser = await LaunchBrowserAsync<TClientData>(loanRequest);
             await using var context = await browser.NewContextAsync(new BrowserNewContextOptions { AcceptDownloads = true });
@@ -54,7 +54,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
 
             //using var userTurnSession = _userTurnCoordinatorService.RegisterBranch();
             // Preparamos el watcher (esperará indefinidamente hasta que aparezca)
-            var watcherTask = WatcherAsync(page, _locators.DashboardPage.TransactionNotAllowed);
+            var watcherTask = WatcherAsync(page, _locators.LocatorsGeneralDashboard.TransactionNotAllowed);
             try
             {
                 // Verificar que el usuario no tenga una sesión activa

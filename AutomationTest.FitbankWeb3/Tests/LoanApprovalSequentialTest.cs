@@ -13,15 +13,16 @@ using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Tests
 {
-    public class LoanApplicationSequentialTest : IClassFixture<TestFixture>
+    public class LoanApprovalSequentialTest : IClassFixture<TestFixture>
     {
-        private static List<LoanApplicationWorkflowModel<IClientData>> _cases = null!;
-        private static ILoanApplicationExecutor _workflowExecutor;
-        static LoanApplicationSequentialTest()
+        private static List<LoanApprovalWorkflowModel<IClientData>> _cases = null!;
+        private static ILoanApprovalExecutor _workflowExecutor;
+        private readonly ITestOutputAccessor _outputAccessor;
+        static LoanApprovalSequentialTest()
         {
             var serviceProvider = TestFixture.Configure();
 
-            _workflowExecutor = serviceProvider.GetRequiredService<ILoanApplicationExecutor>();
+            _workflowExecutor = serviceProvider.GetRequiredService<ILoanApprovalExecutor>();
 
             _cases = _workflowExecutor.LoadCases().ToList();
         }
@@ -32,11 +33,12 @@ namespace AutomationTest.FitbankWeb3.Tests
                 data.Add(i);
             return data;
         }
-        public LoanApplicationSequentialTest(TestFixture fixture, ITestOutputHelper output)
+        public LoanApprovalSequentialTest(TestFixture fixture, ITestOutputHelper output)
         {
             var accessor = fixture.ServiceProvider
                .GetRequiredService<ITestOutputAccessor>();
             accessor.Set(output);
+            _outputAccessor = accessor;
         }
         [Theory]
         [MemberData(nameof(GetData), DisableDiscoveryEnumeration = true)]

@@ -23,7 +23,6 @@ namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.DataProvider
         {
             _sp = sp;
         }
-
         public IEnumerable<TClientData> GetTestCases<TClientData>(
             string filePath,
             string sheetName)

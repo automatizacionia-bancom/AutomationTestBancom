@@ -15,7 +15,7 @@ namespace AutomationTest.FitbankWeb3.Tests
 {
     public class LoanApplicationParallelTest : IClassFixture<TestFixture>
     {
-        private static List<LoanApplicationModel<IClientData>> _cases = null!;
+        private static List<LoanApplicationWorkflowModel<IClientData>> _cases = null!;
         private static ILoanApplicationExecutor _workflowExecutor;
         static LoanApplicationParallelTest()
         {

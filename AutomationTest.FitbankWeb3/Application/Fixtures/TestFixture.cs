@@ -14,9 +14,11 @@ using AutomationTest.FitbankWeb3.Application.Services;
 using AutomationTest.FitbankWeb3.Application.Services.ActionCoordination;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications;
+using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.BusinessBanking;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalBanking;
-using AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.PersonalLoan;
+using AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.BusinessBanking;
 using AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators;
+using AutomationTest.FitbankWeb3.Application.Transactions.PersonalBanking.PersonalBanking;
 using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
 using AutomationTest.FitbankWeb3.Domain.Ports.Inbound;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
@@ -144,7 +146,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddSingleton<PlaywrightFixture>();
 
             // 5) Registra ElementRepositoryFixture como singleton (si no guarda estado mutable)
-            services.AddSingleton<ElementRepositoryFixture>();
+            services.AddSingleton<LocatorRepositoryFixture>();
 
             // 6) Registra las demás dependencias (queries, servicios, etc.)
             services.AddTransient<IStandardQuery<DeleteUserSesionModel>, DeleteUserSesionQuery>();
@@ -157,6 +159,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
 
             services.AddSingleton<IFullWorkflowExecutor, FullWorkflowExecutor>();
             services.AddSingleton<ILoanApplicationExecutor, LoanApplicationExecutor>();
+            services.AddSingleton<ILoanApprovalExecutor, LoanApprovalExecutor>();
 
             services.AddTransient<IActionCoordinatorService, ActionCoordinatorService>();
             services.AddSingleton<IActionCoordinatorFactory, ActionCoordinatorFactory>();
@@ -168,6 +171,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
 
             services.AddSingleton<IFullWorkflowOrchestrator, FullWorkflowOrchestrator>();
             services.AddSingleton<ILoanApplicationOrchestrator, LoanApplicationOrchestrator>();
+            services.AddSingleton<ILoanApprovalOrchestrator, LoanApprovalOrchestrator>();
 
             services.AddTransient<ILoanApplication<ClientDataT062900>, LoanApplicationT062900>();
             services.AddTransient<ILoanApplication<ClientDataT062800>, LoanApplicationT062800>();
@@ -175,13 +179,16 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddTransient<ILoanApplication<ClientDataT062600>, LoanApplicationT062600>();
             services.AddTransient<ILoanApplication<ClientDataT062500>, LoanApplicationT062500>();
             services.AddTransient<ILoanApplication<ClientDataT062400>, LoanApplicationT062400>();
+            services.AddTransient<ILoanApplication<ClientDataT072100Pe>, LoanApplicationT072100Pe>();
 
-            services.AddTransient<ILoanApproval<ClientDataT062900>, LoanApproval>();
-            services.AddTransient<ILoanApproval<ClientDataT062800>, LoanApproval>();
-            services.AddTransient<ILoanApproval<ClientDataT062700>, LoanApproval>();
-            services.AddTransient<ILoanApproval<ClientDataT062600>, LoanApproval>();
-            services.AddTransient<ILoanApproval<ClientDataT062500>, LoanApproval>();
-            services.AddTransient<ILoanApproval<ClientDataT062400>, LoanApproval>();
+            services.AddTransient<ILoanApproval<ClientDataT062900>, LoanApprovalPersonalBanking>();
+            services.AddTransient<ILoanApproval<ClientDataT062800>, LoanApprovalPersonalBanking>();
+            services.AddTransient<ILoanApproval<ClientDataT062700>, LoanApprovalPersonalBanking>();
+            services.AddTransient<ILoanApproval<ClientDataT062600>, LoanApprovalPersonalBanking>();
+            services.AddTransient<ILoanApproval<ClientDataT062500>, LoanApprovalPersonalBanking>();
+            services.AddTransient<ILoanApproval<ClientDataT062400>, LoanApprovalPersonalBanking>();
+            services.AddTransient<ILoanApproval<ClientDataT072100Pe>, LoanApprovalBusinessBanking>();
+
 
             // Adaptadores por cada TClientData
             services.AddTransient<IClientDataAdapter<ClientDataT062900>, ClientDataT062900Adapter>();
@@ -190,6 +197,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddTransient<IClientDataAdapter<ClientDataT062600>, ClientDataT062600Adapter>();
             services.AddTransient<IClientDataAdapter<ClientDataT062500>, ClientDataT062500Adapter>();
             services.AddTransient<IClientDataAdapter<ClientDataT062400>, ClientDataT062400Adapter>();
+            services.AddTransient<IClientDataAdapter<ClientDataT072100Pe>, ClientDataT072100PeAdapter>();
 
             // 7) Construye el ServiceProvider
             var ServiceProvider = services.BuildServiceProvider();

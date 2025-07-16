@@ -14,5 +14,6 @@ namespace AutomationTest.FitbankWeb3.Domain.Enums
         T062600, // Transacción de prestamos hipotecarios
         T062500, // Transacción de convenios FFAA
         T062400, // Transacción de credito pignoraticio
+        T072100Pe // Transacción de creditos de pequeño empresa
     }
 }

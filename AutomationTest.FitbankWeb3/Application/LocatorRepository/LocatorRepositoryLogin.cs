@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
 {
-    public class LoginRepository
+    public class LocatorRepositoryLogin
     {
         public string UsernameInput { get; } = "input[type='text']";
         public string PasswordInput { get; } = "input[type='password']";

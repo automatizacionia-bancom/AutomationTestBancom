@@ -34,7 +34,7 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
             _orchestrator = orchestrator;
             _outputAccessor = outputAccessor;
         }
-        public async Task ExecuteWorkflow(LoanApplicationModel<IClientData> fullLoanRequest)
+        public async Task ExecuteWorkflow(LoanApplicationWorkflowModel<IClientData> fullLoanRequest)
         {
             if (!Directory.Exists(fullLoanRequest.EvidenceFoler))
             {
@@ -43,7 +43,7 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
 
             await ExecuteTypedTransactionAsync(fullLoanRequest);
         }
-        public IEnumerable<LoanApplicationModel<IClientData>> LoadCases()
+        public IEnumerable<LoanApplicationWorkflowModel<IClientData>> LoadCases()
         {
             // 1) Determina el tipo de ClientData a usar
             var txType = _config.TransactionType;
@@ -67,7 +67,7 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
                 var client = (IClientData)cd;
                 string caseFolder = Path.Combine(_config.EvidenceFolderBase, $"Caso {index}");
 
-                yield return new LoanApplicationModel<IClientData>
+                yield return new LoanApplicationWorkflowModel<IClientData>
                 {
                     ClientData = client,
                     EvidenceFoler = caseFolder,
@@ -78,21 +78,21 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
                 index++;
             }
         }
-        private async Task ExecuteTypedTransactionAsync(LoanApplicationModel<IClientData> loanRequestApplication)
+        private async Task ExecuteTypedTransactionAsync(LoanApplicationWorkflowModel<IClientData> loanRequestApplication)
         {
             // 2) Descubre el tipo real de TClientData
             var clientData = loanRequestApplication.ClientData!;
             var clientType = clientData.GetType(); // e.g. typeof(ClientDataT062900)
 
             // 3) Crea un FullLoanRequest<TClientData> dinámicamente
-            var fullReqType = typeof(LoanApplicationModel<>).MakeGenericType(clientType);
+            var fullReqType = typeof(LoanApplicationWorkflowModel<>).MakeGenericType(clientType);
             var typedReq = Activator.CreateInstance(fullReqType)!;
 
             // 4) Copia cada propiedad de untypedReq a typedReq
             foreach (var prop in fullReqType.GetProperties().Where(p => p.CanWrite))
             {
                 // obtiene el valor de la propiedad genérica IClientData
-                var value = typeof(LoanApplicationModel<IClientData>)
+                var value = typeof(LoanApplicationWorkflowModel<IClientData>)
                     .GetProperty(prop.Name)!.GetValue(loanRequestApplication);
                 prop.SetValue(typedReq, value);
             }

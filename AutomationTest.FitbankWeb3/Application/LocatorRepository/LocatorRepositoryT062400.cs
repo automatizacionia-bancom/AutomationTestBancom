@@ -7,7 +7,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
 {
-    public class LoanApplicationT062400Repository
+    public class LocatorRepositoryT062400
     {
         public string OK_RangeError { get; } = "#entorno-estatus-contenido:text-matches(\"^(?:Ok|EL MONTO A SOLICITAR DE).*\")";
         public string Identification { get; } = "#c_v2_identificacion_0";

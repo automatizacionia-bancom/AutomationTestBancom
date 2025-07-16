@@ -12,6 +12,6 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Interfaces
 {
     public interface ILoanApplication<TClientData> where TClientData : IClientData
     {
-        Task<ILoanApplicationResult> ApplyForLoanAsync(IPage page, LoanApplicationModel<TClientData> loanRequest);
+        Task<ILoanApplicationResult> ApplyForLoanAsync(IPage page, LoanApplicationWorkflowModel<TClientData> loanRequest);
     }
 }
