@@ -153,7 +153,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
                 string currentFullPath = Path.Combine(loanRequest.EvidenceFolder, pdfFile);
 
                 // Renombrar el archivo a Documento_1.pdf, Documento_1_2.pdf, etc.
-                string newFileName = pdfFiles.Count == 1 ? "Documento.pdf" : $"Documento_{index}.pdf";
+                string newFileName = pdfFiles.Count == 1 ? $"{sufix}.pdf" : $"{sufix}_{index}.pdf";
                 string newFullPath = Path.Combine(loanRequest.EvidenceFolder, newFileName);
 
                 // Sobreescribir si existe
