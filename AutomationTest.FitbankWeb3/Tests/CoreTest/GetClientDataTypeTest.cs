@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Application.Fixtures;
+﻿using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Domain.Attributes;
-using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Extensions.DependencyInjection;

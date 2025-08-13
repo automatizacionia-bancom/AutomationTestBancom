@@ -75,7 +75,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             // Ingresamos el monto de la linea
             await page.Locator(_locators.LocatorsT062700.CreditLine).FillSimulatedAsync(clientData.CreditLine.ToString(), "Enter");
-            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500,new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
@@ -156,7 +156,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                     State = WaitForSelectorState.Visible
                 }, _outputAccessor.Output);
 
-            bool approvalError = await page.Locator(_locators.LocatorsT062700.ApprovalError).IsVisibleAsync();  
+            bool approvalError = await page.Locator(_locators.LocatorsT062700.ApprovalError).IsVisibleAsync();
             if (approvalError)
             {
                 await page.ClickAndWaitAsync(
@@ -351,7 +351,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.Locator(_locators.LocatorsT062700.GuaranteeDate).FillAsync(DateTime.Now.ToString("dd/MM/yyyy"));
             await page.Locator(_locators.LocatorsT062700.GuaranteeDescription).FillAsync("QA");
 
-            await page.WaitForTimeoutAsync(500); 
+            await page.WaitForTimeoutAsync(500);
             await page.ClickAndWaitAsync(
                 page.Locator(_locators.LocatorsGeneralDashboard.F12Button),
                 page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect),

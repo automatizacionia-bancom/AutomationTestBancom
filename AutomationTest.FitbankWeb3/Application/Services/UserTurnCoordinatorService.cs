@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Services;
-using Microsoft.Playwright;
 
 namespace AutomationTest.FitbankWeb3.Application.Services
 {

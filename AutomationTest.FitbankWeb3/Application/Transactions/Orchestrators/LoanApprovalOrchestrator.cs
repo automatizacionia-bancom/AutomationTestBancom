@@ -1,33 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Application.Enums;
-using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
-using AutomationTest.FitbankWeb3.Application.Extensions;
-using AutomationTest.FitbankWeb3.Application.Fixtures;
+﻿using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
-using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Output;
-using AutomationTest.FitbankWeb3.Application.Models.LoanApprovalModels.Input;
-using AutomationTest.FitbankWeb3.Application.Models.LoanApprovalModels.Output;
-using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
-using AutomationTest.FitbankWeb3.Application.Services;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications;
-using AutomationTest.FitbankWeb3.Application.Transactions.PersonalBanking;
-using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using AutomationTest.FitbankWeb3.Infrastructure.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Playwright;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
-using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
 {
@@ -81,7 +59,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
                         loanRequest.RecognizedApprovingUsers,
                         loanRequest.EvidenceFolder,
                         loanRequest.IpPort,
-                        loanRequest.MaxApprovalUser);//, userTurnSession);
+                        loanRequest.MaxApprovalUser,
+                        loanRequest.Attempt);//, userTurnSession);
                 });
 
                 // Obtenemos la terea que termina primero, ya sea el flujo principal o el watcher

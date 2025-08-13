@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
+﻿using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
@@ -107,6 +102,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             string evidenceFolder,
             string ipPort,
             int maxApprovalUser,
+            int attemptInit = 1,
             IBranchSession? userTurnSession = null) where TClientData : IClientData
         {
             var approvalFlow = _provider.GetRequiredService<ILoanApproval<TClientData>>();
@@ -114,7 +110,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
 
             List<string> recognizedNewUsers = recognizedUsers;
 
-            for (int attempt = 1; attempt <= maxApprovalUser; attempt++)
+            for (int attempt = attemptInit; attempt <= maxApprovalUser; attempt++)
             {
                 string nextUser = await _transactionUsersSelectionService
                     .SelectOptimalUserAsync(transactionType, recognizedNewUsers);

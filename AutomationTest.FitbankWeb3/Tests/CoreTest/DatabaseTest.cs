@@ -1,10 +1,6 @@
 ﻿using System.Data;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Models.QueryModels;
-using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
-using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;

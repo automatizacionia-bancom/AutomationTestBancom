@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
+﻿namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
 {
     public class LocatorRepositoryGeneralDashboard
     {
@@ -14,10 +8,12 @@ namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
         public string OK { get; } = "#entorno-estatus-contenido:text('Ok')";
         public string TransactionCorrect { get; } = "#entorno-estatus-contenido:text('TRANSACCION REALIZADA CORRECTAMENTE')";
         public string FormCorrect { get; } = "#entorno-estatus-contenido:text('Formulario cargado correctamente')";
+        public string FormProcessing { get; } = "#entorno-estatus-contenido.processing";
         public string OK_TransactionCorrect { get; } = "#entorno-estatus-contenido:text-matches(\"^(?:Ok|TRANSACCION REALIZADA CORRECTAMENTE)$\")";
         public string TransactionError { get; } = "#entorno-estatus-contenido.error";
         public string TransactionNotAllowed { get; } = "#entorno-estatus-contenido:has-text('TRANSACCION NO PERMITIDA PARA ESTE ROL')";
         public string NonAuthorizingUsers { get; } = "#entorno-estatus-contenido:text('NO TIENE AUTORIZADORES')";
         public string ListElement(string elementName) => $"td:text-matches(\"^{elementName}$\", \"\")";
+        public string ListElementPattern(string elementName) => $"td:text-matches(\"{elementName}\")";
     }
 }

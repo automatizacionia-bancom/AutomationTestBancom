@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Data;
 using System.Data.Odbc;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using AutomationTest.FitbankWeb3.Domain.Models.AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 

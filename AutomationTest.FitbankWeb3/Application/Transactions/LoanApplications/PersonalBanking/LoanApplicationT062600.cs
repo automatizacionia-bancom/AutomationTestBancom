@@ -84,7 +84,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.Locator(_locators.LocatorsT062600.MortgageProject).SelectOptionAsync(clientData.MortgageProject.GetDescription());
 
             // Selecionar Grado si lo requiere
-            if(await page.Locator(_locators.LocatorsT062600.MortgageGrade).IsEnabledAsync())
+            if (await page.Locator(_locators.LocatorsT062600.MortgageGrade).IsEnabledAsync())
                 await page.Locator(_locators.LocatorsT062600.MortgageGrade).SelectOptionAsync("Grado 1");
 
             // Ingresamos el valor estimado, cuota inicial y numero de cuotas
@@ -197,7 +197,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             }
 
             // Realizamos las aprobacion de verificacion domiciliaria y laboral
-            await ValidateDocumentationAsync(page, applicationNumber); 
+            await ValidateDocumentationAsync(page, applicationNumber);
             await ValidateDocumentationAsync(page, applicationNumber);
 
 

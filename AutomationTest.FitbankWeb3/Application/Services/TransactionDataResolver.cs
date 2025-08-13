@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Attributes;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 

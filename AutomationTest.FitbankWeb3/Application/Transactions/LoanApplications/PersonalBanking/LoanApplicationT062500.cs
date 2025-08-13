@@ -80,7 +80,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
 
             // Ingresamos el monto del préstamo y las cuotas
             await page.Locator(_locators.LocatorsT062500.LoanAmount).FillSimulatedAsync(clientData.LoanAmount.ToString(), "Enter");
-            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500 ,new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Models;
@@ -81,7 +75,7 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
                         Headless = _config.Headless,
                         MaxApprovalUser = _config.MaxApprovalUser,
                         ApplicationNumber = row.SafeField<string>("NumeroSolicitud") ?? string.Empty,
-                        Attempt = row.SafeField<int?>("Aprobacion") ?? 1,
+                        Attempt = row.SafeField<int?>("Aprobacion") ?? 0,
                         RecognizedApprovingUsers = ParseUsers(row.SafeField<string>("Usuarios") ?? string.Empty),
                     };
                 }

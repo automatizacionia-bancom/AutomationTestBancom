@@ -6,7 +6,6 @@ using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Output;
-using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
@@ -66,7 +65,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             {
                 State = WaitForSelectorState.Visible
             });
-            
+
             Transaction062800Type transacion062800Type = clientData.ProductGroup switch
             {
                 "05" => Transaction062800Type.Maxiprestamos,
@@ -83,7 +82,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             // Ingresamos el monto del préstamo y las cuotas
             await page.Locator(_locators.LocatorsT062800.LoanAmount).FillSimulatedAsync(clientData.LoanAmount.ToString(), "Enter");
-            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500,new LocatorWaitForOptions
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });

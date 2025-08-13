@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Application.Fixtures;
+﻿using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;

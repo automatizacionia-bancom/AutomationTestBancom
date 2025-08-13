@@ -1,31 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Data;
 using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 using System.Web;
 using AutomationTest.FitbankWeb3.Application.Enums;
-using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
-using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Playwright;
-using PdfSharpCore.Pdf;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.BusinessBanking
 {
-    public abstract class LoanApplicationBusinessBanking<TClientData> : LoanApplicationBase<TClientData> 
+    public abstract class LoanApplicationBusinessBanking<TClientData> : LoanApplicationBase<TClientData>
         where TClientData : IClientData
     {
         public LoanApplicationBusinessBanking(
@@ -70,9 +62,10 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
                     new PageWaitForFunctionOptions { Timeout = 90_000 }
                 );
 
-                await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
+                // Esperamos que desaparezca la etiqueta de procesando ...
+                await page.Locator(_locators.LocatorsGeneralDashboard.FormProcessing).WaitForAsync(delayBefore: 1000, new LocatorWaitForOptions
                 {
-                    State = WaitForSelectorState.Visible
+                    State = WaitForSelectorState.Hidden
                 });
             }
 
@@ -131,13 +124,14 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
             await page.ClickAndWaitAsync(
                 page.Locator(_locators.LocatorsBusinessBankingDashboard.ApprovalStatusList),
                 page.Locator(_locators.LocatorsGeneralDashboard.OK),
+                page.Locator(_locators.LocatorsGeneralDashboard.TransactionError),
                 new LocatorWaitForOptions
                 {
                     State = WaitForSelectorState.Visible,
                     Timeout = 30000 // 30 seconds timeout for the transaction to be processed
                 }, _outputAccessor.Output);
 
-            List<string> approvalStatusElements = await GetFirstColumnAsync(page, _locators.LocatorsBusinessBankingDashboard.ApprovalStatusElements);
+            List<string> approvalStatusElements = await GetFirstColumnAsync(page, _locators.LocatorsBusinessBankingDashboard.ApprovalStatusElementsPe);
 
             // Define las opciones en orden de prioridad
             string[] options = new[] { "APROBADO", "POR CONFIRMAR", "OBSERVADO" };
@@ -183,7 +177,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
                 FullPage = true
             });
 
-            string users = await page.Locator(_locators.LocatorsBusinessBankingDashboard.ApprovalUsersList).InnerTextAsync();
+            string users = await page.Locator(_locators.LocatorsBusinessBankingDashboard.ApprovalUsersListPe).InnerTextAsync();
 
             List<string> usersList = new List<string>();
             if (!string.IsNullOrWhiteSpace(users))

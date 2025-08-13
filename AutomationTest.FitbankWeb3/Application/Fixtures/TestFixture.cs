@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using AutomationTest.FitbankWeb3.Application.Adapters;
-using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
-using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Output;
 using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Application.Services;
 using AutomationTest.FitbankWeb3.Application.Services.ActionCoordination;
@@ -28,12 +21,8 @@ using AutomationTest.FitbankWeb3.Infrastructure.Adapters.FileProcessing;
 using AutomationTest.FitbankWeb3.Infrastructure.Configuration;
 using AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.ClientDataAdapters;
 using AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.Interfaces;
-using Meziantou.Xunit;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Application.Fixtures
 {
@@ -156,6 +145,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddScoped<ITransactionUsersSelectionService, TransactionUsersSelectionService>();
             services.AddScoped<IPdfConverter, CrossPlatformPdfConverter>();
             services.AddSingleton<ITestDataProvider, SpireTestDataProvider>();
+            services.AddSingleton<ICaseReportWriter, TxtCaseReportWriter>();
 
             services.AddSingleton<IFullWorkflowExecutor, FullWorkflowExecutor>();
             services.AddSingleton<ILoanApplicationExecutor, LoanApplicationExecutor>();
@@ -180,6 +170,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddTransient<ILoanApplication<ClientDataT062500>, LoanApplicationT062500>();
             services.AddTransient<ILoanApplication<ClientDataT062400>, LoanApplicationT062400>();
             services.AddTransient<ILoanApplication<ClientDataT072100Pe>, LoanApplicationT072100Pe>();
+            services.AddTransient<ILoanApplication<ClientDataT072100Be>, LoanApplicationT072100Be>();
 
             services.AddTransient<ILoanApproval<ClientDataT062900>, LoanApprovalPersonalBanking>();
             services.AddTransient<ILoanApproval<ClientDataT062800>, LoanApprovalPersonalBanking>();
@@ -187,8 +178,8 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddTransient<ILoanApproval<ClientDataT062600>, LoanApprovalPersonalBanking>();
             services.AddTransient<ILoanApproval<ClientDataT062500>, LoanApprovalPersonalBanking>();
             services.AddTransient<ILoanApproval<ClientDataT062400>, LoanApprovalPersonalBanking>();
-            services.AddTransient<ILoanApproval<ClientDataT072100Pe>, LoanApprovalBusinessBanking>();
-
+            services.AddTransient<ILoanApproval<ClientDataT072100Pe>, LoanApprovalSmallBusiness>();
+            services.AddTransient<ILoanApproval<ClientDataT072100Be>, LoanApprovalBankingBusiness>();
 
             // Adaptadores por cada TClientData
             services.AddTransient<IClientDataAdapter<ClientDataT062900>, ClientDataT062900Adapter>();
@@ -198,6 +189,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
             services.AddTransient<IClientDataAdapter<ClientDataT062500>, ClientDataT062500Adapter>();
             services.AddTransient<IClientDataAdapter<ClientDataT062400>, ClientDataT062400Adapter>();
             services.AddTransient<IClientDataAdapter<ClientDataT072100Pe>, ClientDataT072100PeAdapter>();
+            services.AddTransient<IClientDataAdapter<ClientDataT072100Be>, ClientDataT072100BeAdapter>();
 
             // 7) Construye el ServiceProvider
             var ServiceProvider = services.BuildServiceProvider();

@@ -5,7 +5,6 @@ using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Output;
-using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalBanking;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Models;
@@ -101,7 +100,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
             await page.Locator(_locators.LocatorsT062900.PayrollSource).SelectOptionAsync(clientData.PayrollSource.GetDescription());
 
             // Forma de desembolso
-            if(clientData.DisbursementType != DisbursementType.Unspecified)
+            if (clientData.DisbursementType != DisbursementType.Unspecified)
             {
                 await page.Locator(_locators.LocatorsT062900.DisbursementType).SelectOptionAsync(clientData.DisbursementType.GetDescription());
 

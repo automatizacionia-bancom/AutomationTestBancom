@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Primitives;
-
-namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
+﻿namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
 {
     public class LocatorRepositoryT062400
     {
@@ -19,7 +12,7 @@ namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
         public string ManagerElement { get; } = "#entorno-formulario > form:nth-child(10) > div > table > tbody > tr:nth-child(1) > td:nth-child(1)";
         public string LotNumber { get; } = "#c_txt_NumeroLote_0";
         public string ConsultSentinel { get; } = "#c_btnSentinel_0";
-        public string JewelTypeList { get; } = "#container_10 > div > table > tbody > tr:nth-child(1) > td:nth-child(3) > img";   
+        public string JewelTypeList { get; } = "#container_10 > div > table > tbody > tr:nth-child(1) > td:nth-child(3) > img";
         public string JewelTypeElement { get; } = "#entorno-formulario > form:nth-child(15) > div > table > tbody > tr:nth-child(1) > td:nth-child(1)";
         public string JewelSubTypeList { get; } = "#container_10 > div > table > tbody > tr:nth-child(1) > td:nth-child(5) > img";
         public string JewelSubTypeElement { get; } = "#entorno-formulario > form:nth-child(16) > div > table > tbody > tr:nth-child(1) > td:nth-child(1)";

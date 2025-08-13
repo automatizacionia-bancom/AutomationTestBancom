@@ -1,33 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
 using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
-using AutomationTest.FitbankWeb3.Application.LocatorRepository;
-using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
-using AutomationTest.FitbankWeb3.Application.Services;
-using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Playwright;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
-using PdfSharpCore.Pdf;
-using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalBanking
 {

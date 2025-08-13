@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
-using AutomationTest.FitbankWeb3.Domain.Models;
 using Microsoft.Playwright;
 using Xunit.Abstractions;
 
@@ -221,7 +216,7 @@ namespace AutomationTest.FitbankWeb3.Application.Extensions
                 outputHelper?.WriteLine($"El elemento no es editable: {locator.ToString()}");
             }
         }
-        public static async Task WaitForAsync(this ILocator locator, float delayBefore,LocatorWaitForOptions? options = null)
+        public static async Task WaitForAsync(this ILocator locator, float delayBefore, LocatorWaitForOptions? options = null)
         {
             await locator.Page.WaitForTimeoutAsync(delayBefore);
             await locator.WaitForAsync(options);
@@ -247,6 +242,59 @@ namespace AutomationTest.FitbankWeb3.Application.Extensions
             {
                 await locatorFill.Page.Keyboard.PressAsync(finalKeyboard);
             }
+        }
+        /// <summary>
+        /// Selects an option from a select element after normalizing both the target text and option texts.
+        /// Removes accents, converts to lowercase, and trims whitespace before matching.
+        /// </summary>
+        /// <param name="locator">The select element locator</param>
+        /// <param name="text">The text to match</param>
+        /// <param name="options">Optional selection options</param>
+        /// <returns>Array of selected option values</returns>
+        public static async Task SelectOptionFuzzyAsync(
+            this ILocator locator,
+            string text,
+            LocatorSelectOptionOptions? options = null)
+        {
+            string normalizedTarget = NormalizeText(text);
+            ILocator optionLocators = locator.Locator("option");
+            int optionCount = await optionLocators.CountAsync();
+
+            for (int i = 0; i < optionCount; i++)
+            {
+                ILocator option = optionLocators.Nth(i);
+                string optionText = await option.TextContentAsync() ?? string.Empty;
+                string normalizedOptionText = NormalizeText(optionText);
+
+                if (normalizedTarget == normalizedOptionText)
+                {
+                    await locator.SelectOptionAsync(optionText, options);
+
+                    return;
+                }
+            }
+
+            throw new PlaywrightException($"Option with text '{text}' not found");
+        }
+
+        private static string NormalizeText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
+
+            text = text.Trim().ToLowerInvariant();
+
+            // Remove accents
+            string normalizedString = text.Normalize(NormalizationForm.FormD);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (char c in normalizedString)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                    stringBuilder.Append(c);
+            }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
     }
 }

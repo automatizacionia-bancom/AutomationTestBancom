@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Application.Interfaces;
+﻿using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Services;
-using Meziantou.Xunit;
 using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Tests.CoreTest

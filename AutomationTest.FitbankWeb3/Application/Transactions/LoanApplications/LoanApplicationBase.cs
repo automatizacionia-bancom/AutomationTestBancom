@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
@@ -11,7 +6,6 @@ using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
-using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
@@ -86,11 +80,11 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
 
             await page.ClickAndWaitAsync(
                 page.Locator(_locators.LocatorsGeneralDashboard.F7Button),
-                page.Locator(_locators.LocatorsGeneralDashboard.OK_TransactionCorrect),
+                page.Locator(_locators.LocatorsGeneralDashboard.FormProcessing),
                 new LocatorWaitForOptions
                 {
                     Timeout = 60000, // 60 seconds timeout
-                    State = WaitForSelectorState.Visible
+                    State = WaitForSelectorState.Hidden
                 }, _outputAccessor.Output);
         }
         protected async Task TakeScreenshotPdfsAsync(

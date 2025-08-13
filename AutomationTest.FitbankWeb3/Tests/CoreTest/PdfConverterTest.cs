@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
-using AutomationTest.FitbankWeb3.Infrastructure.Adapters.FileProcessing;
+﻿using AutomationTest.FitbankWeb3.Infrastructure.Adapters.FileProcessing;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
-using PdfSharpCore.Pdf.IO;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 

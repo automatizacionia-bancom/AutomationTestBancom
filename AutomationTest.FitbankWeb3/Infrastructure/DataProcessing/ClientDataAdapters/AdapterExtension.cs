@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
 namespace AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.ClientDataAdapters
 {
-    public static  class AdapterExtension
+    public static class AdapterExtension
     {
         public static T? SafeField<T>(this DataRow row, string columnName)
         {

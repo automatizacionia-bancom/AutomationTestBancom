@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
+﻿using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Docnet.Core;
 using Docnet.Core.Models;
 using Docnet.Core.Readers;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using Spire.Pdf;
 
 namespace AutomationTest.FitbankWeb3.Infrastructure.Adapters.FileProcessing
 {

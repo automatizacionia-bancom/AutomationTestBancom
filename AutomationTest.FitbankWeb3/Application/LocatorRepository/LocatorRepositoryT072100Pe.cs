@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Primitives;
-
-namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
+﻿namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
 {
     public class LocatorRepositoryT072100Pe
     {
@@ -28,7 +20,7 @@ namespace AutomationTest.FitbankWeb3.Application.LocatorRepository
         public string Payday { get; } = "#c_txtDiaFijo_0";
         public string DisbursementType { get; } = "#c_cboFormaDesembolso_0";
         public string BankAccountList { get; } = "#container_14 > table > tbody > tr:nth-child(3) > td.columna_5 > img";
-        public string BankAccountElement { get; } = "#entorno-formulario > form:nth-child(15) > div > table > tbody > tr > td";
+        public string BankAccountElement { get; } = "#entorno-formulario > form:nth-child(15) > div > table > tbody > tr:nth-child(1) > td";
         public string BankAccountError { get; } = "#entorno-estatus-contenido:text('EL CLIENTE NO POSEE CUENTAS')";
         public string DisturbementPlaceList { get; } = "#container_14 > table > tbody > tr:nth-child(4) > td.columna_5 > img:nth-child(2)";
         public string DisturbementPlaceElement { get; } = "#entorno-formulario > form:nth-child(16) > div > table > tbody > tr:nth-child(1) > td:nth-child(1)";

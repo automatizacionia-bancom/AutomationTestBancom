@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Models;
@@ -19,6 +14,7 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
         private readonly ITestDataProvider _dataProvider;
         private readonly ITransactionDataResolver _resolver;
         private readonly ILoanApplicationOrchestrator _orchestrator;
+        //private readonly ICaseReportWriter _reportWriter;
         private readonly ITestOutputAccessor _outputAccessor;
 
         public LoanApplicationExecutor(
@@ -26,12 +22,14 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
             ITestDataProvider dataProvider,
             ITransactionDataResolver resolver,
             ILoanApplicationOrchestrator orchestrator,
+            //ICaseReportWriter reportWriter,
             ITestOutputAccessor outputAccessor)
         {
             _config = config;
             _dataProvider = dataProvider;
             _resolver = resolver;
             _orchestrator = orchestrator;
+            //_reportWriter = reportWriter;
             _outputAccessor = outputAccessor;
         }
         public async Task ExecuteWorkflow(LoanApplicationWorkflowModel<IClientData> fullLoanRequest)
@@ -42,6 +40,15 @@ namespace AutomationTest.FitbankWeb3.Application.Adapters
             }
 
             await ExecuteTypedTransactionAsync(fullLoanRequest);
+
+            //await _reportWriter.WriteAsync(new CaseReportModel
+            //{
+            //    CaseIndex = _config.TestCaseList.IndexOf(fullLoanRequest.ClientData) + 1,
+            //    ApplicationNumber = fullLoanRequest.ClientData.ApplicationNumber,
+            //    Success = true, // Aquí se puede mejorar para capturar el éxito real
+            //    Message = "Transacción completada con éxito",
+            //    Timestamp = DateTime.UtcNow
+            //});
         }
         public IEnumerable<LoanApplicationWorkflowModel<IClientData>> LoadCases()
         {

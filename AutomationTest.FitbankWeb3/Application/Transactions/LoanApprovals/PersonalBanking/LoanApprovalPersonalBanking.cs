@@ -1,29 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
-using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApprovalModels.Input;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApprovalModels.Output;
-using AutomationTest.FitbankWeb3.Application.Models.QueryModels;
-using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
-using AutomationTest.FitbankWeb3.Application.Services.ActionCoordination;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications;
-using AutomationTest.FitbankWeb3.Application.Transactions.StandardQuery;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Playwright;
-using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.PersonalBanking.PersonalBanking
 {
@@ -75,7 +61,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.PersonalBanking.Pe
             await page.Locator(_locators.LocatorsLogin.UsernameInput).FillAsync(loanAppproval.ApprovingUser);
             await page.Locator(_locators.LocatorsLogin.PasswordInput).FillAsync("fitbank123");
             await page.Locator(_locators.LocatorsLogin.SubmitButton).ClickAsync();
-            
+
             await page.Locator(_locators.LocatorsGeneralDashboard.TransactionInput).FillAsync("064000");
             await page.Locator(_locators.LocatorsGeneralDashboard.TransactionInput).PressAsync("Enter");
             await page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions

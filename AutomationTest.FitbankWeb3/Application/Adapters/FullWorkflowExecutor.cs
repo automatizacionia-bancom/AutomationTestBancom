@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Inbound;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AutomationTest.FitbankWeb3.Application.Adapters
 {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Application.Enums;
+﻿using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
 using AutomationTest.FitbankWeb3.Domain.Attributes;
 using AutomationTest.FitbankWeb3.Domain.Enums;

@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
-using System.Web;
-using AutomationTest.FitbankWeb3.Application.Enums;
+﻿using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
@@ -16,17 +6,10 @@ using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Output;
-using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
-using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
-using AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.PersonalBanking;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Models;
-using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Playwright;
-using PdfSharpCore.Pdf;
-using Spire.Doc;
-using Spire.Xls;
 
 namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.BusinessBanking
 {
@@ -181,6 +164,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
                 FullPage = true               // Captura toda la página, no solo la vista actual
             });
 
+
             // Evaluar la solicitud y obtener el PDF
             EvaluationResult evaluationResult = await EvaluationAndGetPdfAsync(
                 page,
@@ -190,7 +174,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
                 loanApplication.Headless);
 
             // Aprobamos la solicitud y obtenemos los usuarios aprobadores
-            List<string> usersList = await ApproveAndGetUsersAsync(page, loanApplication.EvidenceFolder); 
+            List<string> usersList = await ApproveAndGetUsersAsync(page, loanApplication.EvidenceFolder);
 
             // Convertir los PDF's a JPEG solo si es headless
             if (loanApplication.Headless)

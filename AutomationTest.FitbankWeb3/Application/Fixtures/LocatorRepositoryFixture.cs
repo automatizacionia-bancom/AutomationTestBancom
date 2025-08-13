@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Application.LocatorRepository;
-using PdfSharpCore.Pdf.Content.Objects;
+﻿using AutomationTest.FitbankWeb3.Application.LocatorRepository;
 
 namespace AutomationTest.FitbankWeb3.Application.Fixtures
 {
@@ -18,6 +12,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
         public LocatorRepositoryT062500 LocatorsT062500 { get; } = new LocatorRepositoryT062500();
         public LocatorRepositoryT062400 LocatorsT062400 { get; } = new LocatorRepositoryT062400();
         public LocatorRepositoryT072100Pe LocatorsT072100Pe { get; } = new LocatorRepositoryT072100Pe();
+        public LocatorRepositoryT072100Be LocatorsT072100Be { get; } = new LocatorRepositoryT072100Be();
         public LocatorRepositoryPersonalBankingDashboard LocatorsPersonalBankingDashboard { get; } = new LocatorRepositoryPersonalBankingDashboard();
         public LocatorRepositoryBusinessBankingDashboard LocatorsBusinessBankingDashboard { get; } = new LocatorRepositoryBusinessBankingDashboard();
         public LocatorRepositoryGeneralDashboard LocatorsGeneralDashboard { get; } = new LocatorRepositoryGeneralDashboard();

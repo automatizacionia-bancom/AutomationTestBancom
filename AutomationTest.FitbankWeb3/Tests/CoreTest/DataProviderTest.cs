@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutomationTest.FitbankWeb3.Application.Fixtures;
+﻿using AutomationTest.FitbankWeb3.Application.Fixtures;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
-using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
@@ -30,12 +24,12 @@ namespace AutomationTest.FitbankWeb3.Tests.CoreTest
         public void GetDataTest()
         {
             // Act
-            var data = _dataProvider.GetTestCases<ClientDataT072100Pe>(_config.ExcelPath, _config.SheetName);
+            var data = _dataProvider.GetTestCases<ClientDataT072100Be>(_config.ExcelPath, _config.SheetName);
 
             // Assert/Output
             foreach (var item in data)
             {
-                var properties = typeof(ClientDataT072100Pe).GetProperties();
+                var properties = typeof(ClientDataT072100Be).GetProperties();
                 foreach (var prop in properties)
                 {
                     var value = prop.GetValue(item);
@@ -44,7 +38,7 @@ namespace AutomationTest.FitbankWeb3.Tests.CoreTest
                 _output.WriteLine("-----");
             }
 
-            foreach(int caseTest in _config.TestCaseList)
+            foreach (int caseTest in _config.TestCaseList)
             {
                 _output.WriteLine($"Caso de prueba: {caseTest}");
             }

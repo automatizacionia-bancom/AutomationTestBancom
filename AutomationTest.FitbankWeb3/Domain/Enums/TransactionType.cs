@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AutomationTest.FitbankWeb3.Domain.Enums
+﻿namespace AutomationTest.FitbankWeb3.Domain.Enums
 {
     public enum TransactionType
     {
@@ -14,6 +8,7 @@ namespace AutomationTest.FitbankWeb3.Domain.Enums
         T062600, // Transacción de prestamos hipotecarios
         T062500, // Transacción de convenios FFAA
         T062400, // Transacción de credito pignoraticio
-        T072100Pe // Transacción de creditos de pequeño empresa
+        T072100Pe, // Transacción de creditos de pequeño empresa
+        T072100Be, // Transacción de creditos de banca empresa
     }
 }
