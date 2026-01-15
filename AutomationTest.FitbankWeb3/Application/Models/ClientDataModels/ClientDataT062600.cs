@@ -21,6 +21,7 @@ namespace AutomationTest.FitbankWeb3.Application.Models.ClientDataModels
         public required double DownPayment { get; set; } = 0.0;
         public required int LoanInstallments { get; set; } = 0;
         public required double LoanRate { get; set; } = 0.0;
+        public required BoundOptionsType BoundOptions { get; set; } = BoundOptionsType.Unspecified;
         public required MortgageBondType MortgageBond { get; set; } = MortgageBondType.SinBono;
         public required GuaranteeType GuaranteeType { get; set; } = GuaranteeType.SinGarantia;
         public required double Income { get; set; } = 0.0;

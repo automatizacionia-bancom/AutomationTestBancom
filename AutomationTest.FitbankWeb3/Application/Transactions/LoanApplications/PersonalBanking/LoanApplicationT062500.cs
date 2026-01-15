@@ -152,6 +152,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
             // Ingresar los datos de ingresos del cliente si es necesario
             await AssingAdditonalIncomeAsync(page, clientData);
 
+            await page.WaitForTimeoutAsync(30000); // Ingresar represtamo
+
             // Evaluar la solicitud de préstamo y esperamos el resultado de la evaluación, tomando capturas de pantalla en el proceso
             await page.ClickAndWaitAsync(
                 page.Locator(_locators.LocatorsT062500.EvaluateButton),
@@ -225,8 +227,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
             await page.Locator(_locators.LocatorsT062500.IncomeAssets).FillIfEditableAsync(clientData.Income.ToString());
             await page.Locator(_locators.LocatorsT062500.IncomeAssets).PressAsync("Enter");
 
-            await page.Locator(_locators.LocatorsT062500.IncomeOther).FillAsync(clientData.Income.ToString());
-            await page.Locator(_locators.LocatorsT062500.IncomeOther).PressAsync("Enter");
+            //await page.Locator(_locators.LocatorsT062500.IncomeOther).FillAsync(clientData.Income.ToString());
+            //await page.Locator(_locators.LocatorsT062500.IncomeOther).PressAsync("Enter");
 
             // Presionar F12 para guardar los cambios
             await page.ClickAndWaitAsync(

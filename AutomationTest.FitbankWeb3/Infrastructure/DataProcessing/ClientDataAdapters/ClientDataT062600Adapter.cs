@@ -26,6 +26,7 @@ namespace AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.ClientDataAda
                 LoanRate = row.SafeField<double?>("Tasa") ?? 0.0,
                 GuaranteeType = row.SafeField<GuaranteeType?>("Garantia") ?? GuaranteeType.SinGarantia,
                 Income = row.SafeField<double?>("IngresoNeto") ?? 0.0,
+                BoundOptions = row.SafeField<BoundOptionsType?>("OpcionDeBono") ?? BoundOptionsType.Unspecified,
                 MortgageBond = row.SafeField<MortgageBondType?>("Bono") ?? MortgageBondType.SinBono,
                 ModifyLoanApplication = row.SafeField<ModifyLoanApplication?>("ModificarSolicitud") ?? ModifyLoanApplication.Default,
                 RequestState = row.SafeField<RequestStatus?>("TipoEstatus") ?? RequestStatus.APROBAR,

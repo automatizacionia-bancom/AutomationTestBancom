@@ -8,6 +8,7 @@ namespace AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum
         [Description("Prop. Menor")] PropMenor,
         [Description("Garantía Líquida")] GarantiaLiquida,
         [Description("Mid Market Regular")] MidMarketRegular,
+        [Description("Factoring")] Factoring,
         Default
     }
 }

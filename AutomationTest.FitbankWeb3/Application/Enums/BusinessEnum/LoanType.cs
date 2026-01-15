@@ -4,5 +4,6 @@
     {
         Prestamo,
         Represtamo,
+        Paralelo
     }
 }

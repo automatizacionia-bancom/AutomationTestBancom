@@ -180,7 +180,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.PersonalBanking.Pe
             // Ejecutamos en bucle F7 para verificar los cambios en el fitbank, estos pueden tardar en reflejarse
             if (approvalStatus == ApprovalStatus.APROBADO)
             {
-                for (int i = 0; i < 15; i++)
+                for (int i = 0; i < 20; i++)
                 {
                     string approvalProcess = await page.Locator(_locators.LocatorsPersonalBankingDashboard.ApprovalProcess).InputValueAsync();
 

@@ -14,6 +14,8 @@ namespace AutomationTest.FitbankWeb3.Application.Models.ClientDataModels
         public required int Address { get; set; } = 1;
         public required double RMG { get; set; } = 0.0;
         public required ClientType ClientType { get; set; } = ClientType.A;
+        public required bool FinAceptable { get; set; } = false;
+        public required BankBusinessType BusinessType { get; set; } = BankBusinessType.Default;
         public required GuaranteeType GuaranteeType { get; set; } = GuaranteeType.SinGarantia;
         public required ModifyLoanApplication ModifyLoanApplication { get; set; } = ModifyLoanApplication.Default;
     }

@@ -178,6 +178,9 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
                 await GetImgFromPdfDocument(loanApplication, "4. PRT"); // Convertir el PDF del PRT a JPEG
             }
 
+            //await page.PauseAsync();
+
+
             return new LoanApplicationResultT062900
             {
                 ApplicationNumber = applicationNumber,

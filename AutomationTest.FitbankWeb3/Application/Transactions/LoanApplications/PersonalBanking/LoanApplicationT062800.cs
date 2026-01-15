@@ -75,6 +75,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.Locator(_locators.LocatorsT062800.ManagerList).ClickAsync();
             await page.Locator(_locators.LocatorsT062800.ManagerElement).ClickAsync();
+            //await page.WaitForTimeoutAsync(15_000);//     campania 3 - 0000341741  Campania 11 - 9000000042
+
 
             await page.Locator(_locators.LocatorsT062800.LoanTypeList).ClickAsync();
             await page.Locator(_locators.LocatorsGeneralDashboard.ListElement(clientData.LoanType.ToString())).ClickAsync();

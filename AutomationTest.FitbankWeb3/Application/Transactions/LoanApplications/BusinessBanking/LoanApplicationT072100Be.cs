@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Globalization;
 using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
 using AutomationTest.FitbankWeb3.Application.Extensions;
@@ -16,7 +17,6 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
 {
     public class LoanApplicationT072100Be : LoanApplicationBusinessBanking<ClientDataT072100Be>
     {
-        private static readonly Random _rnd = new Random();
         public LoanApplicationT072100Be(
             LocatorRepositoryFixture locators,
             IPdfConverter pdfConverter,
@@ -65,15 +65,34 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
                 });
             }
 
-            // Obtener el tipo de propuesta
-            string creditProposalString = await page.Locator(_locators.LocatorsT072100Be.CreditProposal).InputValueAsync();
+            // Seleccionar tipo de propuesta
+            await page.Locator("tr:has-text('Tipo Propuesta') img.asistente-icono").ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Visible
+            });
+            if (await page.Locator(_locators.LocatorsGeneralDashboard.ListElement(clientData.BusinessType.GetDescription())).IsVisibleAsync())
+            {
+                await page.Locator(_locators.LocatorsGeneralDashboard.ListElement(clientData.BusinessType.GetDescription())).ClickAsync();
+            }
+            else
+            {
+                throw new Exception("No se encontró el tipo de propuesta especificado para el cliente actual.");
+            }
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Visible
+            });
 
-            // Clean up the string to remove special characters before parsing
-            string cleanedCreditProposalString = new string(creditProposalString.Where(char.IsLetterOrDigit).ToArray());
-            if (!Enum.TryParse<BankBusinessType>(cleanedCreditProposalString, ignoreCase: true, out BankBusinessType creditProposal))
-                creditProposal = BankBusinessType.Default;
+            //// Obtener el tipo de propuesta
+            //string creditProposalString = await page.Locator(_locators.LocatorsT072100Be.CreditProposal).InputValueAsync();
 
-            _outputAccessor.Output.WriteLine($"Tipo de segmento del cliente: {creditProposal}");
+            //// Limpiamos el texto del tipo de propuesta y lo convertimos a enum
+            //string cleanedCreditProposalString = new string(creditProposalString.Where(char.IsLetterOrDigit).ToArray());
+            //if (!Enum.TryParse<BankBusinessType>(cleanedCreditProposalString, ignoreCase: true, out BankBusinessType creditProposal))
+            //    creditProposal = BankBusinessType.Default;
+
+            //_outputAccessor.Output.WriteLine($"Tipo de segmento del cliente: {creditProposal}");
 
             await page.Locator(_locators.LocatorsT072100Be.AdressList).ClickAsync();
             await page.Locator(_locators.LocatorsT072100Be.AddressElement).ClickAsync();
@@ -88,11 +107,14 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
             await AssingClientRatingAsync(page);
 
             // Ingreso de Riesgo maximo
-            await page.Locator(_locators.LocatorsT072100Be.Rma).FillAsync(clientData.RMG.ToString());
+            await page.Locator(_locators.LocatorsT072100Be.Rma).FillAsync(clientData.RMG.ToString(CultureInfo.InvariantCulture));
 
             // Ingreso de Riesgo maximo de grupo
-            double rmg = clientData.RMG * 1.2; // 120% del monto solicitado
-            await page.Locator(_locators.LocatorsT072100Be.Rmg).FillAsync(rmg.ToString());
+            double rmg = clientData.RMG;// * 1.2; // 120% del monto solicitados
+            await page.Locator(_locators.LocatorsT072100Be.Rmg).FillAsync(rmg.ToString(CultureInfo.InvariantCulture));
+
+            // Selecionar fin aceptable si se requiere
+            if (clientData.FinAceptable) await page.Locator(_locators.LocatorsT072100Be.FirstCheckbox).CheckAsync();
 
             await page.WaitForTimeoutAsync(500); // Esperar medio segundo para asegurar que los cambios se reflejen
             using (var handle = _actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.LoanApplicationCoordinator).CreateHandle())

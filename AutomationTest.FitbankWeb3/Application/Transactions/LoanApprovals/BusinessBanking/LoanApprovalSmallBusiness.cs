@@ -99,6 +99,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
                     }, _outputAccessor.Output);
             }
 
+            string currentActivity = await page.Locator(_locators.LocatorsBusinessBankingDashboard.TransactionCurrentActivity).InputValueAsync();
+
             await page.ClickAndWaitAsync(
                 page.Locator(_locators.LocatorsBusinessBankingDashboard.ApplicationNumberSearchTransactionResult),
                 page.Locator(_locators.LocatorsGeneralDashboard.OK_TransactionCorrect),
@@ -132,9 +134,11 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
             // Define las opciones en orden de prioridad
             string[] options = new[] { "APROBADO", "POR CONFIRMAR", "OBSERVADO" };
 
-            //bool hasReconsidered = await AnyInputInTableContainsAsync(page, "RECONSIDERADO");
 
-            //if (!hasReconsidered) // Si no hay "RECONSIDERADO" en la tabla, lo agrega al inicio de las opciones como prioridad
+            /// Seleciona RECONSIDERADO durante el rpoceso de APROBACIÓN AUTONOMÍA
+            //string autonomiaTag = "APROBACIÓN AUTONOMÍA";
+            //bool isObserved = currentActivity == autonomiaTag && await CountInputOccurrencesInTableAsync(page, autonomiaTag) == 1;
+            //if (isObserved)
             //{
             //    var list = options.ToList();
             //    list.Insert(0, "RECONSIDERADO");      // inserta al inicio
@@ -215,6 +219,24 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
                 ApprovalStatus = approvalStatus
             };
         }
+        private async Task<int> CountInputOccurrencesInTableAsync(IPage page, string needle)
+        {
+            if (string.IsNullOrWhiteSpace(needle)) return 0;
+            needle = needle.Trim().ToLowerInvariant();
+
+            var inputs = page.Locator("table.tabla.table-group tbody tr.clonada input.record.input[type='text']");
+            var count = await inputs.CountAsync();
+
+            int occurrences = 0;
+            for (int i = 0; i < count; i++)
+            {
+                var val = await inputs.Nth(i).InputValueAsync();
+                if (!string.IsNullOrEmpty(val) && val.ToLowerInvariant().Contains(needle))
+                    occurrences++;
+            }
+
+            return occurrences;
+        }
         private async Task<bool> AnyInputInTableContainsAsync(IPage page, string needle)
         {
             if (string.IsNullOrWhiteSpace(needle)) return false;
@@ -277,6 +299,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
             {
                 State = WaitForSelectorState.Visible
             });
+
+            // await page.PauseAsync();
         }
         private async Task<List<string>> GetFirstColumnAsync(IPage page, string tbodySelector)
         {

@@ -62,6 +62,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             await page.Locator(_locators.LocatorsT062700.AdressList).ClickAsync();
             await page.Locator(_locators.LocatorsT062700.AddressElement).ClickAsync();
+            //await page.WaitForTimeoutAsync(10000); // Agregar conyugue manual
 
             // Seleccionamos el producto, gestor y tipo de préstamo
             await page.Locator(_locators.LocatorsT062700.ProductList).ClickAsync();

@@ -17,6 +17,8 @@ namespace AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.ClientDataAda
                 Address = row.SafeField<int?>("Direccion") ?? 1,
                 RMG = row.SafeField<double?>("RMG") ?? 0.0,
                 ClientType = row.SafeField<ClientType?>("TipoCliente") ?? ClientType.A,
+                FinAceptable = row.SafeField<bool?>("FinAceptable") ?? false,
+                BusinessType = row.SafeField<BankBusinessType?>("TipoNegocio") ?? BankBusinessType.Default,
                 GuaranteeType = row.SafeField<GuaranteeType?>("TipoGarantia") ?? GuaranteeType.SinGarantia,
                 ModifyLoanApplication = row.SafeField<ModifyLoanApplication?>("ModificarSolicitud") ?? ModifyLoanApplication.Default,
             };

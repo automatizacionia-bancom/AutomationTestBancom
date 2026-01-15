@@ -215,7 +215,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
 
             return results;
         }
-        protected async Task DisturbementPlaceInterceptor(IPage page)
+        protected async Task DisturbementPlaceInterceptor(IPage page, string placeCode)
         {
             bool hasModified = false;
             string pattern = "**/proc/lv";
@@ -286,7 +286,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
                         {
                             if (field?["elementName"]?.ToString() == "txtCodAgencia")
                             {
-                                field["value"] = "45";
+                                field["value"] = placeCode;
                                 break;
                             }
                         }

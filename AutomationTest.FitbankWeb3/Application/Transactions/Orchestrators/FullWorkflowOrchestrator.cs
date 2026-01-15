@@ -48,8 +48,14 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             page.SetDefaultNavigationTimeout(_transactionSettings.GeneralTimout);
 
             //using var userTurnSession = _userTurnCoordinatorService.RegisterBranch();
+
             // Preparamos el watcher (esperará indefinidamente hasta que aparezca)
-            var watcherTask = WatcherAsync(page, _locators.LocatorsGeneralDashboard.TransactionNotAllowed);
+            IEnumerable<Task> watchers = new List<Task>
+            {
+                WatcherAsync(page, _locators.LocatorsGeneralDashboard.TransactionNotAllowed),
+                WatcherAsync(page, _locators.LocatorsGeneralDashboard.PageErrorMessage)
+            };
+
             try
             {
                 var mainFlowTask = Task.Run(async () =>
@@ -71,21 +77,22 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
                         loanRequest.MaxApprovalUser);//, userTurnSession);
                 });
 
-                // Obtenemos la terea que termina primero, ya sea el flujo principal o el watcher
-                var winner = await Task.WhenAny(mainFlowTask, watcherTask);
+                // Combinamos todas las tareas en una sola colección
+                IEnumerable<Task> taks = Enumerable.Concat(watchers, new[] { mainFlowTask });
 
-                // Si el watcher es el que terminó primero, significa que detectó el elemento inesperado
-                if (winner == watcherTask)
+                // Obtenemos la terea que termina primero, ya sea el flujo principal o un watcher
+                var winner = await Task.WhenAny(taks);
+
+                if (winner == mainFlowTask)
                 {
-                    // El watcher detectó el elemento: re-lanza su excepción y muere aquí
-                    await watcherTask;
+                    // El flujo principal acabó sin que apareciera
+                    await mainFlowTask;
                 }
                 else
                 {
-                    // El flujo principal acabó sin que apareciera → limpiamos el watcher
-                    // (no hay forma de cancelar WaitForSelectorAsync, así que lo observamos)
-                    _ = watcherTask.ContinueWith(_ => { }, TaskScheduler.Default);
-                    await mainFlowTask;
+                    // Si el watcher es el que terminó primero, significa que detectó el elemento inesperado
+                    //  re-lanza su excepción y muere aquí
+                    await winner;
                 }
             }
             catch (Exception ex)

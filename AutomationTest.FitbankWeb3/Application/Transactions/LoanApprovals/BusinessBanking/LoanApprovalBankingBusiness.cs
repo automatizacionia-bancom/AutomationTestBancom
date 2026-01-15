@@ -140,14 +140,16 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
             // Define las opciones en orden de prioridad
             string[] options = new[] { "APROBADO", "POR CONFIRMAR", "OBSERVADO" };
 
-            //bool hasReconsidered = await AnyInputInTableContainsAsync(page, "RECONSIDERADO");
-
-            //if (!hasReconsidered) // Si no hay "RECONSIDERADO" en la tabla, lo agrega al inicio de las opciones como prioridad
-            //{
-            //    var list = options.ToList();
-            //    list.Insert(0, "RECONSIDERADO");      // inserta al inicio
-            //    options = list.ToArray();
-            //}
+            /// Seleciona Observado durante el rpoceso de APROBACIÓN AUTONOMÍA
+            string autonomiaTag = "APROBACIÓN AUTONOMÍA";
+            bool isObserved = currentActivity == autonomiaTag && await CountInputOccurrencesInTableAsync(page, autonomiaTag) == 1;
+            if (isObserved)
+            {
+                var list = options.ToList();
+                list.Insert(0, "OBSERVADO");      // inserta al inicio
+                options = list.ToArray();
+            }
+            ///
 
             // Elige la primera que esté presente en approvalStatusElements o, de lo contrario, la última
             string selected = options.FirstOrDefault(opt => approvalStatusElements.Contains(opt))
@@ -155,6 +157,20 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
 
             // Haz click en el elemento correspondiente
             await page.Locator(_locators.LocatorsGeneralDashboard.ListElement(selected)).ClickAsync();
+
+            // Selecionamos el tipo de observacion de ser necesario
+            if (isObserved)
+            {
+                await page.ClickAndWaitAsync(
+                    page.Locator("#container_4 > table > tbody > tr:nth-child(1) > td.columna_4 > img"),
+                    page.Locator(_locators.LocatorsGeneralDashboard.OK),
+                    new LocatorWaitForOptions
+                    {
+                        State = WaitForSelectorState.Visible,
+                        Timeout = 30000 // 30 seconds timeout for the transaction to be processed
+                    }, _outputAccessor.Output);
+                await page.Locator(_locators.LocatorsGeneralDashboard.ListElement("0001")).ClickAsync();
+            }
 
             await page.Locator(_locators.LocatorsBusinessBankingDashboard.ApprovalComment).FillAsync("QA");
 
@@ -223,21 +239,39 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
                 ApprovalStatus = approvalStatus
             };
         }
-        private async Task<bool> AnyInputInTableContainsAsync(IPage page, string needle)
+        //private async Task<bool> AnyInputInTableContainsAsync(IPage page, string needle)
+        //{
+        //    if (string.IsNullOrWhiteSpace(needle)) return false;
+        //    needle = needle.Trim().ToLowerInvariant();
+
+        //    var inputs = page.Locator("table.tabla.table-group tbody tr.clonada input.record.input.none[type='text']");
+        //    var count = await inputs.CountAsync();
+
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        var val = await inputs.Nth(i).InputValueAsync(); // lee la propiedad value actual
+        //        if (!string.IsNullOrEmpty(val) && val.ToLowerInvariant().Contains(needle))
+        //            return true;
+        //    }
+        //    return false;
+        //}
+        private async Task<int> CountInputOccurrencesInTableAsync(IPage page, string needle)
         {
-            if (string.IsNullOrWhiteSpace(needle)) return false;
+            if (string.IsNullOrWhiteSpace(needle)) return 0;
             needle = needle.Trim().ToLowerInvariant();
 
-            var inputs = page.Locator("table.tabla.table-group tbody tr.clonada input.record.input.none[type='text']");
+            var inputs = page.Locator("table.tabla.table-group tbody tr.clonada input.record.input[type='text']");
             var count = await inputs.CountAsync();
 
+            int occurrences = 0;
             for (int i = 0; i < count; i++)
             {
-                var val = await inputs.Nth(i).InputValueAsync(); // lee la propiedad value actual
+                var val = await inputs.Nth(i).InputValueAsync();
                 if (!string.IsNullOrEmpty(val) && val.ToLowerInvariant().Contains(needle))
-                    return true;
+                    occurrences++;
             }
-            return false;
+
+            return occurrences;
         }
         private async Task AssingGuaranteeAndBusinessPlanAsync(IPage page, LoanApprovalModel loanAppproval)
         {
@@ -271,9 +305,9 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
 
             double guaranteeValue = rmgValue * 1.5;
 
-            await page.Locator(_locators.LocatorsBusinessBankingDashboard.GuaranteeTaxAmount).FillAsync(guaranteeValue.ToString());
-            await page.Locator(_locators.LocatorsBusinessBankingDashboard.GuaranteeComertialValue).FillAsync(guaranteeValue.ToString());
-            await page.Locator(_locators.LocatorsBusinessBankingDashboard.GuaranteeFinalValue).FillAsync(guaranteeValue.ToString());
+            await page.Locator(_locators.LocatorsBusinessBankingDashboard.GuaranteeTaxAmount).FillAsync(guaranteeValue.ToString(CultureInfo.InvariantCulture));
+            await page.Locator(_locators.LocatorsBusinessBankingDashboard.GuaranteeComertialValue).FillAsync(guaranteeValue.ToString(CultureInfo.InvariantCulture));
+            await page.Locator(_locators.LocatorsBusinessBankingDashboard.GuaranteeFinalValue).FillAsync(guaranteeValue.ToString(CultureInfo.InvariantCulture));
 
             await page.Locator(_locators.LocatorsBusinessBankingDashboard.GuaranteeDate).FillAsync(DateTime.Now.ToString(DateTime.Now.ToString("dd-MM-yyyy")));
 
@@ -315,9 +349,9 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
 
             await page.Locator(_locators.LocatorsBusinessBankingDashboard.LineProductCoinType).SelectOptionFuzzyAsync(coinType.ToString());
 
-            double lineProductValue = rmgValue * 0.2;
+            double lineProductValue = rmgValue * 0.95;
 
-            await page.Locator(_locators.LocatorsBusinessBankingDashboard.LineProductAmount).FillAsync(lineProductValue.ToString());
+            await page.Locator(_locators.LocatorsBusinessBankingDashboard.LineProductAmount).FillAsync(lineProductValue.ToString(CultureInfo.InvariantCulture));
 
             await page.Locator(_locators.LocatorsBusinessBankingDashboard.LineProductExpirationDay).FillAsync(DateTime.Now.AddYears(1).ToString("dd-MM-yyyy"));
 

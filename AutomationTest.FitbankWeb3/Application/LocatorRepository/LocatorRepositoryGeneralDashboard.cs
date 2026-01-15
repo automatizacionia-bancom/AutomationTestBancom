@@ -13,6 +13,7 @@
         public string TransactionError { get; } = "#entorno-estatus-contenido.error";
         public string TransactionNotAllowed { get; } = "#entorno-estatus-contenido:has-text('TRANSACCION NO PERMITIDA PARA ESTE ROL')";
         public string NonAuthorizingUsers { get; } = "#entorno-estatus-contenido:text('NO TIENE AUTORIZADORES')";
+        public string PageErrorMessage { get; } = "#mensajeError";
         public string ListElement(string elementName) => $"td:text-matches(\"^{elementName}$\", \"\")";
         public string ListElementPattern(string elementName) => $"td:text-matches(\"{elementName}\")";
     }

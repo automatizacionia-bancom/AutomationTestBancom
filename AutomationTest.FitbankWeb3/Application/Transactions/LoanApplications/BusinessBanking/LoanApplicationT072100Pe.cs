@@ -1,4 +1,5 @@
-﻿using AutomationTest.FitbankWeb3.Application.Enums;
+﻿using System.Globalization;
+using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
@@ -76,7 +77,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
 
             // Ingresamos el tipo de cliente y  persona de contacto
             await page.Locator(_locators.LocatorsT072100Pe.ClientType).SelectOptionAsync(clientData.ClientType.GetDescription());
-
+            //await page.PauseAsync();
             await page.Locator(_locators.LocatorsT072100Pe.ContactList).ClickAsync();
             await page.Locator(_locators.LocatorsT072100Pe.ContactElement).ClickAsync();
 
@@ -90,8 +91,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
                 State = WaitForSelectorState.Visible
             });
 
-            await page.Locator(_locators.LocatorsT072100Pe.LoanTypeList).ClickAsync();
-            await page.Locator(_locators.LocatorsGeneralDashboard.ListElement(clientData.LoanType.ToString())).ClickAsync();
+            // Selecionar tipo de prestamo
+            await page.Locator(_locators.LocatorsT072100Pe.LoanTypeList).SelectOptionAsync(clientData.LoanType.ToString().ToUpper());
 
             // Seleccionamos Seguro Desgravamen
             await page.Locator(_locators.LocatorsT072100Pe.DesgravamentType).SelectOptionAsync(InsuranceType.Propio.GetDescription());
@@ -102,7 +103,9 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
             });
 
             // Ingreso de monto y plazo del préstamo
-            await page.Locator(_locators.LocatorsT072100Pe.LoanAmount).FillAsync(clientData.LoanAmount.ToString());
+            _outputAccessor.Output.WriteLine($"Riesgo maximo: {clientData.LoanAmount}");
+
+            await page.Locator(_locators.LocatorsT072100Pe.LoanAmount).FillAsync(clientData.LoanAmount.ToString(CultureInfo.InvariantCulture));
             await page.Locator(_locators.LocatorsT072100Pe.Identification).PressAsync("Enter");
 
             await page.Locator(_locators.LocatorsT072100Pe.LoanInstallments).FillSimulatedAsync(clientData.LoanInstallments.ToString(), "Enter");
@@ -121,14 +124,14 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
             await SelectDisbursementType(page, clientData.DisbursementType);
 
             // Lugar de desembolso
-
-            await DisturbementPlaceInterceptor(page);
+            await DisturbementPlaceInterceptor(page, "45");
             await page.Locator(_locators.LocatorsT072100Pe.DisturbementPlaceList).ClickAsync();
             await page.Locator(_locators.LocatorsT072100Pe.DisturbementPlaceElement).ClickAsync();
 
             // Ingreso de Riesgo maximo de grupo
             double rmg = clientData.LoanAmount * 1.2; // 120% del monto solicitado
-            await page.Locator(_locators.LocatorsT072100Pe.Rmg).FillAsync(rmg.ToString());
+            _outputAccessor.Output.WriteLine($"Riesgo maximo de grupo: {rmg}");
+            await page.Locator(_locators.LocatorsT072100Pe.Rmg).FillAsync(rmg.ToString(CultureInfo.InvariantCulture));
 
             // Ingreso de riesgo de cliente
             string clienRisk = await page.Locator(_locators.LocatorsT072100Pe.RiskType).InputValueAsync();
@@ -157,6 +160,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
             _outputAccessor.Output.WriteLine($"Solicitud: {applicationNumber}");
 
             await AssingGuaranteeAsync(page, loanApplication);
+
+            await AssingReLoan(page, loanApplication);
 
             await page.ScreenshotAsync(new PageScreenshotOptions
             {
@@ -217,8 +222,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
             await page.Locator(_locators.LocatorsT072100Pe.GuaranteeCoinType).SelectOptionAsync(CoinType.Soles.ToString());
 
             double guaranteeValue = loanApplication.ClientData.LoanAmount * 1.2;
-            await page.Locator(_locators.LocatorsT072100Pe.GuaranteeTaxAmount).FillAsync(guaranteeValue.ToString());
-            await page.Locator(_locators.LocatorsT072100Pe.GuaranteeAmount).FillAsync(guaranteeValue.ToString());
+            await page.Locator(_locators.LocatorsT072100Pe.GuaranteeTaxAmount).FillAsync(guaranteeValue.ToString(CultureInfo.InvariantCulture));
+            await page.Locator(_locators.LocatorsT072100Pe.GuaranteeAmount).FillAsync(guaranteeValue.ToString(CultureInfo.InvariantCulture));
             await page.Locator(_locators.LocatorsT072100Pe.GuaranteeDate).FillAsync(DateTime.Now.ToString("dd/MM/yyyy"));
             await page.Locator(_locators.LocatorsT072100Pe.GuaranteeDescription).FillAsync("QA");
 
@@ -268,6 +273,86 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
                         Timeout = 60000, // 60 seconds timeout
                         State = WaitForSelectorState.Visible
                     }, _outputAccessor.Output);
+        }
+        private async Task AssingReLoan(IPage page, LoanApplicationWorkflowModel<ClientDataT072100Pe> loanApplication)
+        {
+            if (!loanApplication.ClientData.LoanType.Equals(LoanType.Represtamo))
+                return;
+
+            await page.Locator(_locators.LocatorsT072100Pe.ReLoanButton).ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Visible
+            });
+
+            await SeleccionarCompraSegunUltimaCuotaAsync(page);
+            //await page.WaitForTimeoutAsync(10000);
+            await page.WaitForTimeoutAsync(500);
+
+            // Presionar F12 para guardar los cambios
+            await page.ClickAndWaitAsync(
+                    page.Locator(_locators.LocatorsGeneralDashboard.F12Button),
+                    page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect),
+                    page.Locator(_locators.LocatorsGeneralDashboard.TransactionError),
+                    new LocatorWaitForOptions
+                    {
+                        Timeout = 60000, // 60 seconds timeout
+                        State = WaitForSelectorState.Visible
+                    }, _outputAccessor.Output);
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Visible
+            });
+
+            await page.ScreenshotAsync(new PageScreenshotOptions
+            {
+                Path = Path.Combine(loanApplication.EvidenceFolder, "5. Represtamo.jpeg"),         // Ruta donde se guarda la imagen
+                FullPage = true               // Captura toda la página, no solo la vista actual
+            });
+
+            await page.Locator(_locators.LocatorsT072100Pe.ReLoanButtonReturn).ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Visible
+            });
+
+            await page.ClickAndWaitAsync(
+                page.Locator(_locators.LocatorsGeneralDashboard.F12Button),
+                page.Locator(_locators.LocatorsGeneralDashboard.OK),
+                page.Locator(_locators.LocatorsGeneralDashboard.TransactionError),
+                new LocatorWaitForOptions
+                {
+                    Timeout = 60000, // 60 seconds timeout
+                    State = WaitForSelectorState.Visible
+                }, _outputAccessor.Output);
+            //await page.PauseAsync();
+        }
+        private async Task SeleccionarCompraSegunUltimaCuotaAsync(IPage page)
+        {
+            int ultimoIndiceValido = -1;
+
+            // Asumimos que los índices son consecutivos desde 0
+            for (int i = 0; i < 100; i++)
+            {
+                var cuota = page.Locator($"#c_txtCuota_{i}");
+
+                // Si ya no existe el input, salimos del loop
+                if (await cuota.CountAsync() == 0)
+                    break;
+
+                var valor = (await cuota.InputValueAsync()).Trim();
+
+                if (valor != "0.00")
+                {
+                    ultimoIndiceValido = i;
+                    break;
+                }
+            }
+
+            if (ultimoIndiceValido >= 0)
+            {
+                await page.CheckAsync($"#c_ckCompra_{ultimoIndiceValido}");
+            }
         }
         private async Task SelectDisbursementType(IPage page, DisbursementType disbursementType)
         {

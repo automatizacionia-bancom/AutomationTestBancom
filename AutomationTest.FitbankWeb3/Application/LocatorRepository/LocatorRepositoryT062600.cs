@@ -20,7 +20,8 @@
         public string FinancedAmount { get; } = "#c_txtMtoPrestamo_0";
         public string LoanRate { get; } = "#c_txtTasaNegociable1_0";
         public string ExternalEvaluation { get; } = "#c_txtEvaluacionExt_0";
-        public string MortgageBondList { get; } = "#container_6 > div > table > tbody > tr:nth-child(1) > td.record.input.usaIcono.list-of-values > img";
+        public string BoundOptionsList { get; } = "#c_cbOpcion_0";
+        public string MortgageBondList { get; } = "#container_7 > div > table > tbody > tr:nth-child(1) > td.record.input.usaIcono.list-of-values > img";
         public string CreditDataLabel { get; } = "#entorno-formulario > div.entorno-html > form > fieldset:nth-child(5) > legend";
         public string ApplicationNumber { get; } = "#c_txtCsolicitud_0";
         public string IncomeButtton { get; } = "span:has-text('Ingresos y Dsctos.')";
