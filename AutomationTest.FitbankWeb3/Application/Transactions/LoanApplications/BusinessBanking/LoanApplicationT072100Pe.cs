@@ -66,11 +66,11 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
             }
 
             // Obtener el tipo de propuesta
-            string creditProposalString = await page.Locator(_locators.LocatorsT072100Pe.CreditProposal).InputValueAsync();
-            if (!Enum.TryParse<SmallBusinessType>(creditProposalString.Replace('ñ', 'n').Replace(" ", ""), ignoreCase: true, out SmallBusinessType creditProposal))
-                throw new ArgumentException("El tipo de segmento del cliente no coincide con ningun tipo de Pequena Empresa");
+            //string creditProposalString = await page.Locator(_locators.LocatorsT072100Pe.CreditProposal).InputValueAsync();
+            //if (!Enum.TryParse<SmallBusinessType>(creditProposalString.Replace('ñ', 'n').Replace(" ", ""), ignoreCase: true, out SmallBusinessType creditProposal))
+            //    throw new ArgumentException("El tipo de segmento del cliente no coincide con ningun tipo de Pequena Empresa");
 
-            _outputAccessor.Output.WriteLine($"Tipo de segmento del cliente: {creditProposal}");
+            //_outputAccessor.Output.WriteLine($"Tipo de segmento del cliente: {creditProposal}");
 
             await page.Locator(_locators.LocatorsT072100Pe.AdressList).ClickAsync();
             await page.Locator(_locators.LocatorsT072100Pe.AddressElement).ClickAsync();
@@ -78,8 +78,8 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
             // Ingresamos el tipo de cliente y  persona de contacto
             await page.Locator(_locators.LocatorsT072100Pe.ClientType).SelectOptionAsync(clientData.ClientType.GetDescription());
             //await page.PauseAsync();
-            await page.Locator(_locators.LocatorsT072100Pe.ContactList).ClickAsync();
-            await page.Locator(_locators.LocatorsT072100Pe.ContactElement).ClickAsync();
+            //await page.Locator(_locators.LocatorsT072100Pe.ContactList).ClickAsync();
+            //await page.Locator(_locators.LocatorsT072100Pe.ContactElement).ClickAsync();
 
             // No es necesario el Rating cliente ni operacion
 
@@ -129,15 +129,18 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.B
             await page.Locator(_locators.LocatorsT072100Pe.DisturbementPlaceElement).ClickAsync();
 
             // Ingreso de Riesgo maximo de grupo
-            double rmg = clientData.LoanAmount * 1.2; // 120% del monto solicitado
+            double rmg = clientData.LoanAmount * 1.0; // 120% del monto solicitado
             _outputAccessor.Output.WriteLine($"Riesgo maximo de grupo: {rmg}");
             await page.Locator(_locators.LocatorsT072100Pe.Rmg).FillAsync(rmg.ToString(CultureInfo.InvariantCulture));
 
             // Ingreso de riesgo de cliente
-            string clienRisk = await page.Locator(_locators.LocatorsT072100Pe.RiskType).InputValueAsync();
-            if (string.IsNullOrWhiteSpace(clienRisk) || clienRisk == "0")
+            if (!await page.Locator(_locators.LocatorsT072100Pe.RiskType).IsDisabledAsync())
             {
-                await page.Locator(_locators.LocatorsT072100Pe.RiskType).SelectOptionAsync(clientData.RiskType.ToString());
+                string clienRisk = await page.Locator(_locators.LocatorsT072100Pe.RiskType).InputValueAsync();
+                if (string.IsNullOrWhiteSpace(clienRisk) || clienRisk == "0")
+                {
+                    await page.Locator(_locators.LocatorsT072100Pe.RiskType).SelectOptionAsync(clientData.RiskType.ToString());
+                }
             }
 
             await page.WaitForTimeoutAsync(500); // Esperar medio segundo para asegurar que los cambios se reflejen

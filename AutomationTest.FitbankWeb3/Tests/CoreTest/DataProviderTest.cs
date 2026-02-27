@@ -2,6 +2,7 @@
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Extensions.DependencyInjection;
+using Spire.Presentation;
 using Xunit.Abstractions;
 
 namespace AutomationTest.FitbankWeb3.Tests.CoreTest
@@ -24,12 +25,12 @@ namespace AutomationTest.FitbankWeb3.Tests.CoreTest
         public void GetDataTest()
         {
             // Act
-            var data = _dataProvider.GetTestCases<ClientDataT072100Be>(_config.ExcelPath, _config.SheetName);
+            var data = _dataProvider.GetTestCases<ClientDataT062400>(_config.ExcelPath, _config.SheetName);
 
             // Assert/Output
             foreach (var item in data)
             {
-                var properties = typeof(ClientDataT072100Be).GetProperties();
+                var properties = typeof(ClientDataT062400).GetProperties();
                 foreach (var prop in properties)
                 {
                     var value = prop.GetValue(item);

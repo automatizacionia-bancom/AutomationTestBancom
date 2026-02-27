@@ -60,8 +60,10 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.Orchestrators
             {
                 var mainFlowTask = Task.Run(async () =>
                 {
-                    // Liberamos el usuario
-                    await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel { User = loanRequest.ClientData.UserRequest });
+                    await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel
+                    {
+                        User = loanRequest.ClientData.UserRequest
+                    });
 
                     // Ejecutamos el lujo de aprobacion
                     var applicationResult = await RunLoanApplicationAsync<TClientData>(page, loanRequest.ClientData, loanRequest.EvidenceFolder, loanRequest.IpPort, loanRequest.Headless, loanRequest.KeepPdf);

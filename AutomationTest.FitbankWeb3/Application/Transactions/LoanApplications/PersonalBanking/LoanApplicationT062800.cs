@@ -6,6 +6,7 @@ using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Application.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApplicationModels.Output;
+using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Domain.Enums;
 using AutomationTest.FitbankWeb3.Domain.Models;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
@@ -28,6 +29,14 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             ClientDataT062800 clientData = loanApplication.ClientData;
 
             // Verificar que el usuario no tenga una sesión activa
+            await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel
+            {
+                User = clientData.UserRequest
+            });
+            await _standardQueryService.ExecuteStandardQueryAsync<UpdatePasswordUserModel>(new UpdatePasswordUserModel
+            {
+                User = clientData.UserRequest
+            });
 
             await SearchProduct(page, clientData.Product, clientData.ProductGroup, clientData.CoinType); // Buscar el producto de forma rapida en la lista de productos
 
@@ -141,6 +150,9 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
 
             // Ingresar los datos de ingresos del cliente si es necesario
             await AssingAdditonalIncomeAsync(page, clientData);
+
+            await page.WaitForTimeoutAsync(30000);
+
 
             // Asignar la garantía según el tipo de préstamo si requiere
             await AssingGuaranteeAsync(page, loanApplication, transacion062800Type);

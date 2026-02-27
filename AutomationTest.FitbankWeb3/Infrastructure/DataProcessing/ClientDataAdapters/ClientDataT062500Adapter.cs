@@ -15,6 +15,7 @@ namespace AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.ClientDataAda
                 UserRequest = row.SafeField<string>("Usuario") ?? string.Empty,
                 Identification = row.SafeField<string>("DNI") ?? string.Empty,
                 Address = row.SafeField<int?>("Direccion") ?? 1,
+                Group = row.SafeField<string>("Grupo") ?? string.Empty,
                 Product = row.SafeField<string>("Producto") ?? string.Empty,
                 LoanType = row.SafeField<LoanType?>("TipoPrestamo") ?? LoanType.Prestamo,
                 LoanInstallments = row.SafeField<int?>("Cuotas") ?? 0,

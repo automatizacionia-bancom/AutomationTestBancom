@@ -139,6 +139,7 @@ namespace AutomationTest.FitbankWeb3.Application.Fixtures
 
             // 6) Registra las demás dependencias (queries, servicios, etc.)
             services.AddTransient<IStandardQuery<DeleteUserSesionModel>, DeleteUserSesionQuery>();
+            services.AddTransient<IStandardQuery<UpdatePasswordUserModel>, UpdatePasswordUserQuery>();
             services.AddTransient<IStandardQuery<ForceLoanApprovalModel>, ForceLoanApprovalQuery>();
             services.AddTransient<IStandardQuery<ForceOnlyCarsEssentialModel>, ForceOnlyCarsEssential>();
             services.AddScoped<IStandardQueryService, StandardQueryService>();

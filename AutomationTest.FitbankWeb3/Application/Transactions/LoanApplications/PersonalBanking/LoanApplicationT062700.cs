@@ -28,12 +28,6 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
         {
             ClientDataT062700 clientData = loanApplication.ClientData;
 
-            // Verificar que el usuario no tenga una sesión activa
-            await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel
-            {
-                User = clientData.UserRequest
-            });
-
             await SearchProduct(page, clientData.Product); // Buscar el producto de forma rapida en la lista de productos
 
             // Ingresar a la página de inicio de sesión de Fitbank

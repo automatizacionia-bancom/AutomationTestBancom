@@ -20,7 +20,7 @@
         public string ApplicationNumber { get; } = "#c_txtCsolicitud_0";
         public string DisbursementOpType { get; } = "input[type='radio'][name='chekFPago'][value='0']";
         public string BankAccountList { get; } = "#container_8 > table > tbody > tr:nth-child(2) > td.columna_5 > img";
-        public string BankAccountElement { get; } = "#entorno-formulario > form:nth-child(16) > div > table > tbody > tr > td";
+        public string BankAccountElement { get; } = "#entorno-formulario > form:nth-child(16) > div > table > tbody > tr:nth-child(1) > td";
         public string IncomeButtton { get; } = "span.input-label:has-text('Ingresos y Dsctos.')";
         public string IncomeDate { get; } = "#c_txtPeriodo1_0";
         public string IncomeAssets { get; } = "#c_txtImporte1_0";
@@ -28,5 +28,10 @@
         public string IncomeReturn { get; } = ".return-link:has-text('Regresar')";
         public string EvaluateButton { get; } = "#c_Evaluar_0";
         public string EvaluateResult { get; } = "#c_resultadoCars_0";
+        public string ReLoanButton { get; } = "span:has-text(\"Represtamo\")";
+        public string ReLoanButtonReturn { get; } = "span:has-text(\"Regresar\")";
+
+
+
     }
 }

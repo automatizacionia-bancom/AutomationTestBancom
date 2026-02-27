@@ -12,6 +12,7 @@ namespace AutomationTest.FitbankWeb3.Application.Models.ClientDataModels
         public required string UserRequest { get; set; } = string.Empty;
         public required string Identification { get; set; } = string.Empty;
         public required int Address { get; set; } = 1;
+        public required string Group { get; set; } = string.Empty;
         public required string Product { get; set; } = string.Empty;
         public required LoanType LoanType { get; set; } = LoanType.Prestamo;
         public required int LoanInstallments { get; set; } = 0;

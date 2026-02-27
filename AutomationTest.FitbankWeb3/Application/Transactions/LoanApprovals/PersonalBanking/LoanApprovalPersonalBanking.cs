@@ -7,7 +7,9 @@ using AutomationTest.FitbankWeb3.Application.Interfaces;
 using AutomationTest.FitbankWeb3.Application.Models.ClientDataModels;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApprovalModels.Input;
 using AutomationTest.FitbankWeb3.Application.Models.LoanApprovalModels.Output;
+using AutomationTest.FitbankWeb3.Application.Models.QueryModels.StandardQueryModels;
 using AutomationTest.FitbankWeb3.Application.Transactions.Interfaces;
+using AutomationTest.FitbankWeb3.Domain.Models.Interfaces;
 using AutomationTest.FitbankWeb3.Domain.Ports.Outbound;
 using Microsoft.Playwright;
 
@@ -38,6 +40,16 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.PersonalBanking.Pe
         }
         public async Task<LoanApprovalResultModel> ApproveLoanAsync(IPage page, LoanApprovalModel loanAppproval)
         {
+            // Verificar que el usuario no tenga una sesión activa
+            await _standardQueryService.ExecuteStandardQueryAsync<DeleteUserSesionModel>(new DeleteUserSesionModel
+            {
+                User = loanAppproval.ApprovingUser
+            });
+            await _standardQueryService.ExecuteStandardQueryAsync<UpdatePasswordUserModel>(new UpdatePasswordUserModel
+            {
+                User = loanAppproval.ApprovingUser
+            });
+
             await page.GotoAsync($"{loanAppproval.IpPort}/WEB3/ingreso.html");
 
             // Forzar cierre de sesión anterior

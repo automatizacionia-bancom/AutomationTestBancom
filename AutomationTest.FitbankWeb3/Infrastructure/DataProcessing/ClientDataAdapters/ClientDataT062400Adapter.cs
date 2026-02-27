@@ -19,7 +19,7 @@ namespace AutomationTest.FitbankWeb3.Infrastructure.DataProcessing.ClientDataAda
                 JewelGrossWeight = row.SafeField<double?>("PesoBruto") ?? 0.0,
                 JewelEmbeddedWeight = row.SafeField<double?>("PesoInscrustacion") ?? 0.0,
                 RequestedAmount = row.SafeField<double?>("Monto") ?? 0.0,
-                PaymentTerm = row.SafeField<PaymentTerm?>("Monto") ?? PaymentTerm.Monthly,
+                PaymentTerm = row.SafeField<PaymentTerm?>("Plazo") ?? PaymentTerm.Monthly,
                 Income = row.SafeField<double?>("IngresoNeto") ?? 0.0,
                 DisbursementType = row.SafeField<DisbursementType?>("FormaDesembolso") ?? DisbursementType.Unspecified,
                 ModifyLoanApplication = row.SafeField<ModifyLoanApplication?>("ModificarSolicitud") ?? ModifyLoanApplication.Default,

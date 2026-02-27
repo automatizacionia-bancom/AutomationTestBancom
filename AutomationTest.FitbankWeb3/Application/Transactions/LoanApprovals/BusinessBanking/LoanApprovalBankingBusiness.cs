@@ -143,12 +143,12 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
             /// Seleciona Observado durante el rpoceso de APROBACIÓN AUTONOMÍA
             string autonomiaTag = "APROBACIÓN AUTONOMÍA";
             bool isObserved = currentActivity == autonomiaTag && await CountInputOccurrencesInTableAsync(page, autonomiaTag) == 1;
-            if (isObserved)
-            {
-                var list = options.ToList();
-                list.Insert(0, "OBSERVADO");      // inserta al inicio
-                options = list.ToArray();
-            }
+            //if (isObserved)
+            //{
+            //    var list = options.ToList();
+            //    list.Insert(0, "OBSERVADO");      // inserta al inicio
+            //    options = list.ToArray();
+            //}
             ///
 
             // Elige la primera que esté presente en approvalStatusElements o, de lo contrario, la última
@@ -159,18 +159,18 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApprovals.Busi
             await page.Locator(_locators.LocatorsGeneralDashboard.ListElement(selected)).ClickAsync();
 
             // Selecionamos el tipo de observacion de ser necesario
-            if (isObserved)
-            {
-                await page.ClickAndWaitAsync(
-                    page.Locator("#container_4 > table > tbody > tr:nth-child(1) > td.columna_4 > img"),
-                    page.Locator(_locators.LocatorsGeneralDashboard.OK),
-                    new LocatorWaitForOptions
-                    {
-                        State = WaitForSelectorState.Visible,
-                        Timeout = 30000 // 30 seconds timeout for the transaction to be processed
-                    }, _outputAccessor.Output);
-                await page.Locator(_locators.LocatorsGeneralDashboard.ListElement("0001")).ClickAsync();
-            }
+            //if (isObserved)
+            //{
+            //    await page.ClickAndWaitAsync(
+            //        page.Locator("#container_4 > table > tbody > tr:nth-child(1) > td.columna_4 > img"),
+            //        page.Locator(_locators.LocatorsGeneralDashboard.OK),
+            //        new LocatorWaitForOptions
+            //        {
+            //            State = WaitForSelectorState.Visible,
+            //            Timeout = 30000 // 30 seconds timeout for the transaction to be processed
+            //        }, _outputAccessor.Output);
+            //    await page.Locator(_locators.LocatorsGeneralDashboard.ListElement("0001")).ClickAsync();
+            //}
 
             await page.Locator(_locators.LocatorsBusinessBankingDashboard.ApprovalComment).FillAsync("QA");
 

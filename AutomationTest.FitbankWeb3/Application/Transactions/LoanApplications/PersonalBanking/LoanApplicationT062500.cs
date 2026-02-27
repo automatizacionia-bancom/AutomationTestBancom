@@ -33,8 +33,12 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
             {
                 User = clientData.UserRequest
             });
+            await _standardQueryService.ExecuteStandardQueryAsync<UpdatePasswordUserModel>(new UpdatePasswordUserModel
+            {
+                User = clientData.UserRequest
+            });
 
-            await SearchProduct(page, clientData.Product); // Buscar el producto de forma rapida en la lista de productos
+            await SearchProduct(page, clientData.Product, clientData.Group); // Buscar el producto de forma rapida en la lista de productos
 
             // Ingresar a la página de inicio de sesión de Fitbank
             await page.GotoAsync($"{loanApplication.IpPort}/WEB3/ingreso.html");
@@ -105,7 +109,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
             // Ingresamos la fehca de aprobacion y el número de remesa si es necesario
             if (await page.Locator(_locators.LocatorsT062500.ApprovalDate).IsVisibleAsync())
             {
-                await page.Locator(_locators.LocatorsT062500.ApprovalDate).FillAsync(DateTime.Now.ToString("dd/MM/yyyy"));
+                await page.Locator(_locators.LocatorsT062500.ApprovalDate).FillAsync(DateTime.Now.ToString("dd-MM-yyyy"));
             }
 
             if (await page.Locator(_locators.LocatorsT062500.RemittanceNumber).IsVisibleAsync())
@@ -152,7 +156,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
             // Ingresar los datos de ingresos del cliente si es necesario
             await AssingAdditonalIncomeAsync(page, clientData);
 
-            await page.WaitForTimeoutAsync(30000); // Ingresar represtamo
+            await AssingReLoan(page, loanApplication);
 
             // Evaluar la solicitud de préstamo y esperamos el resultado de la evaluación, tomando capturas de pantalla en el proceso
             await page.ClickAndWaitAsync(
@@ -209,6 +213,86 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications
                 EvaluationResult = evaluationResult,
                 RecognizedApprovingUsers = approvingUsers
             };
+        }
+        private async Task AssingReLoan(IPage page, LoanApplicationWorkflowModel<ClientDataT062500> loanApplication)
+        {
+            if (!loanApplication.ClientData.LoanType.Equals(LoanType.Represtamo))
+                return;
+
+            await page.Locator(_locators.LocatorsT062500.ReLoanButton).ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect).WaitForAsync(new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Visible
+            });
+
+            await SeleccionarCompraSegunUltimaCuotaAsync(page);
+            //await page.WaitForTimeoutAsync(10000);
+            await page.WaitForTimeoutAsync(500);
+
+            // Presionar F12 para guardar los cambios
+            await page.ClickAndWaitAsync(
+                    page.Locator(_locators.LocatorsGeneralDashboard.F12Button),
+                    page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect),
+                    page.Locator(_locators.LocatorsGeneralDashboard.TransactionError),
+                    new LocatorWaitForOptions
+                    {
+                        Timeout = 60000, // 60 seconds timeout
+                        State = WaitForSelectorState.Visible
+                    }, _outputAccessor.Output);
+            await page.Locator(_locators.LocatorsGeneralDashboard.TransactionCorrect).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Visible
+            });
+
+            await page.ScreenshotAsync(new PageScreenshotOptions
+            {
+                Path = Path.Combine(loanApplication.EvidenceFolder, "5. Represtamo.jpeg"),         // Ruta donde se guarda la imagen
+                FullPage = true               // Captura toda la página, no solo la vista actual
+            });
+
+            await page.Locator(_locators.LocatorsT062500.ReLoanButtonReturn).ClickAsync();
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Visible
+            });
+
+            //await page.ClickAndWaitAsync(
+            //    page.Locator(_locators.LocatorsGeneralDashboard.F12Button),
+            //    page.Locator(_locators.LocatorsGeneralDashboard.OK),
+            //    page.Locator(_locators.LocatorsGeneralDashboard.TransactionError),
+            //    new LocatorWaitForOptions
+            //    {
+            //        Timeout = 60000, // 60 seconds timeout
+            //        State = WaitForSelectorState.Visible
+            //    }, _outputAccessor.Output);
+            //await page.PauseAsync();
+        }
+        private async Task SeleccionarCompraSegunUltimaCuotaAsync(IPage page)
+        {
+            int ultimoIndiceValido = -1;
+
+            // Asumimos que los índices son consecutivos desde 0
+            for (int i = 0; i < 100; i++)
+            {
+                var cuota = page.Locator($"#c_txtCuota_{i}");
+
+                // Si ya no existe el input, salimos del loop
+                if (await cuota.CountAsync() == 0)
+                    break;
+
+                var valor = (await cuota.InputValueAsync()).Trim();
+
+                if (valor != "0.00")
+                {
+                    ultimoIndiceValido = i;
+                    break;
+                }
+            }
+
+            if (ultimoIndiceValido >= 0)
+            {
+                await page.CheckAsync($"#c_ckCompra_{ultimoIndiceValido}");
+            }
         }
         private async Task AssingAdditonalIncomeAsync(IPage page, ClientDataT062500 clientData)
         {

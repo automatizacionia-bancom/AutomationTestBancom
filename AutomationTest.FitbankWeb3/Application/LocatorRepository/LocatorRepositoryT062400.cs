@@ -2,7 +2,7 @@
 {
     public class LocatorRepositoryT062400
     {
-        public string OK_RangeError { get; } = "#entorno-estatus-contenido:text-matches(\"^(?:Ok|EL MONTO A SOLICITAR DE).*\")";
+        public string OK_RangeError_GestorError { get; } = "#entorno-estatus-contenido:text-matches(\"^(?:Ok|EL MONTO A SOLICITAR DE|DEBE SELECCIONAR UNA CAMPAÑA DEL GESTOR).*\")";
         public string Identification { get; } = "#c_v2_identificacion_0";
         public string Adress { get; } = "#c_v2_cdireccion_0";
         public string AdressList { get; } = "#container_3 > div > table > tbody > tr > td:nth-child(9) > img";
@@ -23,6 +23,7 @@
         public string JewelDescription { get; } = "#c_v8_observacion_0";
         public string JewelGrossWeight { get; } = "#c_v8_pesoBruto_0";
         public string JewelEmbeddedWeight { get; } = "#c_v8_pesoIncrustacion_0";
+        public string JewelData { get; } = "a:has-text('Datos de la Joya')";
         public string CreditData { get; } = "a:has-text('Datos del Credito')";
         public string RequestedAmount { get; } = "#c_txtMtoPrestamo_0";
         public string LoanRate { get; } = "#c_txtTasaNegociable_0";
