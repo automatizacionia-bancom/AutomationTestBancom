@@ -1,4 +1,5 @@
-﻿using AutomationTest.FitbankWeb3.Application.Enums;
+﻿using System.Globalization;
+using AutomationTest.FitbankWeb3.Application.Enums;
 using AutomationTest.FitbankWeb3.Application.Enums.BusinessEnum;
 using AutomationTest.FitbankWeb3.Application.Extensions;
 using AutomationTest.FitbankWeb3.Application.Fixtures;
@@ -169,7 +170,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.Locator(_locators.LocatorsT062400.CreditData).ClickAsync();
 
             // Ingresamos el monto solicitado y el plazo
-            await page.Locator(_locators.LocatorsT062400.RequestedAmount).FillAsync(clientData.RequestedAmount.ToString());
+            await page.Locator(_locators.LocatorsT062400.RequestedAmount).FillAsync(clientData.RequestedAmount.ToString(CultureInfo.InvariantCulture));
             await page.Locator(_locators.LocatorsT062400.RequestedAmount).PressAsync("Enter");
 
             await page.Locator(_locators.LocatorsT062400.PaymentTerm).SelectOptionAsync(clientData.PaymentTerm.GetDescription());
