@@ -108,19 +108,6 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.Locator(_locators.LocatorsT062400.JewelEmbeddedWeight).FillAsync(clientData.JewelEmbeddedWeight.ToString());
             await page.Locator(_locators.LocatorsT062400.JewelEmbeddedWeight).PressAsync("Enter");
 
-            //// Ingresamos los datos del crédito
-            //await page.Locator(_locators.LocatorsT062400.CreditData).ClickAsync();
-
-            //// Ingresamos el monto solicitado y el plazo
-            //await page.Locator(_locators.LocatorsT062400.RequestedAmount).FillAsync(clientData.RequestedAmount.ToString());
-            //await page.Locator(_locators.LocatorsT062400.RequestedAmount).PressAsync("Enter");
-
-            //await page.Locator(_locators.LocatorsT062400.PaymentTerm).SelectOptionAsync(clientData.PaymentTerm.GetDescription());
-            //await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
-            //{
-            //    State = WaitForSelectorState.Visible
-            //});
-
             // Regresamos los datos de la joya
             await page.Locator(_locators.LocatorsT062400.JewelData).ClickAsync();
 
@@ -151,30 +138,16 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             await page.Locator(_locators.LocatorsT062400.ManagerList).ClickAsync();
             await page.Locator(_locators.LocatorsT062400.ManagerElement).ClickAsync();
 
-            //// Ingresamos los datos del crédito
-            //await page.Locator(_locators.LocatorsT062400.CreditData).ClickAsync();
-
-            //// Ingresamos el monto solicitado y el plazo
-            //await page.Locator(_locators.LocatorsT062400.RequestedAmount).FillAsync(clientData.RequestedAmount.ToString());
-            //await page.Locator(_locators.LocatorsT062400.RequestedAmount).PressAsync("Enter");
-
-            //_outputAccessor.Output.WriteLine(clientData.PaymentTerm.GetDescription());
-            //_outputAccessor.Output.WriteLine(clientData.PaymentTerm.ToString());
-            //await page.Locator(_locators.LocatorsT062400.PaymentTerm).SelectOptionAsync(clientData.PaymentTerm.GetDescription());
-            //await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
-            //{
-            //    State = WaitForSelectorState.Visible
-            //});
-
             // Ingresamos los datos del crédito
             await page.Locator(_locators.LocatorsT062400.CreditData).ClickAsync();
+            await page.WaitForTimeoutAsync(500);
 
             // Ingresamos el monto solicitado y el plazo
-            await page.Locator(_locators.LocatorsT062400.RequestedAmount).FillAsync(clientData.RequestedAmount.ToString(CultureInfo.InvariantCulture));
-            await page.Locator(_locators.LocatorsT062400.RequestedAmount).PressAsync("Enter");
-
             await page.Locator(_locators.LocatorsT062400.PaymentTerm).SelectOptionAsync(clientData.PaymentTerm.GetDescription());
-            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 1500, new LocatorWaitForOptions
+
+            await page.Locator(_locators.LocatorsT062400.RequestedAmount).FillSimulatedAsync(clientData.RequestedAmount.ToString(CultureInfo.InvariantCulture));
+            await page.Locator(_locators.LocatorsT062400.RequestedAmount).PressAsync("Enter");
+            await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Visible
             });
@@ -195,12 +168,18 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
                 await page.Locator(_locators.LocatorsT062400.DisbursementOpType).CheckAsync();
             }
 
-            await page.WaitForTimeoutAsync(5000); // Esperar un segundo para asegurar que los cambios se reflejen
+            await page.WaitForTimeoutAsync(500); // Esperar un segundo para asegurar que los cambios se reflejen
 
             // Crear la solicitud de préstamo y esperar a que se genere el número de solicitud
             using (var handle = _actionCoordinatorFactory.GetCoordinator(ActionCoordinatorType.LoanApplicationCoordinator).CreateHandle())
             {
                 await handle.WaitForTurnAsync();
+
+                await page.Locator(_locators.LocatorsGeneralDashboard.F12Button).ClickAsync();
+                await page.Locator(_locators.LocatorsGeneralDashboard.OK).WaitForAsync(delayBefore: 500, new LocatorWaitForOptions
+                {
+                    State = WaitForSelectorState.Visible
+                });
 
                 await page.ClickAndWaitAsync(
                 page.Locator(_locators.LocatorsGeneralDashboard.F12Button),
