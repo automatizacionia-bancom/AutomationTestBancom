@@ -24,6 +24,7 @@
         public string JewelGrossWeight { get; } = "#c_v8_pesoBruto_0";
         public string JewelEmbeddedWeight { get; } = "#c_v8_pesoIncrustacion_0";
         public string JewelData { get; } = "a:has-text('Datos de la Joya')";
+        public string ClientDebt { get; } = "legend:has-text('DEUDA DEL CLIENTE')";
         public string CreditData { get; } = "a:has-text('Datos del Credito')";
         public string RequestedAmount { get; } = "#c_txtMtoPrestamo_0";
         public string LoanRate { get; } = "#c_txtTasaNegociable_0";

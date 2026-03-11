@@ -151,7 +151,7 @@ namespace AutomationTest.FitbankWeb3.Application.Transactions.LoanApplications.P
             // Ingresar los datos de ingresos del cliente si es necesario
             await AssingAdditonalIncomeAsync(page, clientData);
 
-            await page.WaitForTimeoutAsync(30000);
+            //await page.WaitForTimeoutAsync(30000);
 
 
             // Asignar la garantía según el tipo de préstamo si requiere
